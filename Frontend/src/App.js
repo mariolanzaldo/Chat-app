@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Signup from "./pages/Register";
-import Signup from "./pages/Signup2";
+import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
 // import { createTheme, ThemeProvider } from '@mui/material/styles';

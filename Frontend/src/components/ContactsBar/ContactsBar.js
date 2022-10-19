@@ -1,11 +1,40 @@
 import BasicCard from "../common/BasicCard/BasicCard";
-import { Box, Grid, Typography, IconButton } from "@mui/material";
+import { Box, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Modal, Typography, Button, TextField } from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchBar from "../common/SearchBar/SearchBar";
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
+import { navbarContacts } from "../Navbar/consts/navbarContacts";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import useForm from "../../hooks/useForm";
+import { validator } from "../../validator/validator";
+import { contactStyles } from "./styles";
 
 const ContactsBar = () => {
+
+    const navigate = useNavigate();
+
+    const [open, setOpen] = useState(false);
+
+    const initState = {
+        username: "",
+    }
+
+    const submit = (values) => {
+        console.log(values);
+    };
+
+    const {
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        errors,
+    } = useForm({
+        initState,
+        callback: submit,
+        validator
+    });
 
     const getHeader = () => {
         const handleChange = (value) => {
@@ -13,7 +42,8 @@ const ContactsBar = () => {
         }
 
         const addContact = () => {
-            console.log('clicked!');
+            setOpen(true);
+
         };
         return (
             <Grid item sx={navbarStyles.wrapper} >
@@ -42,14 +72,28 @@ const ContactsBar = () => {
 
     const getContent = () => {
         return (
-            <Box container>
-                <Typography
+            <List>
+                {/* <Typography
                     align='center'
                     sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
                 >
                     No contacts yet!
-                </Typography>
-            </Box>
+                </Typography> */}
+                {navbarContacts.map((item) => (
+                    <ListItem
+                        button
+                        key={item.id}
+                        onClick={() => navigate(`conversation/${item.id}`)}
+                    >
+                        <ListItemIcon>
+                            {item.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={item.label}
+                        />
+                    </ListItem>
+                ))}
+            </List>
         );
     };
 
@@ -60,6 +104,48 @@ const ContactsBar = () => {
                 header={getHeader()}
                 content={getContent()}
             />
+            {/* <NewUserModal open={open} onClose={() => setOpen(false)} /> */}
+            <Modal open={open} onSubmit={handleSubmit}>
+                <Box component="form" sx={contactStyles.wrapper}>
+                    <Typography
+                        variant='h6'
+                        component='h2'
+                    >
+                        New User
+                    </Typography>
+                    <Typography sx={{ mt: 2 }}>
+                        Fill out the form and submit.
+                    </Typography>
+                    <Box sx={contactStyles.inputFields} >
+                        <TextField
+                            placeholder="username"
+                            name="username"
+                            label="username"
+                            required
+                            defaultValue={initState.username}
+                            error={errors.username ? true : false}
+                            helperText={errors.username}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        />
+                    </Box>
+
+                    <Box sx={contactStyles.buttons}>
+                        <Button
+                            type='submit'
+                            variant='contained'
+                        >
+                            Submit
+                        </Button>
+                        <CommonButton
+                            variant="outlined"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </CommonButton>
+                    </Box>
+                </Box>
+            </Modal>
         </>
     );
 }

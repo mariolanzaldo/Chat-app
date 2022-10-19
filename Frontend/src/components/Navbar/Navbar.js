@@ -1,67 +1,45 @@
-import React, { useState } from 'react';
-import { Drawer, Toolbar, Divider, Box, Grid, IconButton, cardHeaderClasses, Typography } from '@mui/material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { navbarContacts } from './consts/navbarContacts';
+import React, { useState } from "react";
+import { Drawer, Grid, Toolbar, Divider, List, ListItem, ListItemButton, Typography, IconButton } from "@mui/material";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { navbarStyles } from './styles';
-import { useNavigate } from "react-router-dom";
-import { navbarGroups } from './consts/navbarGroups';
-import SearchBar from '../common/SearchBar/SearchBar';
-import BasicCard from '../common/BasicCard/BasicCard';
-import GridWrapper from '../common/GridWrapper/GridWrapper';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import CommonButton from '../common/CommonButton/CommonButton';
+import Image from "./consts/avatar";
+import ContactsBar from "../ContactsBar/ContactsBar";
+import GroupsBar from "../GroupsBar/GroupsBar";
+import { Outlet } from "react-router-dom";
+
 
 const Navbar = () => {
+    const tabs = ['Contacts', 'Groups'];
 
-    const getHeader = () => {
-        const handleChange = (value) => {
-            console.log(value);
+    const initialState = {
+        groups: false,
+        contacts: true,
+    };
+
+    const [isShown, setIsShown] = useState(initialState);
+
+    const handleClick = (event) => {
+
+        if (event.currentTarget.innerText === 'Contacts') {
+            setIsShown(current => {
+                return ({
+                    shown: !current.shown,
+                    contacts: true,
+                    groups: false
+                });
+            })
         }
 
-        const addContact = () => {
-            console.log('clicked!');
-        };
-        return (
-            <div>
-                <Box sx={navbarStyles.wrapper} >
-                    <SearchBar
-                        placeholder="Search a friend!"
-                        onChange={(event) => handleChange(event.target.value)}
-                    />
-                    <Box sx={{
-                        width: '170px',
-                    }}>
-                        <CommonButton
-                            variant="contained"
-                            onClick={addContact}
-                            size='large'
-                            sx={navbarStyles.addUserButton}
-                        >
-                            Add
-                        </CommonButton>
-                        <IconButton sx={navbarStyles.icons}>
-                            <RefreshIcon />
-                        </IconButton>
-                    </Box>
-                </Box>
-            </div>
-        );
+        if (event.currentTarget.innerText === 'Groups') {
+            setIsShown(current => {
+                return ({
+                    shown: !current.shown,
+                    contacts: false,
+                    groups: true
+                });
+            })
+        }
     };
-
-    const getContent = () => {
-        return (
-            <Typography
-                align='center'
-                sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
-            >
-                No contacts yet!
-            </Typography>
-        );
-    };
-
 
     return (
         <Drawer
@@ -69,70 +47,43 @@ const Navbar = () => {
             variant="permanent"
             anchor="left"
         >
-            <Toolbar />
-            <Divider
-                sx={navbarStyles.text}
-            >Contacts</Divider>
-            {/* <GridWrapper>
-                <BasicCard
-                    header={getHeader()}
-                    content={getContent()}
-                />
-            </GridWrapper> */}
 
-            <Box cointaner>
-                <SearchBar
-                    placeholder="Search a friend!"
-                    onChange={handleChange}
-                />
-            </Box>
-            <List>
-                {navbarContacts.map((item, index) => (
-                    <ListItem
-                        button
-                        key={item.id}
-                        onClick={() => navigate(item.route)}
-                    >
-                        <ListItemIcon
-                            sx={navbarStyles.icons}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            sx={navbarStyles.text}
-                            primary={item.label}
-                        />
-                    </ListItem>
-                ))}
-            </List>
-            <Divider
-                sx={navbarStyles.text}
-            >Groups</Divider>
-            <SearchBar
-                placeholder="Search a group!"
-                onChange={handleChange}
-            />
-            <List>
-                {navbarGroups.map((item, index) => (
-                    <ListItem
-                        button
-                        key={item.id}
-                        onClick={() => navigate(item.route)}
-                    >
-                        <ListItemIcon
-                            sx={navbarStyles.icons}
-                        >
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            sx={navbarStyles.text}
-                            primary={item.label}
-                        />
-                    </ListItem>
-                ))}
-            </List>
-
-
+            <Grid container sx={navbarStyles.avatar}>
+                <Grid item xs={3} >
+                    <Image />
+                </Grid>
+                <Grid item xs={7}>
+                    <Typography variant='h4' component='div'>User</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                    <IconButton>
+                        <MoreVertIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
+            <Divider />
+            <Toolbar sx={navbarStyles.tabs}>
+                <List>
+                    {tabs.map((text) => {
+                        return (
+                            <ListItem key={text} >
+                                <ListItemButton
+                                    sx={{ justifyContent: 'center' }}
+                                    onClick={handleClick}
+                                >
+                                    {text}
+                                </ListItemButton>
+                                <Outlet />
+                            </ListItem>
+                        );
+                    }
+                    )}
+                </List>
+            </Toolbar>
+            <Divider />
+            <Grid container sx={navbarStyles.contacts}>
+                {(isShown.contacts && !isShown.groups) ? (<ContactsBar />) : (<GroupsBar />)}
+            </Grid>
         </Drawer>
     );
 };

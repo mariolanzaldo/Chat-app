@@ -10,7 +10,7 @@ const useForm = ({ initState, callback, validator }) => {
             Object.values(errors).filter(error => typeof error !== "undefined")
                 .length > 0;
         if (isSubmited && !isValidErrors()) callback(state);
-    }, [errors]);
+    });
 
     const handleChange = event => {
         const { name, value } = event.target;

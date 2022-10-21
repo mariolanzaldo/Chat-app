@@ -16,13 +16,17 @@ const ContactsBar = () => {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
+    // const [users, setUsers] = useState(navbarContacts);
+    // const [searchResults, setSearchResults] = useState(navbarContacts);
 
     const initState = {
         username: "",
     }
 
-    const submit = (values) => {
+    const addNewUser = (values) => {
+        // users.push({ ...values });
         console.log(values);
+        setOpen(false);
     };
 
     const {
@@ -32,24 +36,42 @@ const ContactsBar = () => {
         errors,
     } = useForm({
         initState,
-        callback: submit,
+        callback: addNewUser,
         validator
     });
 
     const getHeader = () => {
-        const handleChange = (value) => {
+        const handleSearch = (value) => {
+
             console.log(value);
-        }
+            // filterData(value);
+        };
+
+        // const filterData = (value) => {
+        //     const lowerCasedValue = value.toLowerCase().trim();
+
+        //     if (lowerCasedValue === '') setUsers(searchResults);
+        //     else {
+        //         const filteredData = searchResults.filter((item) => {
+        //             return Object.keys(item).some((key) =>
+        //                 item[key].toString().toLowerCase().includes(lowerCasedValue)
+        //             );
+        //         });
+        //         setUsers(filteredData);
+
+        //     }
+
+        // }
 
         const addContact = () => {
             setOpen(true);
-
         };
+
         return (
             <Grid item sx={navbarStyles.wrapper} >
                 <SearchBar
                     placeholder="Search a friend!"
-                    onChange={(event) => handleChange(event.target.value)}
+                    onChange={(event) => handleSearch(event.target.value)}
                 />
                 <Box sx={{
                     width: '170px',
@@ -73,13 +95,7 @@ const ContactsBar = () => {
     const getContent = () => {
         return (
             <List>
-                {/* <Typography
-                    align='center'
-                    sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
-                >
-                    No contacts yet!
-                </Typography> */}
-                {navbarContacts.map((item) => (
+                {(navbarContacts.length > 0) ? navbarContacts.map((item) => (
                     <ListItem
                         button
                         key={item.id}
@@ -92,7 +108,12 @@ const ContactsBar = () => {
                             primary={item.label}
                         />
                     </ListItem>
-                ))}
+                )) : <Typography
+                    align='center'
+                    sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
+                >
+                    No contacts yet!
+                </Typography>}
             </List>
         );
     };
@@ -104,7 +125,7 @@ const ContactsBar = () => {
                 header={getHeader()}
                 content={getContent()}
             />
-            {/* <NewUserModal open={open} onClose={() => setOpen(false)} /> */}
+
             <Modal open={open} onSubmit={handleSubmit}>
                 <Box component="form" sx={contactStyles.wrapper}>
                     <Typography

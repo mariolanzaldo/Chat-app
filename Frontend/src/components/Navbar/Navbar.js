@@ -73,7 +73,6 @@ const Navbar = () => {
                                 >
                                     {text}
                                 </ListItemButton>
-                                <Outlet />
                             </ListItem>
                         );
                     }

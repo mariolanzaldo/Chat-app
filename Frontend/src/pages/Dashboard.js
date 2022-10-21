@@ -24,12 +24,7 @@ import Navbar from '../components/Navbar/Navbar';
 //     </Box>
 //     );
 
-function Dashboard({ children }) {
-    return (
-        <div>
-            {children}
-        </div>
-    );
+function Dashboard() {
 
     return (
         <Stack sx={{

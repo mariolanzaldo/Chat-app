@@ -48,45 +48,4 @@ router.post(
     }
 );
 
-// router.post("/signup", async (req, res) => {
-//     const { username, password } = req.body;
-//     const user = new AuthUser({
-//         username,
-//         password
-//     });
-//     try {
-//         await user.save();
-//         return res.status(201).send(user);
-//     } catch (err) {
-//         return res.status(500).send({
-//             message: `Something wrong occurred ${err}`,
-//         });
-//     }
-// });
-
-// router.post("/login", async (req, res) => {
-//     const { username, password } = req.body;
-//     try {
-//         const user = await AuthUser.findOne({ username });
-//         if (!user) {
-//             return res.status(404).send({ message: "Username or password are incorrect" });
-//         }
-
-//         const valid = await user.isValidPassword(password);
-
-//         if (!valid) {
-//             return res.status(404).send({ message: "Username or password are incorrect" });
-//         }
-
-//         return res.status(200).send({
-//             data: {
-//                 ok: true,
-//             }
-//         });
-
-//     } catch (err) {
-//         return res.status(500).send({ message: "Server error" });
-//     }
-// });
-
 module.exports = router;

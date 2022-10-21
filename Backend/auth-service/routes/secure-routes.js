@@ -5,7 +5,7 @@ router.get(
     '/dashboard',
     (req, res, next) => {
         res.json({
-            message: 'This is a secure route',
+            message: 'Authenticated',
             user: req.user,
             token: req.query.secret_token
         });

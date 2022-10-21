@@ -14,9 +14,10 @@ const userSchema = new mongoose.Schema({
         trim: true,
 
     },
-    contactList: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'Users'
-    }],
+    contactList: [{ type: String, default: [], required: false }],
+    // contactList: [{
+    //     type: mongoose.Schema.Types.ObjectId, ref: 'Users'
+    // }],
     // groupList: {
     //     type: Object,
     //     default: [],

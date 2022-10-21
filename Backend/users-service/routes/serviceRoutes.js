@@ -38,7 +38,7 @@ router.patch('/addFriend', async (req, res, next) => {
         const { id: idB } = req.body.userB;
 
         const userA = await findUser(req.body.userA);
-        const userB = await findUser(req.body.userB);
+        const userB = await findUser(req.body.userB); //TODO: refactor to use promise all instead two calls.
 
         console.log(userA);
 

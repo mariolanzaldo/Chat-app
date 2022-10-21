@@ -31,5 +31,5 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server started on Port ${process.env.PORT}`);
+    console.log(`Server started on Port ${process.env.PORT}`); //Use a loggin library instead console.log (Winston)
 });

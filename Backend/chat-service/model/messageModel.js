@@ -9,19 +9,19 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    receiver: {
-        type: String,
-        required: true,
-    },
-    room: {
+    // receiver: {
+    //     type: String,
+    //     required: true,
+    // },
+    roomId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Room",
     },
-    createdAt: {
-        type: Date,
-        default: Date.now(),
-    }
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now(),
+    // }
 
 }, { timestamps: true });
 

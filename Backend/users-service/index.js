@@ -11,12 +11,6 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 
-app.use(function (err, req, res, next) {
-    console.log(err);
-    res.status(err.status || 500);
-    res.json({ error: err });
-})
-
 app.listen(port, () => {
-    console.log(`Server started on Port ${process.env.PORT}`);
+    console.log(`Server started on Port ${port}`);
 });

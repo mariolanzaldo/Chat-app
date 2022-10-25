@@ -6,91 +6,125 @@ const UserModel = require('../model/userServiceModel');
 
 const router = express.Router();
 
+//TODO: make an equal ID for auth-service and user-service. Note: the ID could either the email or the username, they are unique. 
+
 router.get('/:id', async (req, res, next) => {
     const _id = req.params.id;
     try {
         const user = await UserModel.findById({ _id });
 
-        if (!user) return next({ message: 'User not Found!' });
+        if (!user) return res.status(404).send({ message: 'User not Found!' });
         return res.status(200).send({ user });
     } catch (err) {
-        return next(err);
+        return res.status(500).send({ error: err.message });
     }
 });
 
 router.post('/', async (req, res) => {
     if (!req.body) {
-        return next(new Error('Invalid body'));
+        return res.status(400).send({ message: 'Invalid body' });
     }
     try {
-        const { username, email } = req.body;
-        const newUser = await UserModel.create({ username, email });
+        const { username, firstName, lastName, email } = req.body;
+        const newUser = await UserModel.create({ username, firstName, lastName, email });
         return res.status(201).send({ newUser });
     } catch (err) {
-        return res.status(400).send({ error: err.message });
+        return res.status(500).send({ error: err.message });
     }
 });
 
+router.patch('/update/:id', async (req, res) => {
+    const _id = req.params.id;
+    const infoToupdate = req.body;
+    try {
+        const user = await UserModel.findById({ _id });
+
+        if (!user) return res.status(404).send({ message: 'User not Found!' });
+
+        for (const key in infoToupdate) {
+            user[key] = infoToupdate[key];
+        }
+        user.save();
+
+        return res.status(200).send(user);
+
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
+    }
+})
+
+router.delete('/delete/:id', async (req, res) => {
+    const _id = req.params.id;
+    try {
+        const user = await UserModel.findById({ _id });
+
+        if (!user) return res.status(404).send({ message: 'User not Found!' });
+
+        user.remove();
+        res.status(200).send(user);
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
+    }
+})
+
 router.patch('/addFriend', async (req, res, next) => {
     try {
+        const values = await Promise.all([findUser(req.body.userA), findUser(req.body.userB)]);
+        const userA = values[0];
+        const userB = values[1];
 
-        const { id: idA } = req.body.userA;
-        const { id: idB } = req.body.userB;
+        if (!userA || !userB) return res.status(404).send({ message: 'User(s) not found' });
 
-        const userA = await findUser(req.body.userA);
-        const userB = await findUser(req.body.userB); //TODO: refactor to use promise all instead two calls.
+        if (userA.contactList.includes(userB._id)) return res.status(400).send({ message: 'Already in contact list' });
 
-        console.log(userA);
+        const updatedUserA = await userServiceModel.findByIdAndUpdate(
+            { _id: userA._id, },
+            { $push: { contactList: userB.id } },
+            { upsert: true }
+        );
 
-        // const updatedUserA = await userServiceModel.findByIdAndUpdate(
-        //     { _id: idA, },
-        //     { $push: { contactList: idB } },
-        //     { upsert: true }
-        // );
+        const udaptedUserB = await userServiceModel.findByIdAndUpdate(
+            { _id: userB.id, },
+            { $push: { contactList: userA._id } },
+            { upsert: true }
+        );
 
-        // const udaptedUserB = await userServiceModel.findByIdAndUpdate(
-        //     { _id: idB, },
-        //     { $push: { contactList: idB } },
-        //     { upsert: true }
-        // );
-
-        // updatedUserA, udaptedUserB
-
-        // if (!userA || !userB) return next({ message: 'Something went wrong!' });
-
-        return res.status(200).send({ message: 'succeed' });
+        return res.status(200).send({ updatedUserA, udaptedUserB });
     } catch (err) {
-        next(err);
+        return res.status(500).send({ error: err.message });
+
     }
 });
 
 router.patch('/deleteFriend', async (req, res, next) => {
     try {
 
-        const { id: idA } = req.body.userA;
-        const { id: idB } = req.body.userB;
+        const values = await Promise.all([findUser(req.body.userA), findUser(req.body.userB)]);
+        const userA = values[0];
+        const userB = values[1];
 
-        const userA = await userServiceModel.findByIdAndUpdate(
-            { _id: idA, },
-            { $pull: { contactList: idB } },
+        if (!userA || !userB) return res.status(404).send({ message: 'User(s) not found' });
+
+        const updatedUserA = await userServiceModel.findByIdAndUpdate(
+            { _id: userA.id, },
+            { $pull: { contactList: userB.id } },
         );
 
-        const userB = await userServiceModel.findByIdAndUpdate(
-            { _id: idB, },
-            { $pull: { contactList: idB } },
+        const udaptedUserB = await userServiceModel.findByIdAndUpdate(
+            { _id: userB.id, },
+            { $pull: { contactList: userA._id } },
         );
 
-        if (!userA || !userB) return next({ message: 'Something went wrong!' });
+        if (!updatedUserA || !udaptedUserB) return next({ message: 'Something went wrong!' });
 
         return res.status(200).send({ userA, userB });
     } catch (err) {
-        next(err);
+        return res.status(500).send({ error: err.message });
     }
 });
 
 async function findUser(user) {
-    const found = await userServiceModel.findOne({ email: user.email, username: user.username });
-    console.log(found);
+    const found = await userServiceModel.findOne({ $or: [{ email: user.email }, { username: user.username }] });
 
     if (!found) return null;
 

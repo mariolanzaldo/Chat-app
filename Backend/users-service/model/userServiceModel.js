@@ -14,17 +14,26 @@ const userSchema = new mongoose.Schema({
         trim: true,
 
     },
-    contactList: [{ type: String, default: [], required: false }],
-    // contactList: [{
-    //     type: mongoose.Schema.Types.ObjectId, ref: 'Users'
-    // }],
-    // groupList: {
-    //     type: Object,
-    //     default: [],
-    // }
-    // avatar: {
-    //  type:    
-    // }
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    contactList: [{
+        type: String,
+        default: [],
+        required: false,
+    }],
+    rooms: [{
+        type: String,
+        default: [],
+        required: false
+    }],
 }, { timestamps: true });
 
 const userServiceModel = mongoose.model("Users", userSchema);

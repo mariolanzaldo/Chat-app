@@ -1,57 +1,68 @@
 const { gql } = require("apollo-server-express");
 
-// const typeDefs = gql`
-//     type Book {
-//         title: String
-//         authors: [Author]
-//     }
-
-//     type Author {
-//         name: String!
-//         age: Int
-//     }
-
-//     type Query {
-//         books: [Book]
-//     }
-// `;
-
 const typeDefs = gql`
     type User {
-        id: ID
-        username: String!
-        # email: String!
-        # password: String
-        # contactList:[Contact]
+        _id: ID
+        username: String
+        firstName: String
+        lastName: String
+        email: String
+        password: String
+        confirmPassword: String
+        contactList: [ID]
         rooms: [Room]
+        #rooms: [ID]
+        token: String
     }
 
-    type Contact {
-        id: ID
+    input UserInput {
         username: String!
-         email: String!
+        firstName: String
+        lastName: String
+        email: String
+        password: String
+        confirmPassword: String
+    }
+
+    type Message {
+        _id: ID
+        content: String
+        sendBy: String
+        room: ID
+    }
+
+    input MessageInput {
+        content: String
+        sendBy: String
+        #room: [Room] ????
     }
 
     type Room {
-        id: ID
-        name: String!
+        _id: ID
+        name: String
         groupalRoom: Boolean
         members: [String]
-    } 
+    }
+
+    type Res{
+        success: Boolean
+        errorMessage: String
+    }
+
+    type Mutation {
+        login(userInput: UserInput): User!
+        createUser(userInput: UserInput): Res!
+        createMessage(messageInput: MessageInput): Message!
+    }
 
     type Query {
+        messages: [Message]
         users: [User]
     }
+
+    type Subscription {
+        newMessage: Message
+    }
 `;
-
-// messages: [Message]
-
-/*type Message {
-      id: ID
-      body: String!
-      sendBy: User
-      room: Room
-      user: User
-  }*/
 
 module.exports = typeDefs;

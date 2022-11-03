@@ -36,7 +36,6 @@ router.post(
 
                             const body = { id: user._id, username: user.username };
                             const token = jwt.sign({ user: body }, 'TOP_SECRET');
-
                             return res.status(200).json({ token });
                         }
                     )

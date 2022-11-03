@@ -13,7 +13,9 @@ router.get('/:id', async (req, res, next) => {
     try {
         const user = await UserModel.findById({ _id });
 
-        if (!user) return res.status(404).send({ message: 'User not Found!' });
+        if (!user) {
+            return res.status(404).send({ error: 'User not Found!' });
+        }
         return res.status(200).send({ user });
     } catch (err) {
         return res.status(500).send({ error: err.message });
@@ -22,11 +24,11 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res) => {
     if (!req.body) {
-        return res.status(400).send({ message: 'Invalid body' });
+        return res.status(400).send({ error: 'Invalid body' });
     }
     try {
         const { username, firstName, lastName, email } = req.body;
-        const newUser = await UserModel.create({ username, firstName, lastName, email });
+        const newUser = await UserModel.create({ _id: username, username, firstName, lastName, email });
         return res.status(201).send({ newUser });
     } catch (err) {
         return res.status(500).send({ error: err.message });
@@ -38,8 +40,10 @@ router.patch('/update/:id', async (req, res) => {
     const infoToupdate = req.body;
     try {
         const user = await UserModel.findById({ _id });
+        // console.log(user);
+        // console.log(infoToupdate);
 
-        if (!user) return res.status(404).send({ message: 'User not Found!' });
+        if (!user) return res.status(404).send({ error: 'User not Found!' });
 
         for (const key in infoToupdate) {
             user[key] = infoToupdate[key];
@@ -58,7 +62,7 @@ router.delete('/delete/:id', async (req, res) => {
     try {
         const user = await UserModel.findById({ _id });
 
-        if (!user) return res.status(404).send({ message: 'User not Found!' });
+        if (!user) return res.status(404).send({ error: 'User not Found!' });
 
         user.remove();
         res.status(200).send(user);
@@ -73,9 +77,9 @@ router.patch('/addFriend', async (req, res, next) => {
         const userA = values[0];
         const userB = values[1];
 
-        if (!userA || !userB) return res.status(404).send({ message: 'User(s) not found' });
+        if (!userA || !userB) return res.status(404).send({ error: 'User(s) not found' });
 
-        if (userA.contactList.includes(userB._id)) return res.status(400).send({ message: 'Already in contact list' });
+        if (userA.contactList.includes(userB._id)) return res.status(400).send({ error: 'Already in contact list' });
 
         const updatedUserA = await userServiceModel.findByIdAndUpdate(
             { _id: userA._id, },
@@ -103,7 +107,7 @@ router.patch('/deleteFriend', async (req, res, next) => {
         const userA = values[0];
         const userB = values[1];
 
-        if (!userA || !userB) return res.status(404).send({ message: 'User(s) not found' });
+        if (!userA || !userB) return res.status(404).send({ error: 'User(s) not found' });
 
         const updatedUserA = await userServiceModel.findByIdAndUpdate(
             { _id: userA.id, },
@@ -115,7 +119,7 @@ router.patch('/deleteFriend', async (req, res, next) => {
             { $pull: { contactList: userA._id } },
         );
 
-        if (!updatedUserA || !udaptedUserB) return next({ message: 'Something went wrong!' });
+        if (!updatedUserA || !udaptedUserB) return next({ error: 'Something went wrong!' });
 
         return res.status(200).send({ userA, userB });
     } catch (err) {
@@ -124,7 +128,7 @@ router.patch('/deleteFriend', async (req, res, next) => {
 });
 
 async function findUser(user) {
-    const found = await userServiceModel.findOne({ $or: [{ email: user.email }, { username: user.username }] });
+    const found = await userServiceModel.findOne({ $or: [{ email: user[0].email }, { username: user[0].username }] });
 
     if (!found) return null;
 

@@ -3,13 +3,21 @@ const mongoose = require('mongoose');
 const roomSchema = new mongoose.Schema({
     name: {
         type: String,
-        // required: true,
+        required: true,
         trim: true,
     },
     groupalRoom: {
         type: Boolean,
         default: false,
     },
+    // creator: {
+    //     type: new mongoose.Schema({
+    //         username: {
+    //             type: String,
+    //             required: true
+    //         }
+    //     })
+    // },
     // members: [String],
     members: [{
         type: new mongoose.Schema({

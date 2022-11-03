@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true,
+    },
     username: {
         type: String,
         unique: true,
@@ -30,11 +36,16 @@ const userSchema = new mongoose.Schema({
         required: false,
     }],
     rooms: [{
-        type: String,
-        default: [],
-        required: false
+        type: new mongoose.Schema({
+            _id: mongoose.Schema.Types.ObjectId,
+            name: {
+                type: String,
+                required: true,
+            },
+        }, { _id: false }),
+        required: false,
     }],
-}, { timestamps: true });
+}, { timestamps: true, _id: false });
 
 const userServiceModel = mongoose.model("Users", userSchema);
 

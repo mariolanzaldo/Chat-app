@@ -1,6 +1,9 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
+
+    scalar Date
+
     type User {
         _id: ID
         username: String
@@ -16,12 +19,18 @@ const typeDefs = gql`
     }
 
     input UserInput {
-        username: String!
+        username: String
         firstName: String
         lastName: String
         email: String
         password: String
         confirmPassword: String
+        joinedAt: Date
+    }
+
+    input FriendInput {
+        userA: [UserInput]
+        userB: [UserInput]
     }
 
     type Message {
@@ -34,14 +43,30 @@ const typeDefs = gql`
     input MessageInput {
         content: String
         sendBy: String
+        roomId: ID
         #room: [Room] ????
+    }
+
+    type Member {
+        username: String
+        joinedAt: Date
     }
 
     type Room {
         _id: ID
         name: String
+        creator: User
         groupalRoom: Boolean
-        members: [String]
+        members: [Member]
+    }
+
+
+    input RoomInput {
+        name: String
+        groupalRoom: Boolean
+        creator: UserInput
+        members: [UserInput]
+        #addMember: [UserInput]
     }
 
     type Res{
@@ -52,7 +77,10 @@ const typeDefs = gql`
     type Mutation {
         login(userInput: UserInput): User!
         createUser(userInput: UserInput): Res!
+        addFriend(friendInput: FriendInput): Res!
         createMessage(messageInput: MessageInput): Message!
+        createRoom(roomInput: RoomInput): Room!
+        addMember(roomInput: RoomInput): Room!
     }
 
     type Query {
@@ -62,6 +90,7 @@ const typeDefs = gql`
 
     type Subscription {
         newMessage: Message
+        newRoom: Room
     }
 `;
 

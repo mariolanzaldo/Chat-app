@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-    body: {
+    content: {
         type: String,
         required: true,
     },
@@ -14,7 +14,8 @@ const messageSchema = new mongoose.Schema({
     //     required: true,
     // },
     roomId: {
-        type: mongoose.Schema.Types.ObjectId,
+        // type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: "Room",
     },

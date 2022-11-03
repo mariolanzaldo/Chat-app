@@ -3,6 +3,12 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const authUserSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true,
+    },
     username: {
         type: String,
         required: true,
@@ -13,7 +19,7 @@ const authUserSchema = new mongoose.Schema({
         type: String,
         required: true,
     }
-});
+}, { _id: false });
 
 authUserSchema.pre("save", async function (next) {
     const user = this;

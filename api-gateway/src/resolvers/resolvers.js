@@ -1,5 +1,5 @@
 const express = require('express');
-const { GraphQLError, GraphQLScalarType, Kind } = require('graphql');
+const { GraphQLError, GraphQLScalarType, Kind, PossibleFragmentSpreadsRule } = require('graphql');
 const { PubSub } = require('graphql-subscriptions');
 
 const router = express.Router();
@@ -82,8 +82,6 @@ const messages = [
 
 const pubSub = new PubSub();
 
-const AUTH_SERVICE = "http://localhost:5000";
-const USER_SERVICE = "http://localhost:5500";
 const CHAT_SERVICE = "http://localhost:4500";
 
 const resolvers = {
@@ -146,39 +144,14 @@ const resolvers = {
                 email,
             } = userInput;
 
-            const userFetch = fetch(`${USER_SERVICE}/api/users/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    username,
-                    firstName,
-                    lastName,
-                    email
-                })
-            });
+            const signup = context.dataSources.authAPI.signup(username, password);
+            const userInfo = context.dataSources.userAPI.createUser(username, firstName, lastName, email);
 
-            const authFetch = fetch(`${AUTH_SERVICE}/api/auth/signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
             try {
-                const [userRes, authRes] = await Promise.all([userFetch, authFetch]);
+                const [userRes, authRes] = await Promise.all([userInfo, signup]);
 
-                const auth = await authRes.json();
-                const user = await userRes.json();
-
-                if (auth.error || user.error) {
-                    return { success: false, errorMessage: auth.error ? auth.error : user.error }
+                if (userRes.error || authRes.error) {
+                    return { success: false, errorMessage: userRes.error ? userRes.error : authRes.error }
                 }
 
                 return { success: true, errorMessage: null };
@@ -187,33 +160,18 @@ const resolvers = {
             }
         },
         login: async (parent, { userInput }, context) => {
+            const authRes = context.dataSources.authAPI.login(userInput);
+            const userRes = context.dataSources.userAPI.getUser(userInput);
+            try {
+                const [auth, user] = await Promise.all([authRes, userRes]);
 
-            const authResponse = await fetch(`${AUTH_SERVICE}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(userInput)
-            });
+                const { token } = auth;
 
-            const { token } = await authResponse.json();
-
-            const userResponse = await fetch(`${USER_SERVICE}/api/users/${userInput.username}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            });
-
-            const data = await userResponse.json();
-
-            if (data.error) {
-                throw new GraphQLError(data.error);
+                return { ...user.user, token };
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                throw new GraphQLError(message.error ? message.error : message);
             }
-
-            return { ...data.user, token };
         },
 
         createMessage: async (parent, { messageInput }, context) => {
@@ -221,18 +179,19 @@ const resolvers = {
                 newMessage: messageInput,
             });
 
-            const chatResponse = await fetch(`${CHAT_SERVICE}/api/chat/message/createMessage`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(messageInput)
-            });
+            try {
+                // context.res.cookie('token', token, {
+                //     maxAge: 10000
+                // });
 
-            const data = await chatResponse.json();
+                //fetching from REST w/Apollo server
+                const createdMessage = await context.dataSources.chatAPI.createMessage(messageInput);
 
-            return messageInput;
+                return createdMessage.message;
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                throw new GraphQLError(message);
+            }
         },
         createRoom: async (parent, { roomInput }, context) => {
             pubSub.publish("ROOM_CREATED", {
@@ -241,44 +200,15 @@ const resolvers = {
 
             const { creator } = roomInput;
 
-            const roomResponse = await fetch(`${CHAT_SERVICE}/api/chat/room/createRoom`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(roomInput),
-            });
-            const rooms = await roomResponse.json();
-            // const getAdmin = 
+            try {
+                const createdRoom = await context.dataSources.chatAPI.createRoom(roomInput);
+                const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: createdRoom });
 
-            const addAdminResponse = await fetch(`${CHAT_SERVICE}/api/chat/room/addMember/${rooms._id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(creator),
-            });
-
-            const addRoomToUserResponse = await fetch(`${USER_SERVICE}/api/users/update/${creator.username}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ rooms }),
-            });
-
-            // const addAmin = await addAdminResponse.json();
-
-            if (rooms.error) {
-                throw new GraphQLError(rooms.error);
-            } else if (addAdminResponse.error) {
-                throw new GraphQLError(rooms.error);
+                return createdRoom;
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                throw new GraphQLError(message);
             }
-
-            return rooms;
         },
 
         addMember: async (parent, { roomInput }, context) => {
@@ -309,36 +239,32 @@ const resolvers = {
         },
 
         addFriend: async (parent, { friendInput }, context) => {
+            pubSub.publish("FRIEND_REQUEST", {
+                addFriend: friendInput,
+            });
+
             try {
-                const userResponse = await fetch(`${USER_SERVICE}/api/users/addFriend`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(friendInput),
-                });
-
-                const data = await userResponse.json();
-
-                if (data.error) {
-                    return { success: false, errorMessage: data.error };
-                }
+                const friendResponse = await context.dataSources.userAPI.addFriend(friendInput);
 
                 return { success: true, errorMessage: null };
             } catch (err) {
-                return { success: false, errorMessage: err.message };
+                const message = err.extensions.response.body.error
+                return { success: false, errorMessage: message };
             }
 
         },
     },
     Subscription: {
         newMessage: {
-            subscribe: () => {
-                pubSub.asyncIterator("MESSAGE_CREATED")
-                pubSub.asyncIterator("ROOM_CREATED")
-            },
+            subscribe: () => pubSub.asyncIterator("MESSAGE_CREATED"),
+        },
+        newRoom: {
+            subscribe: () => pubSub.asyncIterator("ROOM_CREATED"),
+        },
+        addFriend: {
+            subscribe: () => pubSub.asyncIterator("FRIEND_REQUEST"),
         }
+
     }
 };
 

@@ -42,13 +42,13 @@ passport.use("login", new LocalStrategy({
         try {
             const user = await UserModel.findOne({ username });
             if (!user) {
-                return done(null, false, { message: 'The user or password is incorrect', status: 404 });
+                return done(null, false, { error: 'The user or password is incorrect', status: 404 });
             }
 
             const validate = await user.isValidPassword(password);
 
             if (!validate) {
-                return done(null, false, { message: 'The user or password is incorrect', status: 404 });
+                return done(null, false, { error: 'The user or password is incorrect', status: 404 });
             }
 
             return done(null, user, { message: 'Logged in Successfully' });

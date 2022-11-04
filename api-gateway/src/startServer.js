@@ -1,28 +1,87 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('@apollo/server');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const { WebSocketServer } = require('ws');
+const { useServer } = require('graphql-ws/lib/use/ws');
+const { createServer } = require('http');
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
+const { expressMiddleware } = require('@apollo/server/express4');
+// const { startStandAloneServer } = require('@apollo/server/standalone');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const typeDefs = require('./schema/schema');
 const resolvers = require('./resolvers/resolvers');
 
-require('dotenv').config();
+const ChatAPI = require('./datasources/chatAPI');
+const UserAPI = require('./datasources/userAPI');
+const AuthAPI = require('./datasources/authAPI');
 
-//chats (messages, groups, members, ...)
-//user 
+require('dotenv').config();
 
 const startServer = async () => {
     const app = express();
 
     const port = process.env.PORT || 5000;
 
+
+    const httpServer = createServer(app);
+
+    const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: '/graphql',
+    });
+
+    const serverCleanup = useServer({ schema }, wsServer);
+
     const server = new ApolloServer({
-        resolvers,
-        typeDefs,
+        schema,
+        dataSources: () => ({
+            chatAPI: new ChatAPI(),
+        }),
+        // context: function () {
+        //     const datasource = {
+        //         ChatAPI: new ChatAPI({ cache }),
+        //     };
+        //     return {
+        //         datasources
+        //     }
+        // },
+        plugins: [
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await serverCleanup.dispose();
+                        },
+                    };
+                },
+            },
+        ],
     });
 
     await server.start();
 
-    server.applyMiddleware({ app, cors: true, path: '/graphql' });
+    app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(server, {
+        context: async ({ req, res }) => {
+            const dataSources = {
+                chatAPI: new ChatAPI(),
+                userAPI: new UserAPI(),
+                authAPI: new AuthAPI(),
 
-    app.listen(port, () => {
+            };
+            return {
+                req,
+                res,
+                dataSources,
+            }
+        },
+    }));
+
+    httpServer.listen(port, () => {
         console.log(`Server ready at ${port}`);
     })
 };

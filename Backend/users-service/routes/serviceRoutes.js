@@ -12,9 +12,8 @@ router.get('/:id', async (req, res, next) => {
     const _id = req.params.id;
     try {
         const user = await UserModel.findById({ _id });
-
         if (!user) {
-            return res.status(404).send({ error: 'User not Found!' });
+            return res.status(404).send({ error: 'User not Found' });
         }
         return res.status(200).send({ user });
     } catch (err) {
@@ -40,8 +39,6 @@ router.patch('/update/:id', async (req, res) => {
     const infoToupdate = req.body;
     try {
         const user = await UserModel.findById({ _id });
-        // console.log(user);
-        // console.log(infoToupdate);
 
         if (!user) return res.status(404).send({ error: 'User not Found!' });
 

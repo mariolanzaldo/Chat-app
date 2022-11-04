@@ -60,7 +60,6 @@ const typeDefs = gql`
         members: [Member]
     }
 
-
     input RoomInput {
         name: String
         groupalRoom: Boolean
@@ -91,6 +90,7 @@ const typeDefs = gql`
     type Subscription {
         newMessage: Message
         newRoom: Room
+        addFriend: User
     }
 `;
 

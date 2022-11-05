@@ -212,7 +212,7 @@ const resolvers = {
         },
 
         addMember: async (parent, { roomInput }, context) => {
-            console.log(roomInput);
+            //TODO: This is not finished!
 
             const roomResponse = await fetch(`${CHAT_SERVICE}/api/chat/room/6362c0482666a2ec8db87cba`, {
                 method: 'GET',
@@ -248,11 +248,22 @@ const resolvers = {
 
                 return { success: true, errorMessage: null };
             } catch (err) {
-                const message = err.extensions.response.body.error
+                const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
             }
 
         },
+
+        deleteFriend: async (parent, { friendInput }, context) => {
+            try {
+                const deleteFriendResponse = await context.dataSources.userAPI.deleteFriend(friendInput);
+
+                return { success: true, errorMessage: null };
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return { success: false, errorMessage: message };
+            }
+        }
     },
     Subscription: {
         newMessage: {

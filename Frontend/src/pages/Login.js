@@ -2,18 +2,38 @@ import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
 import { Box } from '@mui/material';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-function Login() {
+const Login = () => {
+
+    const dispatch = useDispatch();
+
+    const [inputFields, setInputFields] = useState({
+        username: "",
+        password: "",
+    });
+
+    const handleChange = (event) => {
+        setInputFields((prevState) => ({
+            ...prevState,
+            [event.target.name]: event.target.value,
+        }));
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        //HTTP request to auth service
+        dispatch({
+            type: "QUERY_USER",
+            payload: {
+                user: inputFields,
+            }
+        });
         console.log({
-            email: data.get('email'),
+            username: data.get('username'),
             password: data.get('password'),
         });
-        //Show something if response went wrong....
-
     };
 
     return (
@@ -42,16 +62,18 @@ function Login() {
                     </div>
                     <Box component='form' onSubmit={handleSubmit}>
                         <TextField
-                            name="email"
-                            type="email"
-                            placeholder="example@email.com"
-                            label="Email"
+                            name="username"
+                            type="text"
+                            placeholder="username123"
+                            label="Username"
+                            onChange={handleChange}
                         />
                         <TextField
                             name="password"
                             type="password"
                             placeholder="password"
                             label="Password"
+                            onChange={handleChange}
                         />
                         <Button
                             fullWidth

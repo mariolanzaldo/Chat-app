@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get(
-    '/dashboard',
+    '/profile',
     (req, res, next) => {
         res.json({
             message: 'Authenticated',

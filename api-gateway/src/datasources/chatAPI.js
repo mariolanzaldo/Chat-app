@@ -22,7 +22,7 @@ class ChatAPI extends RESTDataSource {
             `/api/chat/room/addMember/${_id}`,
             { body: creator }
         );
-    }
+    };
 }
 
 module.exports = ChatAPI;

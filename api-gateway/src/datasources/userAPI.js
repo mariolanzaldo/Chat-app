@@ -3,6 +3,12 @@ const { RESTDataSource } = require('@apollo/datasource-rest');
 class UserAPI extends RESTDataSource {
     baseURL = 'http://localhost:5500';
 
+    constructor(options) {
+        super(options);
+        this.token = options.token;
+        this.memoizeGetRequests;
+    }
+
     async createUser(username, firstName, lastName, email) {
         return this.post(
             `/api/users/`,
@@ -34,7 +40,14 @@ class UserAPI extends RESTDataSource {
             `/api/users/addFriend`,
             { body: friendInput },
         );
-    }
+    };
+
+    async deleteFriend(friendInput) {
+        return this.patch(
+            `/api/users/deleteFriend`,
+            { body: friendInput },
+        );
+    };
 }
 
 module.exports = UserAPI;

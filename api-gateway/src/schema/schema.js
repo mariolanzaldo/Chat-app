@@ -74,12 +74,17 @@ const typeDefs = gql`
     }
 
     type Mutation {
+        #User info and login
         login(userInput: UserInput): User!
         createUser(userInput: UserInput): Res!
         addFriend(friendInput: FriendInput): Res!
+        deleteFriend(friendInput: FriendInput ): Res!
+
+        #Messages and rooms
         createMessage(messageInput: MessageInput): Message!
         createRoom(roomInput: RoomInput): Room!
         addMember(roomInput: RoomInput): Room!
+
     }
 
     type Query {

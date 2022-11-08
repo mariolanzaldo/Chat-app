@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import { Provider } from "react-redux";
-import configureAppStore from "./store";
+import configureAppStore from "./redux/store";
 
 export default function App() {
   return (

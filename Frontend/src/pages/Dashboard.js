@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import React, { Children } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar/Navbar';
 
 // const DefaultMessageChat = () => (

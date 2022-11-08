@@ -1,6 +1,7 @@
 import { put, call, takeEvery, all } from "redux-saga/effects";
 import { gql } from '@apollo/client';
-import client from "./client";
+import { login, errorFetching } from "./reducers/authSlice";
+import client from "../client";
 
 export function* queryUser(action) {
     const options = {
@@ -23,17 +24,24 @@ export function* queryUser(action) {
         }
     };
 
-    const res = yield call(client.query, options);
-    const user = res.data.user;
-    yield put({ type: "CHANGE_USER", payload: { user } });
+    try {
+        const res = yield call(client.query, options);
+        const user = res.data.user;
+        console.log(user);
+        // yield put({ type: "login", payload: { user } });
+
+    } catch (err) {
+        yield put(errorFetching(err));
+    }
 }
 
 export function* watchQueryUser() {
-    yield takeEvery("QUERY_USER", queryUser);
+
+    yield takeEvery('login', queryUser);
 }
 
 export default function* rootSaga() {
     yield all([
-        watchQueryUser,
+        watchQueryUser(),
     ])
 }

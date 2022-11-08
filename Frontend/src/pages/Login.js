@@ -25,7 +25,7 @@ const Login = () => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         dispatch({
-            type: "QUERY_USER",
+            type: "login",
             payload: {
                 user: inputFields,
             }

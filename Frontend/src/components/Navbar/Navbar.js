@@ -5,8 +5,6 @@ import { navbarStyles } from './styles';
 import Image from "./consts/avatar";
 import ContactsBar from "../ContactsBar/ContactsBar";
 import GroupsBar from "../GroupsBar/GroupsBar";
-import { Outlet } from "react-router-dom";
-
 
 const Navbar = () => {
     const tabs = ['Contacts', 'Groups'];

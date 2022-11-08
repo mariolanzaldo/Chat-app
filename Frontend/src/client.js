@@ -10,7 +10,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new GraphQLWsLink(createClient({
-    url: 'ws://localhost:2500/subscriptions',
+    url: 'ws://localhost:2500/graphql',
     //TODO: Authenticate over websocket??? connectionParams: { authToken: user.authToken }
 }));
 

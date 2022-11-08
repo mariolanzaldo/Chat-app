@@ -5,7 +5,7 @@ import client from "../client";
 
 export function* queryUser(action) {
     const options = {
-        query: gql`
+        mutation: gql`
         mutation ($userInput: UserInput) {
             login(userInput: $userInput) {
               _id
@@ -25,7 +25,7 @@ export function* queryUser(action) {
     };
 
     try {
-        const res = yield call(client.query, options);
+        const res = yield call(client.mutate, options);
         const user = res.data.user;
         console.log(user);
         // yield put({ type: "login", payload: { user } });

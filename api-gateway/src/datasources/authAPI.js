@@ -4,9 +4,9 @@ class AuthAPI extends RESTDataSource {
     baseURL = "http://localhost:5000";
 
     //TODO: ensure this the proper config to cache GET requests
-    constructor(options) {
+    constructor(options = {}) {
         super(options);
-        this.token = options.token;
+        // this.token = options.token;
         this.memoizeGetRequests;
     }
 

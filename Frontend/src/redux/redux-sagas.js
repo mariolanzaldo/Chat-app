@@ -1,20 +1,27 @@
 import { put, call, takeEvery, all } from "redux-saga/effects";
 import { gql } from '@apollo/client';
-import { login, errorFetching } from "./reducers/authSlice";
 import client from "../client";
+
+import { setUser } from "./reducers/userSlice";
+import { setLoginFetching, setLoginError, loginErrorFetching, errorDB } from "./reducers/loginSlice";
+import { setSignupFetching, signupErrorFetching, blurForm } from "./reducers/signupSlice";
 
 export function* queryUser(action) {
     const options = {
         mutation: gql`
-        mutation ($userInput: UserInput) {
+        mutation Login($userInput: UserInput) {
             login(userInput: $userInput) {
-              _id
               username
               firstName
               lastName
-              email
               contactList
-              rooms
+              #rooms {
+                #_id
+                #name
+                #members {
+                  #username
+                #}
+              #}
               token
             }
           }
@@ -25,14 +32,45 @@ export function* queryUser(action) {
     };
 
     try {
+        yield put(setLoginFetching());
         const res = yield call(client.mutate, options);
-        const user = res.data.user;
-        console.log(user);
-        // yield put({ type: "login", payload: { user } });
+        const user = res.data.login;
+        yield put(setUser({ user }));
 
     } catch (err) {
-        yield put(errorFetching(err));
+        yield put(setLoginError({ err }));
     }
+}
+
+export function* signupUser(action) {
+    const options = {
+        mutation: gql`
+        mutation CreateUser($userInput: UserInput) {
+            createUser(userInput: $userInput) {
+              success
+              errorMessage
+            }
+          }
+        `,
+        variables: {
+            userInput: action.payload.signup,
+        }
+    };
+
+    try {
+        yield put(setSignupFetching());
+        const res = yield call(client.mutate, options);
+        const user = res.data.createUser;
+
+        // if (!user.success) {
+        //     yield put(errorDB({ user }));
+        // }
+
+        yield put(setUser({ user }));
+    } catch (err) {
+        yield put(signupErrorFetching(err));
+    }
+
 }
 
 export function* watchQueryUser() {
@@ -40,8 +78,14 @@ export function* watchQueryUser() {
     yield takeEvery('login', queryUser);
 }
 
+export function* watchSignup() {
+    yield takeEvery('signup', signupUser);
+}
+
+
 export default function* rootSaga() {
     yield all([
         watchQueryUser(),
+        watchSignup(),
     ])
 }

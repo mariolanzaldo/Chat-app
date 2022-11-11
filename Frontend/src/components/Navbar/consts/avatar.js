@@ -9,7 +9,7 @@ export default function Image() {
             dataUri: true,
             size: 1280,
         });
-    }, [])
+    }, []);
 
     return <Avatar src={avatar} />;
 };

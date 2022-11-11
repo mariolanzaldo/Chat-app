@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    avatar: {
+        type: String,
+    },
     contactList: [{
         type: String,
         default: [],
@@ -42,6 +45,9 @@ const userSchema = new mongoose.Schema({
                 type: String,
                 required: true,
             },
+            // members: {
+            //     type: String,
+            // }
         }, { _id: false }),
         required: false,
     }],

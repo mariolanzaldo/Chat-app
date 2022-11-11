@@ -6,6 +6,12 @@ export const validator = (values, fieldName) => {
         case "username":
             validateUsername(values.username, errors);
             break;
+        case "firstName":
+            validateFirstName(values.firstName, errors);
+            break;
+        case "lastName":
+            validateLastName(values.lastName, errors);
+            break;
         case "email":
             validateEmail(values.email, errors);
             break;
@@ -19,6 +25,28 @@ export const validator = (values, fieldName) => {
             break;
     }
     return errors;
+}
+
+function validateFirstName(firstName, errors) {
+    let result = true;
+
+    if (!firstName) {
+        errors.firstName = "First name is required";
+        result = false;
+    }
+
+    return result;
+}
+
+function validateLastName(lastName, errors) {
+    let result = true;
+
+    if (!lastName) {
+        errors.lastName = "Last name is required";
+        result = false;
+    }
+
+    return result;
 }
 
 function validateUsername(username, errors) {

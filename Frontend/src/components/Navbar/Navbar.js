@@ -5,8 +5,10 @@ import { navbarStyles } from './styles';
 import Image from "./consts/avatar";
 import ContactsBar from "../ContactsBar/ContactsBar";
 import GroupsBar from "../GroupsBar/GroupsBar";
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const { username } = useSelector((state) => state.user.value);
     const tabs = ['Contacts', 'Groups'];
 
     const initialState = {
@@ -51,7 +53,7 @@ const Navbar = () => {
                     <Image />
                 </Grid>
                 <Grid item xs={7}>
-                    <Typography variant='h4' component='div'>User</Typography>
+                    <Typography variant='h4' component='div'>{username}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                     <IconButton>

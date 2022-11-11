@@ -8,16 +8,16 @@ require('./db/db');
 require("dotenv").config();
 
 const app = express();
+//TODO: enable this again
+// const loginLimiter = rateLimit({
+//     windowMs: 10 * 60 * 1000,
+//     max: 5,
+//     message: 'Too many requests from this IP',
+//     standarHeaders: true,
+//     legacyHeaders: false,
+// });
 
-const loginLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000,
-    max: 5,
-    message: 'Too many requests from this IP',
-    standarHeaders: true,
-    legacyHeaders: false,
-});
-
-app.use(loginLimiter);
+// app.use(loginLimiter);
 
 app.use(express.json());
 

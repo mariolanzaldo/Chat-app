@@ -82,8 +82,6 @@ const messages = [
 
 const pubSub = new PubSub();
 
-const CHAT_SERVICE = "http://localhost:4500";
-
 const resolvers = {
     Query: {
         messages: () => messages,

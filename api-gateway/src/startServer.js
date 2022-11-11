@@ -37,9 +37,9 @@ const startServer = async () => {
 
     const server = new ApolloServer({
         schema,
-        dataSources: () => ({
-            chatAPI: new ChatAPI(),
-        }),
+        // dataSources: () => ({
+        //     chatAPI: new ChatAPI(),
+        // }),
         // context: function () {
         //     const datasource = {
         //         ChatAPI: new ChatAPI({ cache }),

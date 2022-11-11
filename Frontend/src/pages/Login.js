@@ -3,10 +3,14 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
 import { Box } from '@mui/material';
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate } from 'react-router-dom';
 
 const Login = () => {
 
+    const user = useSelector((state) => {
+        return state.user
+    });
     const dispatch = useDispatch();
 
     const [inputFields, setInputFields] = useState({
@@ -23,19 +27,15 @@ const Login = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
         dispatch({
             type: "login",
             payload: {
                 user: inputFields,
             }
         });
-        console.log({
-            username: data.get('username'),
-            password: data.get('password'),
-        });
     };
 
+    if (user.value) return <Navigate to="/" />;
     return (
         <CssVarsProvider>
             <main>

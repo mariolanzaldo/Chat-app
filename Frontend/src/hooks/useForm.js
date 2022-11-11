@@ -13,6 +13,7 @@ const useForm = ({ initState, callback, validator }) => {
     });
 
     const handleChange = event => {
+        event.preventDefault();
         const { name, value } = event.target;
         setState(() => ({
             ...state,
@@ -21,6 +22,7 @@ const useForm = ({ initState, callback, validator }) => {
     };
 
     const handleBlur = event => {
+        event.preventDefault();
         const { name: fieldName } = event.target;
         const faildFields = validator(state, fieldName);
         return setErrors(() => ({

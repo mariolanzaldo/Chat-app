@@ -6,11 +6,11 @@ import { createClient } from 'graphql-ws';
 
 //Apollo Client now supports subscriptions
 const httpLink = new HttpLink({
-    uri: 'http://localhost:2500/graphql',
+    uri: 'http://localhost:3500/graphql',
 });
 
 const wsLink = new GraphQLWsLink(createClient({
-    url: 'ws://localhost:2500/graphql',
+    url: 'ws://localhost:3500/graphql',
     //TODO: Authenticate over websocket??? connectionParams: { authToken: user.authToken }
 }));
 

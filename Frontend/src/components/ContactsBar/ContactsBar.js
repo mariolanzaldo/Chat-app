@@ -10,8 +10,11 @@ import { useState } from "react";
 import useForm from "../../hooks/useForm";
 import { validator } from "../../validator/validator";
 import { contactStyles } from "./styles";
+import { useSelector } from 'react-redux';
+
 
 const ContactsBar = () => {
+    const { contactList } = useSelector((state) => state.user.value);
 
     const navigate = useNavigate();
 
@@ -94,18 +97,18 @@ const ContactsBar = () => {
 
     const getContent = () => {
         return (
+            //TODO: add avatar to the list
             <List>
-                {(navbarContacts.length > 0) ? navbarContacts.map((item) => (
+                {(contactList.length > 0) ? contactList.map((item) => (
                     <ListItem
                         button
-                        key={item.id}
-                        onClick={() => navigate(`conversation/${item.id}`)}
+                        onClick={() => navigate(`conversation/${item}`)}
                     >
-                        <ListItemIcon>
+                        {/* <ListItemIcon>
                             {item.icon}
-                        </ListItemIcon>
+                        </ListItemIcon> */}
                         <ListItemText
-                            primary={item.label}
+                            primary={item}
                         />
                     </ListItem>
                 )) : <Typography

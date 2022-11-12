@@ -9,7 +9,7 @@ class UserAPI extends RESTDataSource {
         this.memoizeGetRequests;
     }
 
-    async createUser(username, firstName, lastName, email) {
+    async createUser(username, firstName, lastName, email, avatar) {
         return this.post(
             `/api/users/`,
             {
@@ -18,6 +18,7 @@ class UserAPI extends RESTDataSource {
                     firstName,
                     lastName,
                     email,
+                    avatar,
                 }
             }
         );
@@ -25,7 +26,11 @@ class UserAPI extends RESTDataSource {
     };
 
     async getUser(userInput) {
-        return this.get(`/api/users/${userInput.username}`);
+        return this.get(`/api/users/getUser/${userInput.username}`);
+    };
+
+    async getUsers() {
+        return this.get(`api/users/getUsers`);
     };
 
     async updateInfo(username, createdRoom) {

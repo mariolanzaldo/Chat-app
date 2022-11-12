@@ -1,26 +1,28 @@
 import BasicCard from "../common/BasicCard/BasicCard";
-import { Box, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Modal, Typography, Button, TextField } from "@mui/material";
+import { Avatar, Box, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Modal, Typography, Button, TextField } from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchBar from "../common/SearchBar/SearchBar";
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
-import { navbarContacts } from "../Navbar/consts/navbarContacts";
+// import { navbarContacts } from "../Navbar/consts/navbarContacts";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useForm from "../../hooks/useForm";
 import { validator } from "../../validator/validator";
 import { contactStyles } from "./styles";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const ContactsBar = () => {
+
+    const dispatch = useDispatch();
+
     const { contactList } = useSelector((state) => state.user.value);
+    const users = useSelector((state) => state.users.value);
 
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-    // const [users, setUsers] = useState(navbarContacts);
-    // const [searchResults, setSearchResults] = useState(navbarContacts);
 
     const initState = {
         username: "",
@@ -96,28 +98,44 @@ const ContactsBar = () => {
     };
 
     const getContent = () => {
+
+        if (contactList.length > 0) {
+            dispatch({
+                type: 'showFriends',
+                payload: {
+                    user: '',
+                },
+            });
+        };
+
+
         return (
-            //TODO: add avatar to the list
             <List>
-                {(contactList.length > 0) ? contactList.map((item) => (
-                    <ListItem
-                        button
-                        onClick={() => navigate(`conversation/${item}`)}
-                    >
-                        {/* <ListItemIcon>
-                            {item.icon}
-                        </ListItemIcon> */}
-                        <ListItemText
-                            primary={item}
-                        />
-                    </ListItem>
-                )) : <Typography
+                {(contactList.length > 0) ? contactList.map((item) => {
+                    const user = users.filter((user) => user.username === item);
+                    const { username, avatar } = user[0];
+                    return (
+                        <ListItem
+                            button
+                            key={item}
+                            onClick={() => navigate(`conversation/${item}`)}
+                        >
+                            <ListItemIcon>
+                                <Avatar src={avatar} />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={username}
+                            />
+                        </ListItem>
+                    )
+                }) : <Typography
                     align='center'
                     sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
                 >
                     No contacts yet!
-                </Typography>}
-            </List>
+                </Typography>
+                }
+            </List >
         );
     };
 

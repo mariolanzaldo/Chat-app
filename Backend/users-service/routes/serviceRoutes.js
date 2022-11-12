@@ -6,9 +6,7 @@ const UserModel = require('../model/userServiceModel');
 
 const router = express.Router();
 
-//TODO: make an equal ID for auth-service and user-service. Note: the ID could either the email or the username, they are unique. 
-
-router.get('/:id', async (req, res, next) => {
+router.get('/getUser/:id', async (req, res, next) => {
     const _id = req.params.id;
     try {
         const user = await UserModel.findById({ _id });
@@ -21,13 +19,23 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+router.get('/getUsers', async (req, res) => {
+    try {
+        const users = await UserModel.find({});
+        return res.status(200).send({ users });
+
+    } catch (err) {
+        return res.status.apply(500).send({ error: err.message })
+    }
+});
+
 router.post('/', async (req, res) => {
     if (!req.body) {
         return res.status(400).send({ error: 'Invalid body' });
     }
     try {
-        const { username, firstName, lastName, email } = req.body;
-        const newUser = await UserModel.create({ _id: username, username, firstName, lastName, email });
+        const { username, firstName, lastName, email, avatar } = req.body;
+        const newUser = await UserModel.create({ _id: username, username, firstName, lastName, email, avatar });
         return res.status(201).send({ newUser });
     } catch (err) {
         return res.status(500).send({ error: err.message });

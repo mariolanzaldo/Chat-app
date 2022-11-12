@@ -85,7 +85,10 @@ const pubSub = new PubSub();
 const resolvers = {
     Query: {
         messages: () => messages,
-        users: () => users,
+        users: async (_, __, context) => {
+            const { users } = await context.dataSources.userAPI.getUsers();
+            return users;
+        },
     },
     Message: {
         room: (parent) => {
@@ -138,12 +141,13 @@ const resolvers = {
                 firstName,
                 lastName,
                 password,
+                avatar,
                 confirmPassword,
                 email,
             } = userInput;
 
             const signup = context.dataSources.authAPI.signup(username, password);
-            const userInfo = context.dataSources.userAPI.createUser(username, firstName, lastName, email);
+            const userInfo = context.dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
 
             try {
                 const [userRes, authRes] = await Promise.all([userInfo, signup]);

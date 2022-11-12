@@ -8,7 +8,11 @@ import GroupsBar from "../GroupsBar/GroupsBar";
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-    const { username } = useSelector((state) => state.user.value);
+    const { username } = useSelector((state) => {
+        console.log(state.user);
+        return state.user.value;
+
+    });
     const tabs = ['Contacts', 'Groups'];
 
     const initialState = {
@@ -27,7 +31,7 @@ const Navbar = () => {
                     contacts: true,
                     groups: false
                 });
-            })
+            });
         }
 
         if (event.currentTarget.innerText === 'Groups') {
@@ -37,7 +41,7 @@ const Navbar = () => {
                     contacts: false,
                     groups: true
                 });
-            })
+            });
         }
     };
 

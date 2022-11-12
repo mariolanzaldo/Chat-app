@@ -5,6 +5,7 @@ import client from "../client";
 import { setUser } from "./reducers/userSlice";
 import { setLoginFetching, setLoginError, loginErrorFetching, errorDB } from "./reducers/loginSlice";
 import { setSignupFetching, signupErrorFetching, blurForm } from "./reducers/signupSlice";
+import { setUsers, setUsersFetching, usersErrorFetching } from "./reducers/usersSlice";
 
 export function* queryUser(action) {
     const options = {
@@ -14,6 +15,7 @@ export function* queryUser(action) {
               username
               firstName
               lastName
+              avatar
               contactList
               #rooms {
                 #_id
@@ -73,6 +75,33 @@ export function* signupUser(action) {
 
 }
 
+export function* showFriends(action) {
+    const options = {
+        query: gql`
+        query Query {
+            users {
+              username
+              email
+              firstName
+              lastName
+              avatar
+            }
+          }
+        `,
+    };
+
+    try {
+        yield put(setUsersFetching());
+        const res = yield call(client.query, options);
+        const users = res.data.users;
+
+        yield put(setUsers({ users }));
+    } catch (err) {
+        yield put(usersErrorFetching(err));
+    }
+
+}
+
 export function* watchQueryUser() {
 
     yield takeEvery('login', queryUser);
@@ -82,10 +111,15 @@ export function* watchSignup() {
     yield takeEvery('signup', signupUser);
 }
 
+export function* watchQueryUsers() {
+    yield takeEvery('showFriends', showFriends);
+}
+
 
 export default function* rootSaga() {
     yield all([
         watchQueryUser(),
         watchSignup(),
+        watchQueryUsers(),
     ])
 }

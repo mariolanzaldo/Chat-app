@@ -11,11 +11,19 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state = null, action) => {
+            state.isFetching = false;
             state.value = action.payload.user;
+        },
+        setUserFetching: (state = null) => {
+            state.isFetching = true;
+        },
+        userErrorFetching: (state = null, action) => {
+            state.isFetching = false;
+            state.error = action.payload.message
         },
     },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setUserFetching, userErrorFetching } = userSlice.actions;
 
 export default userSlice.reducer;

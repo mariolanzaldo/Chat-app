@@ -1,15 +1,8 @@
-import { createAvatar } from "@dicebear/avatars";
-import * as style from '@dicebear/adventurer-neutral';
 import { Avatar } from "@mui/material";
-import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 export default function Image() {
-    const avatar = useMemo(() => {
-        return createAvatar(style, {
-            dataUri: true,
-            size: 1280,
-        });
-    }, []);
+    const { avatar } = useSelector((state) => state.user.value);
 
     return <Avatar src={avatar} />;
 };

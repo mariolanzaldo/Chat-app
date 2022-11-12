@@ -10,6 +10,7 @@ const typeDefs = gql`
         firstName: String
         lastName: String
         email: String
+        avatar: String
         password: String
         confirmPassword: String
         contactList: [ID]
@@ -25,6 +26,7 @@ const typeDefs = gql`
         email: String
         password: String
         confirmPassword: String
+        avatar: String
         joinedAt: Date
     }
 

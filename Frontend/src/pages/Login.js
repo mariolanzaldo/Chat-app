@@ -33,6 +33,12 @@ const Login = () => {
                 user: inputFields,
             }
         });
+        dispatch({
+            type: 'showFriends',
+            payload: {
+                user: '',
+            },
+        });
     };
 
     if (user.value) return <Navigate to="/" />;

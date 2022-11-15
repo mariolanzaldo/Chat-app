@@ -5,14 +5,24 @@ import { navbarStyles } from './styles';
 import Image from "./consts/avatar";
 import ContactsBar from "../ContactsBar/ContactsBar";
 import GroupsBar from "../GroupsBar/GroupsBar";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 const Navbar = () => {
+    // const dispatch = useDispatch();
+
+    // dispatch({
+    //     type: 'showFriends',
+    //     payload: {
+    //         user: '',
+    //     },
+    // });
+
     const { username } = useSelector((state) => {
-        console.log(state.user);
+        // console.log(state.user.value);
         return state.user.value;
 
     });
+
     const tabs = ['Contacts', 'Groups'];
 
     const initialState = {

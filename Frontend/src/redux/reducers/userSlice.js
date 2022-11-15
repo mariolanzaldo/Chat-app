@@ -17,6 +17,10 @@ const userSlice = createSlice({
         setUserFetching: (state = null) => {
             state.isFetching = true;
         },
+        addContact: (state = null, action) => {
+            state.isFetching = false;
+            state.value = action.payload.user
+        },
         userErrorFetching: (state = null, action) => {
             state.isFetching = false;
             state.error = action.payload.message
@@ -24,6 +28,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUser, setUserFetching, userErrorFetching } = userSlice.actions;
+export const { setUser, setUserFetching, userErrorFetching, addContact } = userSlice.actions;
 
 export default userSlice.reducer;

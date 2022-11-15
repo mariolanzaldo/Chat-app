@@ -1,8 +1,8 @@
 import { Stack } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
-import { useSelector } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
 
 // const DefaultMessageChat = () => (
 //     <Box
@@ -35,9 +35,6 @@ const userInfo = {
 };
 
 function Dashboard() {
-    const user = useSelector((state) => {
-        return state.user;
-    });
 
     return (
         <Stack sx={{

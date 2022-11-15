@@ -4,21 +4,32 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchBar from "../common/SearchBar/SearchBar";
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
-// import { navbarContacts } from "../Navbar/consts/navbarContacts";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import useForm from "../../hooks/useForm";
-import { validator } from "../../validator/validator";
 import { contactStyles } from "./styles";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { gql, useSubscription } from '@apollo/client';
+
+const ADD_FRIEND_SUBSCRIPTION = gql`
+subscription Subscription {
+    addFriend {
+      contactList
+    }
+  }
+`;
 
 
 const ContactsBar = () => {
 
     const dispatch = useDispatch();
 
-    const { contactList } = useSelector((state) => state.user.value);
-    const users = useSelector((state) => state.users.value);
+    const { username, contactList } = useSelector((state) => {
+        return state.user.value
+    });
+
+    const users = useSelector((state) => {
+        return state.users.value;
+    });
 
     const navigate = useNavigate();
 
@@ -28,47 +39,38 @@ const ContactsBar = () => {
         username: "",
     }
 
-    const addNewUser = (values) => {
-        // users.push({ ...values });
-        console.log(values);
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+
+        const userB = form.get('username');
+
+        const friendReq = {
+            friendInput: {
+                userA: [{ username }],
+                userB: [{ username: userB }],
+            }
+        };
+
+        dispatch({
+            type: 'addContact',
+            payload: friendReq,
+        });
+
         setOpen(false);
     };
 
-    const {
-        handleChange,
-        handleSubmit,
-        handleBlur,
-        errors,
-    } = useForm({
-        initState,
-        callback: addNewUser,
-        validator
-    });
+
+    const { data, loading } = useSubscription(ADD_FRIEND_SUBSCRIPTION);
 
     const getHeader = () => {
         const handleSearch = (value) => {
 
             console.log(value);
-            // filterData(value);
         };
 
-        // const filterData = (value) => {
-        //     const lowerCasedValue = value.toLowerCase().trim();
-
-        //     if (lowerCasedValue === '') setUsers(searchResults);
-        //     else {
-        //         const filteredData = searchResults.filter((item) => {
-        //             return Object.keys(item).some((key) =>
-        //                 item[key].toString().toLowerCase().includes(lowerCasedValue)
-        //             );
-        //         });
-        //         setUsers(filteredData);
-
-        //     }
-
-        // }
-
-        const addContact = () => {
+        const addContact = (event) => {
+            event.preventDefault();
             setOpen(true);
         };
 
@@ -79,7 +81,7 @@ const ContactsBar = () => {
                     onChange={(event) => handleSearch(event.target.value)}
                 />
                 <Box sx={{
-                    width: '170px',
+                    width: '70px',
                 }}>
                     <CommonButton
                         variant="contained"
@@ -88,30 +90,40 @@ const ContactsBar = () => {
                         sx={navbarStyles.addUserButton}
                     >
                         Add
-                    </CommonButton>
-                    <IconButton sx={navbarStyles.icons}>
-                        <RefreshIcon />
-                    </IconButton>
+                    </CommonButton >
                 </Box>
             </Grid>
         );
     };
 
     const getContent = () => {
-
-        if (contactList.length > 0) {
-            dispatch({
-                type: 'showFriends',
-                payload: {
-                    user: '',
-                },
-            });
-        };
-
-
-        return (
+        if (data) {
+            return data.addFriend.contactList.map((item) => {
+                const user = users.filter((user) => user.username === item);
+                const { username, avatar } = user[0];
+                return (
+                    <ListItem
+                        button
+                        key={item}
+                        onClick={() => navigate(`conversation/${item}`)}
+                    >
+                        <ListItemIcon>
+                            <Avatar src={avatar} />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={username}
+                        />
+                    </ListItem>
+                )
+            })
+        } else if (!data) return (
             <List>
-                {(contactList.length > 0) ? contactList.map((item) => {
+                {(contactList.length === 0) ? <Typography
+                    align='center'
+                    sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
+                >
+                    No contacts yet!
+                </Typography> : contactList.map((item) => {
                     const user = users.filter((user) => user.username === item);
                     const { username, avatar } = user[0];
                     return (
@@ -128,17 +140,11 @@ const ContactsBar = () => {
                             />
                         </ListItem>
                     )
-                }) : <Typography
-                    align='center'
-                    sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
-                >
-                    No contacts yet!
-                </Typography>
+                })
                 }
             </List >
         );
     };
-
 
     return (
         <>
@@ -165,10 +171,10 @@ const ContactsBar = () => {
                             label="username"
                             required
                             defaultValue={initState.username}
-                            error={errors.username ? true : false}
-                            helperText={errors.username}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                        // error={errors.username ? true : false}
+                        // helperText={errors.username}
+                        // onChange={handleChange}
+                        // onBlur={handleBlur}
                         />
                     </Box>
 

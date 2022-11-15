@@ -89,13 +89,13 @@ router.patch('/addFriend', async (req, res, next) => {
         const updatedUserA = await userServiceModel.findByIdAndUpdate(
             { _id: userA._id, },
             { $push: { contactList: userB.id } },
-            { upsert: true }
+            { upsert: true, new: true }
         );
 
         const udaptedUserB = await userServiceModel.findByIdAndUpdate(
             { _id: userB.id, },
             { $push: { contactList: userA._id } },
-            { upsert: true }
+            { upsert: true, new: true }
         );
 
         return res.status(200).send({ updatedUserA, udaptedUserB });

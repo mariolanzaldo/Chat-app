@@ -2,7 +2,7 @@ import { put, call, takeEvery, all } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../client";
 
-import { setUser } from "./reducers/userSlice";
+import { setUser, setUserFetching, userErrorFetching } from "./reducers/userSlice";
 import { setLoginFetching, setLoginError, loginErrorFetching, errorDB } from "./reducers/loginSlice";
 import { setSignupFetching, signupErrorFetching, blurForm } from "./reducers/signupSlice";
 import { setUsers, setUsersFetching, usersErrorFetching } from "./reducers/usersSlice";
@@ -44,6 +44,11 @@ export function* queryUser(action) {
     }
 }
 
+export function* watchQueryUser() {
+
+    yield takeEvery('login', queryUser);
+}
+
 export function* signupUser(action) {
     const options = {
         mutation: gql`
@@ -75,6 +80,10 @@ export function* signupUser(action) {
 
 }
 
+export function* watchSignup() {
+    yield takeEvery('signup', signupUser);
+}
+
 export function* showFriends(action) {
     const options = {
         query: gql`
@@ -102,24 +111,44 @@ export function* showFriends(action) {
 
 }
 
-export function* watchQueryUser() {
-
-    yield takeEvery('login', queryUser);
-}
-
-export function* watchSignup() {
-    yield takeEvery('signup', signupUser);
-}
-
 export function* watchQueryUsers() {
     yield takeEvery('showFriends', showFriends);
 }
 
+
+export function* addContact(action) {
+    const options = {
+        mutation: gql`
+        mutation AddFriend($friendInput: FriendInput) {
+            addFriend(friendInput: $friendInput) {
+                success
+                errorMessage
+            }
+          }
+        `,
+        variables: action.payload,
+    };
+    try {
+        yield put(setUserFetching());
+
+        const res = yield call(client.mutate, options);
+        const value = res.data.addFriend;
+
+        yield put('addContact', value);
+    } catch (error) {
+        yield put(userErrorFetching);
+    }
+};
+
+export function* watchAddContact() {
+    yield takeEvery('addContact', addContact);
+}
 
 export default function* rootSaga() {
     yield all([
         watchQueryUser(),
         watchSignup(),
         watchQueryUsers(),
+        watchAddContact(),
     ])
 }

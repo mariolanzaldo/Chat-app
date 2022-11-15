@@ -241,14 +241,14 @@ const resolvers = {
         },
 
         addFriend: async (parent, { friendInput }, context) => {
-            pubSub.publish("FRIEND_REQUEST", {
-                addFriend: friendInput,
-            });
 
             try {
-                const friendResponse = await context.dataSources.userAPI.addFriend(friendInput);
+                const { updatedUserA } = await context.dataSources.userAPI.addFriend(friendInput);
+                pubSub.publish("FRIEND_REQUEST", {
+                    addFriend: updatedUserA,
+                });
 
-                return { success: true, errorMessage: null };
+                return { success: true, messageError: null };
             } catch (err) {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };

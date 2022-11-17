@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from "redux-saga";
 // import reducer from './reducers';
-import rootSaga from './redux-sagas';
+import rootSaga from './rootSaga';
 import authReducer from "./reducers/loginSlice";
 import userReducer from './reducers/userSlice';
 import signupReducer from './reducers/signupSlice';

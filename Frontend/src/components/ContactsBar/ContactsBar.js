@@ -1,28 +1,29 @@
 import BasicCard from "../common/BasicCard/BasicCard";
-import { Avatar, Box, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Modal, Typography, Button, TextField } from "@mui/material";
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SearchBar from "../common/SearchBar/SearchBar";
+import { Avatar, Box, List, ListItem, ListItemIcon, ListItemText, Modal, Typography, Button, TextField, IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { contactStyles } from "./styles";
 import { useDispatch, useSelector } from 'react-redux';
-import { gql, useSubscription } from '@apollo/client';
+// import { gql, useSubscription } from '@apollo/client';
+import getHeader from "./getHeader";
 
-const ADD_FRIEND_SUBSCRIPTION = gql`
-subscription Subscription {
-    addFriend {
-      contactList
-    }
-  }
-`;
+// const ADD_FRIEND_SUBSCRIPTION = gql`
+// subscription Subscription {
+//     addFriend {
+//       contactList
+//     }
+//   }
+// `;
 
 
 const ContactsBar = () => {
 
     const dispatch = useDispatch();
 
+    //states
     const { username, contactList } = useSelector((state) => {
         return state.user.value
     });
@@ -35,14 +36,13 @@ const ContactsBar = () => {
 
     const [open, setOpen] = useState(false);
 
-    const initState = {
-        username: "",
-    }
+    const [showDelete, setShowDelete] = useState(false);
+
+    const [deleteReq, setDeleteReq] = useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const form = new FormData(event.target);
-
         const userB = form.get('username');
 
         const friendReq = {
@@ -53,70 +53,36 @@ const ContactsBar = () => {
         };
 
         dispatch({
-            type: 'addContact',
+            type: 'addFriend',
             payload: friendReq,
         });
 
         setOpen(false);
     };
 
+    const deleteContact = (event) => {
 
-    const { data, loading } = useSubscription(ADD_FRIEND_SUBSCRIPTION);
+        setShowDelete((prev) => {
+            return !prev
+        });
 
-    const getHeader = () => {
-        const handleSearch = (value) => {
+        const userB = event.target.parentElement.parentElement.previousSibling.firstChild.textContent;
 
-            console.log(value);
+        const unfriendReq = {
+            friendInput: {
+                userA: [{ username }],
+                userB: [{ username: userB }],
+            }
         };
 
-        const addContact = (event) => {
-            event.preventDefault();
-            setOpen(true);
-        };
-
-        return (
-            <Grid item sx={navbarStyles.wrapper} >
-                <SearchBar
-                    placeholder="Search a friend!"
-                    onChange={(event) => handleSearch(event.target.value)}
-                />
-                <Box sx={{
-                    width: '70px',
-                }}>
-                    <CommonButton
-                        variant="contained"
-                        onClick={addContact}
-                        size='large'
-                        sx={navbarStyles.addUserButton}
-                    >
-                        Add
-                    </CommonButton >
-                </Box>
-            </Grid>
-        );
+        setDeleteReq(unfriendReq);
     };
 
-    const getContent = () => {
-        if (data) {
-            return data.addFriend.contactList.map((item) => {
-                const user = users.filter((user) => user.username === item);
-                const { username, avatar } = user[0];
-                return (
-                    <ListItem
-                        button
-                        key={item}
-                        onClick={() => navigate(`conversation/${item}`)}
-                    >
-                        <ListItemIcon>
-                            <Avatar src={avatar} />
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={username}
-                        />
-                    </ListItem>
-                )
-            })
-        } else if (!data) return (
+
+
+    const GetContent = () => {
+
+        return (
             <List>
                 {(contactList.length === 0) ? <Typography
                     align='center'
@@ -130,7 +96,7 @@ const ContactsBar = () => {
                         <ListItem
                             button
                             key={item}
-                            onClick={() => navigate(`conversation/${item}`)}
+                            onDoubleClick={() => navigate(`conversation/${item}`)}
                         >
                             <ListItemIcon>
                                 <Avatar src={avatar} />
@@ -138,6 +104,42 @@ const ContactsBar = () => {
                             <ListItemText
                                 primary={username}
                             />
+                            <IconButton sx={navbarStyles.icons} key={item} onClick={deleteContact}>
+                                <DeleteIcon />
+                            </IconButton>
+
+                            <Modal open={showDelete}>
+                                <Box sx={contactStyles.wrapper}>
+                                    <Typography variant={'subtitle1'} gutterBottom>Are you sure to delete this contact?</Typography>
+                                    <Box sx={contactStyles.buttons}>
+                                        <Button
+                                            variant='contained'
+                                            onClick={(event) => {
+                                                event.preventDefault();
+
+                                                dispatch({
+                                                    type: 'deleteFriend',
+                                                    payload: deleteReq,
+                                                });
+                                                return setShowDelete(false);
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                        <CommonButton
+                                            variant="outlined"
+                                            onClick={(event) => {
+                                                event.preventDefault();
+                                                return setShowDelete(false)
+                                            }}
+                                        >
+                                            Cancel
+                                        </CommonButton>
+                                    </Box>
+                                </Box>
+
+
+                            </Modal>
                         </ListItem>
                     )
                 })
@@ -149,8 +151,8 @@ const ContactsBar = () => {
     return (
         <>
             <BasicCard
-                header={getHeader()}
-                content={getContent()}
+                header={getHeader([open, setOpen])}
+                content={GetContent()}
             />
 
             <Modal open={open} onSubmit={handleSubmit}>
@@ -170,11 +172,6 @@ const ContactsBar = () => {
                             name="username"
                             label="username"
                             required
-                            defaultValue={initState.username}
-                        // error={errors.username ? true : false}
-                        // helperText={errors.username}
-                        // onChange={handleChange}
-                        // onBlur={handleBlur}
                         />
                     </Box>
 
@@ -187,7 +184,10 @@ const ContactsBar = () => {
                         </Button>
                         <CommonButton
                             variant="outlined"
-                            onClick={() => setOpen(false)}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                return setOpen(false)
+                            }}
                         >
                             Cancel
                         </CommonButton>

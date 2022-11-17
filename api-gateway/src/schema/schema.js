@@ -63,6 +63,7 @@ const typeDefs = gql`
     }
 
     input RoomInput {
+        _id: String
         name: String
         groupalRoom: Boolean
         creator: UserInput
@@ -73,6 +74,7 @@ const typeDefs = gql`
     type Res{
         success: Boolean
         errorMessage: String
+        value: User
     }
 
     type Mutation {

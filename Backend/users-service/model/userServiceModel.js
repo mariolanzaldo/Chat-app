@@ -40,17 +40,25 @@ const userSchema = new mongoose.Schema({
     }],
     rooms: [{
         type: new mongoose.Schema({
-            _id: mongoose.Schema.Types.ObjectId,
+            // _id: mongoose.Schema.Types.ObjectId,
             name: {
                 type: String,
                 required: true,
             },
-            // members: {
-            //     type: String,
-            // }
-        }, { _id: false }),
+        }),
         required: false,
     }],
+    // requests: [{
+    //     type: new mongoose.Schema({
+    //         from: {
+    //             type: String,
+    //             required: true
+    //         },
+    //         accepted: {
+    //             type: Boolean
+    //         }
+    //     })
+    // }],
 }, { timestamps: true, _id: false });
 
 const userServiceModel = mongoose.model("Users", userSchema);

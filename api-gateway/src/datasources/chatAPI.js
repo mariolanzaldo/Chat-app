@@ -17,10 +17,16 @@ class ChatAPI extends RESTDataSource {
         );
     };
 
-    async addMember(_id, creator) {
-        return this.post(
+    async getRoom(_id) {
+        return this.get(
+            `/api/chat/room/${_id}`
+        );
+    };
+
+    async addMember(_id, member) {
+        return this.patch(
             `/api/chat/room/addMember/${_id}`,
-            { body: creator }
+            { body: member }
         );
     };
 }

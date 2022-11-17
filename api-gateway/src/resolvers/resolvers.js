@@ -135,7 +135,7 @@ const resolvers = {
         }
     }),
     Mutation: {
-        createUser: async (parent, { userInput }, context) => {
+        createUser: async (parent, { userInput }, { dataSources }) => {
             const {
                 username,
                 firstName,
@@ -146,8 +146,8 @@ const resolvers = {
                 email,
             } = userInput;
 
-            const signup = context.dataSources.authAPI.signup(username, password);
-            const userInfo = context.dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
+            const signup = dataSources.authAPI.signup(username, password);
+            const userInfo = dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
 
             try {
                 const [userRes, authRes] = await Promise.all([userInfo, signup]);
@@ -161,13 +161,22 @@ const resolvers = {
                 return { success: false, errorMessage: err.message };
             }
         },
-        login: async (parent, { userInput }, context) => {
-            const authRes = context.dataSources.authAPI.login(userInput);
-            const userRes = context.dataSources.userAPI.getUser(userInput);
+        login: async (parent, { userInput }, { dataSources, req, res }) => {
+            const authRes = dataSources.authAPI.login(userInput);
+            const userRes = dataSources.userAPI.getUser(userInput);
             try {
                 const [auth, user] = await Promise.all([authRes, userRes]);
 
                 const { token } = auth;
+                //TODO: Search about sameSite (:
+                const options = {
+                    maxAge: 1e9,
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
+                };
+
+                res.cookie("JWT", token, options);
 
                 return { ...user.user, token };
             } catch (err) {
@@ -204,7 +213,11 @@ const resolvers = {
 
             try {
                 const createdRoom = await context.dataSources.chatAPI.createRoom(roomInput);
-                const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: createdRoom });
+                const { _id, name, members } = await context.dataSources.chatAPI.addMember(createdRoom._id, creator);
+
+                const withoutKey = members.map(({ username }) => username);
+
+                const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: { _id, name } });
 
                 return createdRoom;
             } catch (err) {
@@ -214,41 +227,35 @@ const resolvers = {
         },
 
         addMember: async (parent, { roomInput }, context) => {
-            //TODO: This is not finished!
 
-            const roomResponse = await fetch(`${CHAT_SERVICE}/api/chat/room/6362c0482666a2ec8db87cba`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                }
+            const { _id, members } = roomInput;
+            console.log(_id, members);
+
+            let updatedContact;
+
+            // const currentRoom = await context.dataSources.chatAPI.getRoom(_id);
+            const updatedRoom = await context.dataSources.chatAPI.addMember(_id, members);
+
+            const { name, members: updatedMembers } = updatedRoom;
+
+            const updatedUsers = await updatedMembers.map(async ({ username }) => {
+                updatedContact = await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
+                console.log(updatedContact)
+                return updatedContact;
             });
 
-            const room = await roomResponse.json();
-            console.log(room);
-
-            // const chatResponse = await fetch(`${CHAT_SERVICE}/api/chat/room/addMember/:id`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Accept': 'application/json',
-            //     },
-            //     body: JSON.stringify(memberInput),
-            // });
-
-            return roomInput;
+            return updatedRoom;
 
         },
 
         addFriend: async (parent, { friendInput }, context) => {
-
             try {
                 const { updatedUserA } = await context.dataSources.userAPI.addFriend(friendInput);
                 pubSub.publish("FRIEND_REQUEST", {
                     addFriend: updatedUserA,
                 });
 
-                return { success: true, messageError: null };
+                return { success: true, messageError: null, value: updatedUserA };
             } catch (err) {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
@@ -258,9 +265,9 @@ const resolvers = {
 
         deleteFriend: async (parent, { friendInput }, context) => {
             try {
-                const deleteFriendResponse = await context.dataSources.userAPI.deleteFriend(friendInput);
+                const { updatedUserA } = await context.dataSources.userAPI.deleteFriend(friendInput);
 
-                return { success: true, errorMessage: null };
+                return { success: true, errorMessage: null, value: updatedUserA };
             } catch (err) {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
@@ -276,7 +283,7 @@ const resolvers = {
         },
         addFriend: {
             subscribe: () => pubSub.asyncIterator("FRIEND_REQUEST"),
-        }
+        },
 
     }
 };

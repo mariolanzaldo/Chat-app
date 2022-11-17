@@ -21,6 +21,11 @@ const roomSchema = new mongoose.Schema({
     // members: [String],
     members: [{
         type: new mongoose.Schema({
+            _id: {
+                type: String,
+                required: true,
+                unique: true,
+            },
             username: {
                 type: String,
                 required: true,
@@ -29,7 +34,7 @@ const roomSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now(),
             },
-        })
+        }, { _id: false })
     }],
 });
 

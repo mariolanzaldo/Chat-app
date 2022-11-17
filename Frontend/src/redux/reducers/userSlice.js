@@ -17,17 +17,21 @@ const userSlice = createSlice({
         setUserFetching: (state = null) => {
             state.isFetching = true;
         },
-        addContact: (state = null, action) => {
-            state.isFetching = false;
-            state.value = action.payload.user
-        },
         userErrorFetching: (state = null, action) => {
             state.isFetching = false;
             state.error = action.payload.message
         },
+        addContact: (state = null, action) => {
+            state.isFetching = false;
+            state.value = action.payload;
+        },
+        deleteContact: (state = null, action) => {
+            state.isFetching = false;
+            state.value = action.payload;
+        }
     },
 });
 
-export const { setUser, setUserFetching, userErrorFetching, addContact } = userSlice.actions;
+export const { setUser, setUserFetching, userErrorFetching, addContact, deleteContact } = userSlice.actions;
 
 export default userSlice.reducer;

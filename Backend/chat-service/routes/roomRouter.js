@@ -54,12 +54,12 @@ router.patch('/addMember/:id', async (req, res) => {
 
         if (!room) return res.status(404).send({ error: 'Room not found' });
 
-        if (!room.members.length >= 3) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
+        if ((!room.groupalRoom && room.members.length === 2) || (!room.groupalRoom && room.members.length === 0 && req.body.length > 2)) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
 
         const updatedRoom = await roomModel.findByIdAndUpdate(
             { _id: room._id, },
-            { $push: { members: req.body.user } },
-            { upsert: true }
+            { $push: { members: req.body } },
+            { upsert: true, new: true }
         );
 
         return res.status(201).send(updatedRoom);

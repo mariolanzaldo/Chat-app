@@ -45,6 +45,7 @@ router.post('/', async (req, res) => {
 router.patch('/update/:id', async (req, res) => {
     const _id = req.params.id;
     const infoToupdate = req.body;
+
     try {
         const user = await UserModel.findById({ _id });
 
@@ -116,17 +117,21 @@ router.patch('/deleteFriend', async (req, res, next) => {
 
         const updatedUserA = await userServiceModel.findByIdAndUpdate(
             { _id: userA.id, },
-            { $pull: { contactList: userB.id } },
+            { $pull: { contactList: userB._id } },
+            { upsert: false, new: true, }
+
         );
 
         const udaptedUserB = await userServiceModel.findByIdAndUpdate(
             { _id: userB.id, },
             { $pull: { contactList: userA._id } },
+            { upsert: false, new: true }
+
         );
 
         if (!updatedUserA || !udaptedUserB) return next({ error: 'Something went wrong!' });
 
-        return res.status(200).send({ userA, userB });
+        return res.status(200).send({ updatedUserA, udaptedUserB });
     } catch (err) {
         return res.status(500).send({ error: err.message });
     }

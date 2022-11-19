@@ -13,7 +13,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />}>
-            <Route path="/conversation/:id" element={<ChatWindow />} />
+            <Route path="/conversation/:roomId" element={<ChatWindow />} />
           </Route>
 
           <Route path="/signup" element={<Signup />} />

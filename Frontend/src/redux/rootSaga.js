@@ -1,14 +1,19 @@
 import { takeEvery, all } from "redux-saga/effects";
 
-import queryUser from './sagas/queryUser';
+import login from './sagas/login';
 import addFriend from './sagas/addFriend';
 import signupUser from "./sagas/signupUser";
 import showFriends from "./sagas/showFriends";
 import deleteFriend from "./sagas/deleteFriend";
+import queryUser from "./sagas/queryUser";
+
+export function* watchLogin() {
+
+    yield takeEvery('login', login);
+}
 
 export function* watchQueryUser() {
-
-    yield takeEvery('login', queryUser);
+    yield takeEvery('authUser', queryUser);
 }
 
 export function* watchSignup() {
@@ -29,6 +34,7 @@ export function* watchDeleteContact() {
 
 export default function* rootSaga() {
     yield all([
+        watchLogin(),
         watchQueryUser(),
         watchSignup(),
         watchQueryUsers(),

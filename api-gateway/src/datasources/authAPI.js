@@ -21,6 +21,16 @@ class AuthAPI extends RESTDataSource {
             }
         );
     };
+    async secureRoute(token) {
+        return this.post(
+            `api/auth/profile`,
+            {
+                body: {
+                    secret_token: token
+                }
+            }
+        );
+    }
 
     async login(userInput) {
         return this.post(

@@ -2,7 +2,8 @@ import { Stack, Box, Typography } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
-// import { useSelector, useDispatch } from "react-redux";
+import { gql, useQuery } from '@apollo/client';
+import { useSelector, useDispatch } from "react-redux";
 
 const DefaultMessageChat = () => (
     <Box
@@ -25,16 +26,18 @@ const DefaultMessageChat = () => (
     </Box>
 );
 
-const userInfo = {
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    // avatar: "",
-    contactList: [],
-};
-
 function Dashboard() {
+    const dispatch = useDispatch();
+
+    dispatch({
+        type: 'authUser'
+    });
+
+    // const { data, loading, error } = useQuery(QUERY_USER);
+
+    // const { user } = data;
+
+    //setUser with a saga
 
     return (
         <Stack sx={{

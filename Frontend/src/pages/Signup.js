@@ -7,7 +7,7 @@ import { validator } from '../validator/validator';
 import useForm from '../hooks/useForm';
 import { createAvatar } from "@dicebear/avatars";
 import * as style from '@dicebear/adventurer-neutral';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 export default function App() {
 

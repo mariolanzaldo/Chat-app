@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/getUser/:id', async (req, res, next) => {
     const _id = req.params.id;
+
     try {
         const user = await UserModel.findById({ _id });
         if (!user) {
@@ -55,7 +56,6 @@ router.patch('/update/:id', async (req, res) => {
             user[key] = infoToupdate[key];
         }
         user.save();
-
         return res.status(200).send(user);
 
     } catch (err) {
@@ -93,13 +93,13 @@ router.patch('/addFriend', async (req, res, next) => {
             { upsert: true, new: true }
         );
 
-        const udaptedUserB = await userServiceModel.findByIdAndUpdate(
+        const updatedUserB = await userServiceModel.findByIdAndUpdate(
             { _id: userB.id, },
             { $push: { contactList: userA._id } },
             { upsert: true, new: true }
         );
 
-        return res.status(200).send({ updatedUserA, udaptedUserB });
+        return res.status(200).send({ updatedUserA, updatedUserB });
     } catch (err) {
         return res.status(500).send({ error: err.message });
 

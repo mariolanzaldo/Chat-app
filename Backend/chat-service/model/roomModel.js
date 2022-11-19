@@ -6,6 +6,10 @@ const roomSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    // icon: {
+    //     type: String,
+    //     required: true,
+    // },
     groupalRoom: {
         type: Boolean,
         default: false,

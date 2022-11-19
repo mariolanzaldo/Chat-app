@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { gql, useSubscription } from '@apollo/client';
 import getHeader from "./getHeader";
 
+//TODO Instead of add friend create a subscription to send friend requests
 // const ADD_FRIEND_SUBSCRIPTION = gql`
 // subscription Subscription {
 //     addFriend {
@@ -23,7 +24,6 @@ const ContactsBar = () => {
 
     const dispatch = useDispatch();
 
-    //states
     const { username, contactList } = useSelector((state) => {
         return state.user.value
     });
@@ -36,6 +36,7 @@ const ContactsBar = () => {
 
     const [open, setOpen] = useState(false);
 
+    //Shows the modal to delete a contact
     const [showDelete, setShowDelete] = useState(false);
 
     const [deleteReq, setDeleteReq] = useState(null);
@@ -96,7 +97,7 @@ const ContactsBar = () => {
                         <ListItem
                             button
                             key={item}
-                            onDoubleClick={() => navigate(`conversation/${item}`)}
+                        // onDoubleClick={() => navigate(`conversation/${item}`)}
                         >
                             <ListItemIcon>
                                 <Avatar src={avatar} />

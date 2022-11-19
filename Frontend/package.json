@@ -52,16 +52,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": {
-    "/graphql" : {
-      "target" : "http://localhost:3500/graphql",
-      "changeOrigin" : true
-    },
-    "/graphql/subs" : {
-      "target" : "ws://localhost:3500/graphql",
-      "changeOrigin" : true,
-      "ws": true
-    }
   }
 }

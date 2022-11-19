@@ -14,7 +14,7 @@ const Navbar = () => {
 
     });
 
-    const tabs = ['Contacts', 'Groups'];
+    const tabs = ['Contacts', 'Conversations'];
 
     const initialState = {
         groups: false,
@@ -24,7 +24,7 @@ const Navbar = () => {
     const [isShown, setIsShown] = useState(initialState);
 
     const handleClick = (event) => {
-
+        event.preventDefault();
         if (event.currentTarget.innerText === 'Contacts') {
             setIsShown(current => {
                 return ({
@@ -35,7 +35,7 @@ const Navbar = () => {
             });
         }
 
-        if (event.currentTarget.innerText === 'Groups') {
+        if (event.currentTarget.innerText === 'Conversations') {
             setIsShown(current => {
                 return ({
                     shown: !current.shown,

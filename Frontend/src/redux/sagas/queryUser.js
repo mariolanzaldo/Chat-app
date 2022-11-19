@@ -1,44 +1,42 @@
-import { put, call } from "redux-saga/effects";
-import { gql } from '@apollo/client';
-import client from "../../client";
+import { gql } from "@apollo/client";
+import { call, put } from 'redux-saga/effects';
+import { setUser, setUserFetching, userErrorFetching } from '../reducers/userSlice';
 
-import { setUser } from "../reducers/userSlice";
-import { setLoginFetching, setLoginError } from "../reducers/loginSlice";
+import client from "../../client";
 
 function* queryUser(action) {
     const options = {
-        mutation: gql`
-        mutation Login($userInput: UserInput) {
-            login(userInput: $userInput) {
-              username
-              firstName
-              lastName
-              avatar
-              contactList
-              #rooms {
-                #_id
-                #name
-                #members {
-                  #username
-                #}
-              #}
-              token
+        query: gql`
+        query {
+            currentUser{
+                _id
+                username
+                firstName
+                lastName
+                avatar
+                contactList
+                rooms {
+                  _id
+                  name
+                  #members {
+                    #username
+                  #}
+                }
+                token
             }
-          }
-        `,
-        variables: {
-            userInput: action.payload.user,
         }
+        `,
     };
-
     try {
-        yield put(setLoginFetching());
-        const res = yield call(client.mutate, options);
-        const user = res.data.login;
-        yield put(setUser({ user }));
+        yield put(setUserFetching());
+        const res = yield call(client.query, options);
+
+        const { currentUser } = res.data;
+
+        yield put(setUser({ user: currentUser }));
 
     } catch (err) {
-        yield put(setLoginError({ err }));
+        yield put(userErrorFetching({ err }));
     }
 };
 

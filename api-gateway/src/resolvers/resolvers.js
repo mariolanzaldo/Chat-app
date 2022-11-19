@@ -3,83 +3,6 @@ const { GraphQLError, GraphQLScalarType, Kind, PossibleFragmentSpreadsRule } = r
 const { PubSub } = require('graphql-subscriptions');
 
 const router = express.Router();
-
-//User Service
-const users = [{
-    _id: 1,
-    username: 'Mario',
-    firstName: 'Mario',
-    lastName: 'Laureano',
-    email: 'example@mail.com',
-    contactList: ['Jack', 'Chris'],
-    rooms: [1, 2],
-},
-{
-    _id: 2,
-    username: 'Chris',
-    firstName: 'Chris',
-    lastName: 'Hessler',
-    email: 'anotherexample@mail.com',
-    contactList: ['Mario', 'Jack', 'Arya'],
-    rooms: [1, 3],
-},
-{
-    _id: 3,
-    username: 'Jack',
-    firstName: 'Jack',
-    lastName: 'McGraw',
-    email: 'mail@mail.com',
-    contactList: ['Mario', 'Chris', 'Arya'],
-    rooms: [2, 3],
-},
-{
-    _id: 4,
-    username: 'Arya',
-    firstName: 'Arya',
-    lastName: 'Stark',
-    email: 'stark@mail.com',
-    contactList: ['Jack', 'Mario', 'Chris'],
-    rooms: [3],
-}
-];
-
-//Chat Service
-const rooms = [
-    {
-        _id: 1,
-        name: 'Room1',
-        groupalRoom: false,
-        members: ['Mario', 'Jack']
-    },
-    {
-        _id: 2,
-        name: 'Room2',
-        groupalRoom: false,
-        members: ['Mario', 'Jack']
-    },
-    {
-        _id: 3,
-        name: 'GroupRoom',
-        groupalRoom: true,
-        members: ['Arya', 'Chris', 'Jack']
-    },
-];
-
-const messages = [
-    {
-        _id: 1,
-        content: 'Hello Jack',
-        sendBy: 'Mario',
-        room: 2
-    },
-    {
-        _id: 2,
-        content: 'Greetings!',
-        sendBy: 'Chris',
-        room: 3
-    },
-];
-
 const pubSub = new PubSub();
 
 const resolvers = {
@@ -89,36 +12,30 @@ const resolvers = {
             const { users } = await context.dataSources.userAPI.getUsers();
             return users;
         },
+        currentUser: async (parent, input, { req, dataSources }) => {
+
+            const { JWT } = req.cookies;
+
+            if (!JWT) {
+                throw new GraphQLError('Not Authenticated');
+            }
+
+            const response = await dataSources.authAPI.secureRoute(JWT);
+
+            if (!response?.user) {
+                throw new GraphQLError('Not Authorized');
+            }
+
+            const { user } = await dataSources.userAPI.getUser(response.user);
+
+            return user;
+
+        },
     },
     Message: {
         room: (parent) => {
             const found = rooms.filter((room) => room._id === parent.room);
             return found;
-        }
-    },
-    User: {
-        rooms: (parent) => {
-            const userRooms = parent.rooms;
-            let room = [];
-
-            for (let i = 0; i < userRooms.length; i++) {
-                room.push(rooms.find((room) => room._id === userRooms[i]));
-                /*
-                try{
-                 const res = await fetch(URL, whatever) // request all rooms
-                    const fetchedRooms = res.json();
-                room.push(fetchedRooms.find....)
-
-                }catch (err) {
-
-                }
-                
-                */
-
-
-            }
-
-            return room;
         }
     },
     Date: new GraphQLScalarType({
@@ -184,7 +101,6 @@ const resolvers = {
                 throw new GraphQLError(message.error ? message.error : message);
             }
         },
-
         createMessage: async (parent, { messageInput }, context) => {
             pubSub.publish("MESSAGE_CREATED", {
                 newMessage: messageInput,
@@ -229,18 +145,14 @@ const resolvers = {
         addMember: async (parent, { roomInput }, context) => {
 
             const { _id, members } = roomInput;
-            console.log(_id, members);
-
             let updatedContact;
 
-            // const currentRoom = await context.dataSources.chatAPI.getRoom(_id);
             const updatedRoom = await context.dataSources.chatAPI.addMember(_id, members);
 
             const { name, members: updatedMembers } = updatedRoom;
 
-            const updatedUsers = await updatedMembers.map(async ({ username }) => {
+            const updatedUsers = updatedMembers.map(async ({ username }) => {
                 updatedContact = await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
-                console.log(updatedContact)
                 return updatedContact;
             });
 
@@ -250,12 +162,32 @@ const resolvers = {
 
         addFriend: async (parent, { friendInput }, context) => {
             try {
-                const { updatedUserA } = await context.dataSources.userAPI.addFriend(friendInput);
+                const { updatedUserA, updatedUserB } = await context.dataSources.userAPI.addFriend(friendInput);
                 pubSub.publish("FRIEND_REQUEST", {
                     addFriend: updatedUserA,
                 });
 
-                return { success: true, messageError: null, value: updatedUserA };
+                const roomInput = {
+                    creator: {
+                        username: updatedUserA.username
+                    },
+                    groupalRoom: false,
+                    name: `${updatedUserA.username} and ${updatedUserB.username} conversation`
+                };
+
+                const members = [{ username: updatedUserA.username }, { username: updatedUserB.username }];
+
+                const { _id } = await context.dataSources.chatAPI.createRoom(roomInput);
+                const { name } = await context.dataSources.chatAPI.addMember(_id, members);
+
+                const updatedUsers = members.map(async ({ username }) => {
+                    return await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
+                    // return updatedContact;
+                });
+
+                const values = await Promise.all(updatedUsers);
+
+                return { success: true, messageError: null, value: values[0] };
             } catch (err) {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
@@ -264,6 +196,8 @@ const resolvers = {
         },
 
         deleteFriend: async (parent, { friendInput }, context) => {
+            //TODO Erase conversation once a contact is deleted!
+
             try {
                 const { updatedUserA } = await context.dataSources.userAPI.deleteFriend(friendInput);
 

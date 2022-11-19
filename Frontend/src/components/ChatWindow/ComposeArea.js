@@ -19,7 +19,7 @@ const ComposeArea = () => {
                 direction="column"
                 placeholder="Type a message"
                 multiline={true}
-                noWrap
+                // noWrap
 
                 sx={{
                     backgroundColor: "rgb(240, 240, 240)",

@@ -47,4 +47,11 @@ router.post(
     }
 );
 
+// router.post(
+//     '/dashboard', async (req, res) => {
+//         const { token } = req.body;
+//         jwt.validate();
+//     }
+// );
+
 module.exports = router;

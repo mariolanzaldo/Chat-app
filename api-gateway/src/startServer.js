@@ -9,6 +9,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 // const { startStandAloneServer } = require('@apollo/server/standalone');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const typeDefs = require('./schema/schema');
 const resolvers = require('./resolvers/resolvers');
 
@@ -65,21 +66,23 @@ const startServer = async () => {
 
     await server.start();
 
-    app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(server, {
-        context: async ({ req, res }) => {
-            const dataSources = {
-                chatAPI: new ChatAPI(),
-                userAPI: new UserAPI(),
-                authAPI: new AuthAPI(),
+    app.use('/graphql', cookieParser(),
+        cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'http://localhost:3500/graphql'], credentials: true }),
+        bodyParser.json(), expressMiddleware(server, {
+            context: async ({ req, res }) => {
+                const dataSources = {
+                    chatAPI: new ChatAPI(),
+                    userAPI: new UserAPI(),
+                    authAPI: new AuthAPI(),
 
-            };
-            return {
-                req,
-                res,
-                dataSources,
-            }
-        },
-    }));
+                };
+                return {
+                    req,
+                    res,
+                    dataSources,
+                }
+            },
+        }));
 
     httpServer.listen(port, () => {
         console.log(`Server ready at ${port}`);

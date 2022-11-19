@@ -11,8 +11,6 @@ const typeDefs = gql`
         lastName: String
         email: String
         avatar: String
-        password: String
-        confirmPassword: String
         contactList: [ID]
         rooms: [Room]
         #rooms: [ID]
@@ -55,7 +53,7 @@ const typeDefs = gql`
     }
 
     type Room {
-        _id: ID
+        _id: String
         name: String
         creator: User
         groupalRoom: Boolean
@@ -94,10 +92,11 @@ const typeDefs = gql`
     type Query {
         messages: [Message]
         users: [User]
+        currentUser: User
     }
 
     type Subscription {
-        newMessage: Message
+        newMessage(roomId: ID): Message
         newRoom: Room
         addFriend: User
     }

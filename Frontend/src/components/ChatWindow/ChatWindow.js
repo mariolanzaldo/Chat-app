@@ -1,8 +1,30 @@
 import { Grid, List } from "@mui/material";
 import ComposeArea from "./ComposeArea";
 import Message from "./Message";
+import { gql, useSubscription } from '@apollo/client';
+import { useDispatch } from 'react-redux';
+import { useParams } from "react-router-dom";
+
+const MESSAGES_SUBSCRIPTION = gql`
+subscription newMessage($roomId: ID) {
+    newMessage(roomId: $roomId) {
+      _id
+      content
+      room
+      sendBy
+    }
+  }
+`;
 
 const ChatWindow = ({ messagesList }) => {
+
+    const { roomId } = useParams();
+
+    const dispatch = useDispatch();
+
+    useSubscription(MESSAGES_SUBSCRIPTION, {
+        variables: { roomId },
+    })
     return (
         <Grid
             container

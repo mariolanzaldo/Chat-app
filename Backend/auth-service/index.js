@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
-app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute);
+app.use('/api/auth', passport.authenticate('jwt', { session: false }), secureRoute);
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);

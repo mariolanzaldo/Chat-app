@@ -13,6 +13,10 @@ function* showFriends(action) {
               email
               firstName
               lastName
+              rooms {
+                _id
+                name
+              }
               avatar
             }
           }

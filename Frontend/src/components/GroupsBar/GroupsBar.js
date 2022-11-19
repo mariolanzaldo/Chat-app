@@ -1,20 +1,29 @@
 import BasicCard from "../common/BasicCard/BasicCard";
-import { Box, Grid, Typography, IconButton } from "@mui/material";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { Box, Grid, Typography, IconButton, List, ListItem, ListItemText } from "@mui/material";
 import SearchBar from "../common/SearchBar/SearchBar";
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
+import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 const GroupsBar = () => {
+
+    const { rooms } = useSelector((state) => {
+        return state.user.value;
+
+    });
+
+    const navigate = useNavigate();
 
     const getHeader = () => {
         const handleChange = (value) => {
             console.log(value);
         }
 
-        const addContact = () => {
+        const addGroup = () => {
             console.log('clicked!');
         };
+
         return (
             <Grid item sx={navbarStyles.wrapper} >
                 <SearchBar
@@ -22,19 +31,16 @@ const GroupsBar = () => {
                     onChange={(event) => handleChange(event.target.value)}
                 />
                 <Box sx={{
-                    width: '170px',
+                    width: '70px',
                 }}>
                     <CommonButton
                         variant="contained"
-                        onClick={addContact}
+                        onClick={addGroup}
                         size='large'
                         sx={navbarStyles.addUserButton}
                     >
-                        Add
+                        New
                     </CommonButton>
-                    <IconButton sx={navbarStyles.icons}>
-                        <RefreshIcon />
-                    </IconButton>
                 </Box>
             </Grid>
         );
@@ -42,14 +48,33 @@ const GroupsBar = () => {
 
     const getContent = () => {
         return (
-            <Box container>
-                <Typography
+            <List>
+                {(rooms.length === 0 || !rooms) ? <Typography
                     align='center'
                     sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
                 >
                     No groups yet!
-                </Typography>
-            </Box>
+                </Typography> : rooms.map((room) => {
+                    const { _id, name } = room;
+                    return (
+                        <ListItem
+                            button
+                            key={_id}
+                            onDoubleClick={() => navigate(`conversation/${_id}`)}
+                        >
+                            <ListItemText
+                                key={_id}
+                                primary={name}
+                            />
+
+
+                        </ListItem>
+                    );
+                })
+
+
+                }
+            </List>
         );
     };
 

@@ -8,9 +8,10 @@ import { Navigate } from 'react-router-dom';
 
 const Login = () => {
 
-    const user = useSelector((state) => {
-        return state.user
+    const { user } = useSelector((state) => {
+        return state
     });
+
     const dispatch = useDispatch();
 
     const [inputFields, setInputFields] = useState({

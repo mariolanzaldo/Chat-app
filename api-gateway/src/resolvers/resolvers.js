@@ -21,6 +21,7 @@ const resolvers = {
             }
 
             const response = await dataSources.authAPI.secureRoute(JWT);
+            console.log(response);
 
             if (!response?.user) {
                 throw new GraphQLError('Not Authorized');

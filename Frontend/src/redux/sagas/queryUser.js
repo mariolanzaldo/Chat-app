@@ -3,6 +3,7 @@ import { call, put } from 'redux-saga/effects';
 import { setUser, setUserFetching, userErrorFetching } from '../reducers/userSlice';
 
 import client from "../../client";
+import { current } from "@reduxjs/toolkit";
 
 function* queryUser(action) {
     const options = {
@@ -30,12 +31,14 @@ function* queryUser(action) {
     try {
         yield put(setUserFetching());
         const res = yield call(client.query, options);
-
         const { currentUser } = res.data;
+        console.log('here')
+
 
         yield put(setUser({ user: currentUser }));
 
     } catch (err) {
+        //TODO: change fetching  to false
         yield put(userErrorFetching({ err }));
     }
 };

@@ -4,6 +4,15 @@ const typeDefs = gql`
 
     scalar Date
 
+    type UnauthUser {
+        _id: ID
+        username: String
+        firstName: String
+        lastName: String
+        email: String
+        avatar: String
+    }
+
     type User {
         _id: ID
         username: String

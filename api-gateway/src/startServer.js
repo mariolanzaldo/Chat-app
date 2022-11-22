@@ -10,6 +10,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+
 const typeDefs = require('./schema/schema');
 const resolvers = require('./resolvers/resolvers');
 
@@ -38,17 +39,6 @@ const startServer = async () => {
 
     const server = new ApolloServer({
         schema,
-        // dataSources: () => ({
-        //     chatAPI: new ChatAPI(),
-        // }),
-        // context: function () {
-        //     const datasource = {
-        //         ChatAPI: new ChatAPI({ cache }),
-        //     };
-        //     return {
-        //         datasources
-        //     }
-        // },
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
 

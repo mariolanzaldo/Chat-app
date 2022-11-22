@@ -1,4 +1,4 @@
-import { takeEvery, all } from "redux-saga/effects";
+import { takeEvery, all, takeLatest } from "redux-saga/effects";
 
 import login from './sagas/login';
 import addFriend from './sagas/addFriend';
@@ -9,11 +9,11 @@ import queryUser from "./sagas/queryUser";
 
 export function* watchLogin() {
 
-    yield takeEvery('login', login);
+    yield takeLatest('login', login);
 }
 
 export function* watchQueryUser() {
-    yield takeEvery('authUser', queryUser);
+    yield takeLatest('authUser', queryUser);
 }
 
 export function* watchSignup() {

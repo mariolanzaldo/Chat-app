@@ -3,7 +3,7 @@ import { Avatar, Box, List, ListItem, ListItemIcon, ListItemText, Modal, Typogra
 import DeleteIcon from '@mui/icons-material/Delete';
 import CommonButton from '../common/CommonButton/CommonButton';
 import { navbarStyles } from "../Navbar/styles";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { contactStyles } from "./styles";
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +32,7 @@ const ContactsBar = () => {
         return state.users.value;
     });
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
 
@@ -82,10 +82,9 @@ const ContactsBar = () => {
 
 
     const GetContent = () => {
-
         return (
             <List>
-                {(contactList.length === 0) ? <Typography
+                {(contactList.length === 0 && !users) ? <Typography
                     align='center'
                     sx={{ margin: '40px 16px', color: 'rgba(0,0,0,0.6)', fontSize: '1.3rem' }}
                 >

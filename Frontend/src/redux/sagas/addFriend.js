@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import client from "../../client";
 
 import { setUserFetching, userErrorFetching, addContact } from "../reducers/userSlice";
+import { GraphQLError } from "graphql";
 
 function* addFriend(action) {
     const options = {
@@ -26,11 +27,13 @@ function* addFriend(action) {
         variables: action.payload,
     };
     try {
-        yield put(setUserFetching());
-
-
+        // yield put(setUserFetching());
         const res = yield call(client.mutate, options);
-        const value = res.data.addFriend.value;
+
+        // if (!res.data.addFriend.succes) {
+        //     throw new GraphQLError(res.data.addFriend.errorMessage)
+        // }
+        const value = res.data.addFriend?.value;
 
         yield put(addContact(value));
     } catch (error) {

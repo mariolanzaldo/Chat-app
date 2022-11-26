@@ -11,7 +11,7 @@ const usersSlice = createSlice({
     initialState,
     reducers: {
         setUsers: (state = null, action) => {
-            // state.isFetching = false;
+            state.isFetching = false;
             state.value = action.payload.users;
         },
         setUsersFetching: (state = null) => {

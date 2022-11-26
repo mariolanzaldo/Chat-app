@@ -6,31 +6,50 @@ import signupUser from "./sagas/signupUser";
 import showFriends from "./sagas/showFriends";
 import deleteFriend from "./sagas/deleteFriend";
 import queryUser from "./sagas/queryUser";
+import newMessage from "./sagas/newMessage";
+import addNewMessage from "./sagas/addNewMessage";
+import setConversation from "./sagas/setConversation";
+import queryMessages from "./sagas/queryMessages";
 
 export function* watchLogin() {
 
     yield takeLatest('login', login);
-}
+};
 
 export function* watchQueryUser() {
     yield takeLatest('authUser', queryUser);
-}
+};
 
 export function* watchSignup() {
     yield takeEvery('signup', signupUser);
-}
+};
 
 export function* watchQueryUsers() {
     yield takeEvery('showFriends', showFriends);
-}
+};
 
 export function* watchAddContact() {
     yield takeEvery('addFriend', addFriend);
-}
+};
 
 export function* watchDeleteContact() {
     yield takeEvery('deleteFriend', deleteFriend);
-}
+};
+
+export function* watchCreateMessage() {
+    yield takeEvery("createMessage", newMessage);
+};
+
+export function* watchAddMessage() {
+    yield takeLatest("addNewMessage", addNewMessage);
+};
+export function* watchCurrentConv() {
+    yield takeLatest("setConversation", setConversation);
+};
+
+export function* watchQueryMessages() {
+    yield takeLatest("queryMessages", queryMessages);
+};
 
 export default function* rootSaga() {
     yield all([
@@ -40,5 +59,9 @@ export default function* rootSaga() {
         watchQueryUsers(),
         watchAddContact(),
         watchDeleteContact(),
+        watchCreateMessage(),
+        watchAddMessage(),
+        watchCurrentConv(),
+        watchQueryMessages(),
     ]);
 }

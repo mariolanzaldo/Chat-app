@@ -4,12 +4,13 @@ import { styled, InputBase } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
+    gap: '0px',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: 'rgba(127, 93, 149, 0.8)',
     "&:hover": {
         backgroundColor: 'rgba(127, 93, 149, 0.3)',
     },
-    margin: '10px 10px',
+    margin: '0 3px',
     width: '85%',
     // [theme.breakpoints.up('sm')]: {
     //     marginLeft: theme.spacing(1),

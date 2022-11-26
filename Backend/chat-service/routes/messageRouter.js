@@ -23,7 +23,23 @@ router.get('/:id', async (req, res) => {
 
         return res.status(200).send(message);
     } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
 
+router.get('/messagesOfRoom/:id', async (req, res) => {
+    const { id: roomId } = req.params;
+
+    try {
+        const roomMessages = await messageModel.find({ roomId });
+
+        if (!roomMessages) {
+            return res.status(404).send("Conversation not Found");
+        };
+
+        return res.status(200).send(roomMessages);
+    } catch (err) {
+        return res.status(500).send(err);
     }
 });
 

@@ -6,6 +6,15 @@ const router = express.Router();
 router.post('/createRoom', async (req, res) => {
     const group = { ...req.body };
     try {
+        console.log(group)
+        roomModel.collection.dropIndexes();
+        if (group.groupalRoom) {
+            //TODO: work on this to adapt group conversations.
+
+            return null;
+
+        }
+
         const room = await roomModel.create(group);
 
         return res.status(201).send(room);

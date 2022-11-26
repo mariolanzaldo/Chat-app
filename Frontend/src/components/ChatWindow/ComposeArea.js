@@ -1,16 +1,56 @@
 import { Box, IconButton, TextField } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
+import { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+
 
 const ComposeArea = () => {
+
+    const dispatch = useDispatch();
+
+    const [message, setMessage] = useState("");
+
+    const { roomId } = useParams();
+
+    const { username } = useSelector((state) => {
+        return state.user.value;
+    });
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (message.length > 0) {
+            const messageInput = {
+                roomId,
+                content: message,
+                sendBy: username,
+
+            };
+            dispatch({
+                type: "createMessage",
+                payload: messageInput,
+            });
+
+            setMessage("");
+        }
+    };
+
+    const handleChange = (event) => {
+        const text = event.target.value;
+        setMessage(text);
+    };
+
     return (
         <Box
-            container
+            component="form"
+            itemType="submit"
+            onSubmit={handleSubmit}
             sx={{
-                display: "flex",
+                display: 'flex',
                 width: "100%",
                 height: "90px",
                 padding: "0px",
-                gap: '100px',
+                gap: '15px',
                 alignItems: "center",
             }}
         >
@@ -19,6 +59,8 @@ const ComposeArea = () => {
                 direction="column"
                 placeholder="Type a message"
                 multiline={true}
+                value={message}
+                onChange={handleChange}
                 // noWrap
 
                 sx={{
@@ -51,6 +93,7 @@ const ComposeArea = () => {
             <IconButton
                 variant="contained"
                 color="primary"
+                type="submit"
                 sx={{
                     minWidth: "50px",
                     width: "50px",

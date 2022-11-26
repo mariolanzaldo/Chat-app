@@ -7,10 +7,21 @@ const pubSub = new PubSub();
 
 const resolvers = {
     Query: {
-        messages: () => messages,
+        messages: async (_, { _id }, { dataSources }) => {
+            const roomMessages = await dataSources.chatAPI.getMessagesOfRoom(_id);
+
+            return roomMessages;
+        },
         users: async (_, __, context) => {
             const { users } = await context.dataSources.userAPI.getUsers();
             return users;
+        },
+        user: async (_, { _id }, { req, dataSources }) => {
+            const userToFind = { username: _id };
+
+            const { user } = await dataSources.userAPI.getUser(userToFind);
+
+            return user;
         },
         currentUser: async (parent, input, { req, dataSources }) => {
 
@@ -21,7 +32,7 @@ const resolvers = {
             }
 
             const response = await dataSources.authAPI.secureRoute(JWT);
-            console.log(response);
+            // console.log(response);
 
             if (!response?.user) {
                 throw new GraphQLError('Not Authorized');
@@ -33,12 +44,14 @@ const resolvers = {
 
         },
     },
-    Message: {
-        room: (parent) => {
-            const found = rooms.filter((room) => room._id === parent.room);
-            return found;
-        }
-    },
+    // Message: {
+    //     room: (_, parent) => {
+    //         console.log(parent);
+    //         const found = rooms.filter((room) => room._id === parent.room);
+    //         return found;
+    //         return null;
+    //     }
+    // },
     Date: new GraphQLScalarType({
         name: 'Date',
         description: 'Date custom scalar type',
@@ -108,11 +121,6 @@ const resolvers = {
             });
 
             try {
-                // context.res.cookie('token', token, {
-                //     maxAge: 10000
-                // });
-
-                //fetching from REST w/Apollo server
                 const createdMessage = await context.dataSources.chatAPI.createMessage(messageInput);
 
                 return createdMessage.message;
@@ -130,11 +138,12 @@ const resolvers = {
 
             try {
                 const createdRoom = await context.dataSources.chatAPI.createRoom(roomInput);
-                const { _id, name, members } = await context.dataSources.chatAPI.addMember(createdRoom._id, creator);
 
-                const withoutKey = members.map(({ username }) => username);
+                // const { _id, name, members } = await context.dataSources.chatAPI.addMember(createdRoom._id, creator);
 
-                const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: { _id, name } });
+                // const withoutKey = members.map(({ username }) => username);
+
+                // const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: { _id, name } });
 
                 return createdRoom;
             } catch (err) {
@@ -168,18 +177,18 @@ const resolvers = {
                     addFriend: updatedUserA,
                 });
 
+                const members = [{ username: updatedUserA.username }, { username: updatedUserB.username }];
+
                 const roomInput = {
                     creator: {
                         username: updatedUserA.username
                     },
                     groupalRoom: false,
-                    name: `${updatedUserA.username} and ${updatedUserB.username} conversation`
+                    name: `${updatedUserA.username} and ${updatedUserB.username} conversation`,
+                    members: members,
                 };
 
-                const members = [{ username: updatedUserA.username }, { username: updatedUserB.username }];
-
-                const { _id } = await context.dataSources.chatAPI.createRoom(roomInput);
-                const { name } = await context.dataSources.chatAPI.addMember(_id, members);
+                const { _id, name } = await context.dataSources.chatAPI.createRoom(roomInput);
 
                 const updatedUsers = members.map(async ({ username }) => {
                     return await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });

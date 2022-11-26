@@ -1,10 +1,25 @@
 const mongoose = require('mongoose');
 
+const memberSchema = new mongoose.Schema({
+    username: {
+        username: String,
+        // required: true
+    },
+    joinedAt: {
+        type: Date,
+        default: Date.now(),
+    }
+}, { _id: false });
+
 const roomSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
         trim: true,
+    },
+    creator: {
+        type: Object,
+        required: true
     },
     // icon: {
     //     type: String,
@@ -14,32 +29,21 @@ const roomSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    // creator: {
-    //     type: new mongoose.Schema({
-    //         username: {
-    //             type: String,
-    //             required: true
-    //         }
-    //     })
-    // },
     // members: [String],
     members: [{
         type: new mongoose.Schema({
-            _id: {
-                type: String,
-                required: true,
-                unique: true,
-            },
             username: {
                 type: String,
+                unique: true,
                 required: true,
             },
             joinedAt: {
                 type: Date,
                 default: Date.now(),
             },
-        }, { _id: false })
+        }, { _id: false }),
     }],
+    // members: [memberSchema],
 });
 
 const roomModel = mongoose.model("Room", roomSchema);

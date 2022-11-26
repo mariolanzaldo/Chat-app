@@ -10,6 +10,10 @@ class ChatAPI extends RESTDataSource {
         );
     };
 
+    async getMessagesOfRoom(_id) {
+        return this.get(`api/chat/message/messagesOfRoom/${_id}`);
+    };
+
     async createRoom(roomInput) {
         return this.post(
             '/api/chat/room/createRoom',

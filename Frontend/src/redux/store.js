@@ -6,33 +6,30 @@ import authReducer from "./reducers/loginSlice";
 import userReducer from './reducers/userSlice';
 import signupReducer from './reducers/signupSlice';
 import usersReducer from './reducers/usersSlice';
+import messageReducer from './reducers/conversationSlice';
 
+const sagaMiddleware = createSagaMiddleware();
 
-const configureAppStore = () => {
-    const sagaMiddleware = createSagaMiddleware();
+const middlewares = [sagaMiddleware];
 
-    const middlewares = [sagaMiddleware];
+const store = configureStore({
+    reducer: {
+        login: authReducer,
+        user: userReducer,
+        signup: signupReducer,
+        users: usersReducer,
+        messages: messageReducer,
+    },
+    middleware: (getDefaultMiddleware) => {
+        const middleware = [
+            ...getDefaultMiddleware({ thunk: false }),
+            ...middlewares,
+        ];
 
-    const store = configureStore({
-        reducer: {
-            login: authReducer,
-            user: userReducer,
-            signup: signupReducer,
-            users: usersReducer,
-        },
-        middleware: (getDefaultMiddleware) => {
-            const middleware = [
-                ...getDefaultMiddleware({ thunk: false }),
-                ...middlewares,
-            ];
+        return middleware;
+    },
+});
 
-            return middleware;
-        },
-    });
+sagaMiddleware.run(rootSaga);
 
-    sagaMiddleware.run(rootSaga);
-
-    return store;
-};
-
-export default configureAppStore;
+export default store;

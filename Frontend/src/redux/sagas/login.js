@@ -32,7 +32,7 @@ function* login(action) {
   };
 
   try {
-    yield put(setLoginFetching());
+    // yield put(setLoginFetching());
     const res = yield call(client.mutate, options);
     const user = res.data.login;
     yield put(setUser({ user }));

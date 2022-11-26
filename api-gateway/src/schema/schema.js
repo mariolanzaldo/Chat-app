@@ -46,7 +46,9 @@ const typeDefs = gql`
         _id: ID
         content: String
         sendBy: String
-        room: ID
+        roomId: ID
+        createdAt: Date
+        updatedAt: Date
     }
 
     input MessageInput {
@@ -99,9 +101,10 @@ const typeDefs = gql`
     }
 
     type Query {
-        messages: [Message]
+        messages(_id: String): [Message]
         users: [User]
         currentUser: User
+        user(_id: String): User
     }
 
     type Subscription {

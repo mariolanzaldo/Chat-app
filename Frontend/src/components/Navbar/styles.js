@@ -1,9 +1,13 @@
 export const navbarStyles = {
     drawer: {
         width: 320,
+        // width: '100vh',
         flexShrink: 0,
+        overflow: 'hidden',
         '& .MuiDrawer-paper': {
+            // width: '100vh',
             width: 320,
+            overflow: 'visible',
             boxSizing: 'border-box',
             // backgroundColor: '#101F33',
             // color: 'rgba(255, 255, 255, 0.7)',
@@ -26,27 +30,9 @@ export const navbarStyles = {
 
     tabs: {
         display: 'flex',
-        justifyContent: 'center',
-        margin: 0,
-        padding: 0,
-
-        '& .MuiList-root': {
-            display: 'flex',
-            flexDirection: 'row',
-            margin: 0,
-            padding: 0,
-            '& .MuiListItem-root': {
-
-                margin: 0.5,
-                padding: 0,
-                height: '60px',
-                '& .MuiButtonBase-root': {
-                    height: '100%',
-                    width: '157px',
-                }
-            }
-        },
-
+        flexDirection: 'column',
+        width: '316px',
+        height: '100%',
     },
 
     icons: {
@@ -75,14 +61,15 @@ export const navbarStyles = {
     wrapper: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingRight: '10px',
+        padding: 0,
+        mr: 2,
+        width: '98.5%',
         height: '100px',
         backgroundColor: '#f5f5f5',
         borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
     },
     addUserButton: {
         fontSize: '0.65rem',
-        width: '50px'
+        width: '60px'
     },
 };

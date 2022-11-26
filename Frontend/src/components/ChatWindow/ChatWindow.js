@@ -1,16 +1,16 @@
 import { Grid, List } from "@mui/material";
 import ComposeArea from "./ComposeArea";
-import Message from "./Message";
+import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
 import { useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const MESSAGES_SUBSCRIPTION = gql`
 subscription newMessage($roomId: ID) {
     newMessage(roomId: $roomId) {
-      _id
       content
-      room
+      roomId
       sendBy
     }
   }
@@ -22,9 +22,23 @@ const ChatWindow = ({ messagesList }) => {
 
     const dispatch = useDispatch();
 
-    useSubscription(MESSAGES_SUBSCRIPTION, {
+    const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
-    })
+        onData: ({ data }) => {
+            dispatch({
+                type: "addNewMessage",
+                payload: data?.data.newMessage
+            });
+        },
+    });
+
+    if (!data) {
+        dispatch({
+            type: "queryMessages",
+            payload: { _id: roomId },
+        });
+    };
+
     return (
         <Grid
             container
@@ -33,7 +47,6 @@ const ChatWindow = ({ messagesList }) => {
                 flexDirection: 'column',
                 flexWrap: "nowrap",
                 height: "100vh",
-                border: '1px solid red'
             }}
         >
             <Grid
@@ -43,26 +56,17 @@ const ChatWindow = ({ messagesList }) => {
                     overflowY: 'scroll',
                     height: "100%"
                 }}
-            >  {/* messagesList.List.map((message, index) => (
-                            <Message message={message} key={index} />
-                        )) */}
-                <List>
-
-                    {
-                        //Above comment goes here...
-                    }
-                    <Message />
-                </List>
+            >
+                <Messages />
             </Grid>
 
             <Grid
                 item
 
                 sx={{
-                    backgroundColor: 'rgb(106, 90, 205)',
                     padding: "2px",
+                    width: '100%',
                     height: "calc(100vh - 85vh)",
-                    border: "2px solid red"
                 }}
             >
                 <ComposeArea />

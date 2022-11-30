@@ -33,10 +33,10 @@ class UserAPI extends RESTDataSource {
         return this.get(`api/users/getUsers`);
     };
 
-    async updateInfo(username, createdRoom) {
+    async updateInfo(username, infoToupdate) {
         return this.patch(
             `/api/users/update/${username}`,
-            { body: createdRoom },
+            { body: infoToupdate },
         );
     };
 

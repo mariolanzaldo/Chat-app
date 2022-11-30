@@ -10,9 +10,19 @@ class ChatAPI extends RESTDataSource {
         );
     };
 
+    async deleteMessage(_id) {
+        return this.delete(`api/chat/message/deleteMessage/${_id}`);
+    };
+
     async getMessagesOfRoom(_id) {
         return this.get(`api/chat/message/messagesOfRoom/${_id}`);
     };
+
+    async deleteAllRoomMessages(_id) {
+        return this.delete(`api/chat/message/deleteAllRoomMessages/${_id}`)
+    }
+
+
 
     async createRoom(roomInput) {
         return this.post(
@@ -20,6 +30,12 @@ class ChatAPI extends RESTDataSource {
             { body: roomInput }
         );
     };
+
+    async deleteRoom(roomId) {
+        return this.delete(
+            `/api/chat/room/deleteRoom/${roomId}`,
+        );
+    }
 
     async getRoom(_id) {
         return this.get(

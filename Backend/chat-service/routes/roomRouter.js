@@ -6,7 +6,6 @@ const router = express.Router();
 router.post('/createRoom', async (req, res) => {
     const group = { ...req.body };
     try {
-        console.log(group)
         roomModel.collection.dropIndexes();
         if (group.groupalRoom) {
             //TODO: work on this to adapt group conversations.
@@ -31,7 +30,7 @@ router.delete('/deleteRoom/:id', async (req, res) => {
 
         if (!room) return res.status(404).send({ error: 'Room not found' });
 
-        if (!room.groupalRoom) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
+        // if (!room.groupalRoom) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
 
         room.deleteOne();
 

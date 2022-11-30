@@ -1,4 +1,4 @@
-import { Box, IconButton, TextField } from "@mui/material";
+import { Box, Button, IconButton, TextField } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -37,14 +37,19 @@ const ComposeArea = () => {
 
     const handleChange = (event) => {
         const text = event.target.value;
+
         setMessage(text);
     };
 
     return (
         <Box
             component="form"
-            itemType="submit"
             onSubmit={handleSubmit}
+            // onKeyDown={(event) => {
+            //     if (event.key === 'Enter') {
+            //         console.log('enter key was pressed');
+            //     }
+            // }}
             sx={{
                 display: 'flex',
                 width: "100%",
@@ -55,12 +60,12 @@ const ComposeArea = () => {
             }}
         >
             <TextField
-                type="text"
                 direction="column"
                 placeholder="Type a message"
                 multiline={true}
                 value={message}
                 onChange={handleChange}
+                required
                 // noWrap
 
                 sx={{
@@ -85,7 +90,7 @@ const ComposeArea = () => {
 
                     },
                     '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: 'blue',
+                        backgroundColor: 'rgba(145, 136, 153, 0.91)',
                         outline: '1px solid slategrey'
                     }
                 }}

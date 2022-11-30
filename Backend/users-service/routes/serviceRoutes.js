@@ -53,7 +53,14 @@ router.patch('/update/:id', async (req, res) => {
         if (!user) return res.status(404).send({ error: 'User not Found!' });
 
         for (const key in infoToupdate) {
-            user[key] = infoToupdate[key];
+            if (key === 'rooms' && !Array.isArray(infoToupdate[key])) {
+                user[key].push(infoToupdate[key]);
+            } else if (key === 'rooms' && Array.isArray(infoToupdate[key])) {
+                user[key] = infoToupdate[key];
+            } else {
+                user[key] = infoToupdate[key];
+
+            }
         }
         user.save();
         return res.status(200).send(user);
@@ -108,7 +115,6 @@ router.patch('/addFriend', async (req, res, next) => {
 
 router.patch('/deleteFriend', async (req, res, next) => {
     try {
-
         const values = await Promise.all([findUser(req.body.userA), findUser(req.body.userB)]);
         const userA = values[0];
         const userB = values[1];
@@ -122,16 +128,16 @@ router.patch('/deleteFriend', async (req, res, next) => {
 
         );
 
-        const udaptedUserB = await userServiceModel.findByIdAndUpdate(
+        const updatedUserB = await userServiceModel.findByIdAndUpdate(
             { _id: userB.id, },
             { $pull: { contactList: userA._id } },
             { upsert: false, new: true }
 
         );
 
-        if (!updatedUserA || !udaptedUserB) return next({ error: 'Something went wrong!' });
+        if (!updatedUserA || !updatedUserB) return next({ error: 'Something went wrong!' });
 
-        return res.status(200).send({ updatedUserA, udaptedUserB });
+        return res.status(200).send({ updatedUserA, updatedUserB });
     } catch (err) {
         return res.status(500).send({ error: err.message });
     }

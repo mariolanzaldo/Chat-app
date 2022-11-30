@@ -40,6 +40,7 @@ const typeDefs = gql`
     input FriendInput {
         userA: [UserInput]
         userB: [UserInput]
+        roomId: ID
     }
 
     type Message {

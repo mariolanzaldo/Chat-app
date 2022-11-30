@@ -1,13 +1,13 @@
-import { Box, ListItem, ListItemText, Typography } from "@mui/material";
+import { Box, ListItem, ListItemText } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const MessageItem = ({ message }) => {
     const { username } = useSelector((state) => state.user.value);
 
-    const color = message.sendBy === username ? "rgba(133, 128, 228, 0.8)" : "rgba(202, 201, 210, 0.8)";
+    const color = message.sendBy === username ? "rgba(175, 173, 222, 0.8)" : "rgba(202, 201, 210, 0.8)";
     const alignMessage = message.sendBy === username ? "flex-end" : "flex-start";
 
-    const timestamp = new Date(message.createdAt);
+    const date = new Date(Date.now());
 
     return (
         <Box sx={{
@@ -39,7 +39,7 @@ const MessageItem = ({ message }) => {
                     }}
                 />
                 <ListItemText
-                    secondary={`${timestamp.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                    secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                     sx={{
                         padding: 0,
                         margin: 0,

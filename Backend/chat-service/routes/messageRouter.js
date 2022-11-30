@@ -58,6 +58,20 @@ router.delete('/deleteMessage/:id', async (req, res) => {
     } catch (err) {
         return res.status(500).send(err.message);
     }
-})
+});
+
+router.delete('/deleteAllRoomMessages/:id', async (req, res) => {
+    const roomId = req.params.id;
+
+    try {
+        const deleted = await messageModel.deleteMany({ roomId: roomId });
+
+        return res.status(200).send(deleted)
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+
+
+});
 
 module.exports = router;

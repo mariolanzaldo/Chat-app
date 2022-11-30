@@ -11,10 +11,6 @@ const ConvBar = () => {
 
     const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        //TODO: Dispatch Show Groups??
-    });
-
     if (rooms && rooms.length > 0) {
         return (
             <Box
@@ -30,7 +26,7 @@ const ConvBar = () => {
                 <ConvTabContent rooms={rooms} />
             </Box>
         );
-    } else if (rooms.length === 0) {
+    } else if (rooms && rooms.length === 0) {
         return (
             <Box>
                 <ConvTabHeader open={open} setOpen={setOpen} />

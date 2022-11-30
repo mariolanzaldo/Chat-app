@@ -4,6 +4,8 @@ import SearchBar from '../common/SearchBar/SearchBar';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { contactStyles } from '../ContactsBar/styles';
+import TagInput from './TagInput';
+// import TagInput from './TagInput2';
 
 const ConvTabHeader = ({ open, setOpen }) => {
     //TODO: This is not finished yet. This is just a skleton!
@@ -15,6 +17,10 @@ const ConvTabHeader = ({ open, setOpen }) => {
 
     const handleSearch = (value) => {
         console.log(value);
+    };
+
+    const handleSelectedTags = (items) => {
+        console.log(items)
     };
 
     const createConversation = (event) => {
@@ -82,11 +88,16 @@ const ConvTabHeader = ({ open, setOpen }) => {
                     </Typography>
                     <Box sx={contactStyles.inputFields}>
                         <TextField
-                            placeholder="username"
-                            name="username"
-                            label="username"
+                            placeholder="Group name"
+                            name="GroupName"
+                            label="GroupName"
                             required
                         />
+
+                        <TagInput
+                            selectedTags={handleSelectedTags}
+                        />
+                        {/* <TagInput /> */}
                     </Box>
                     <Box sx={contactStyles.buttons}>
                         <Button

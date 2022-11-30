@@ -139,12 +139,6 @@ const resolvers = {
             try {
                 const createdRoom = await context.dataSources.chatAPI.createRoom(roomInput);
 
-                // const { _id, name, members } = await context.dataSources.chatAPI.addMember(createdRoom._id, creator);
-
-                // const withoutKey = members.map(({ username }) => username);
-
-                // const updateUserInfo = await context.dataSources.userAPI.updateInfo(creator.username, { rooms: { _id, name } });
-
                 return createdRoom;
             } catch (err) {
                 const message = err.extensions.response.body.error;
@@ -205,14 +199,31 @@ const resolvers = {
 
         },
 
-        deleteFriend: async (parent, { friendInput }, context) => {
-            //TODO Erase conversation once a contact is deleted!
+        deleteFriend: async (parent, { friendInput }, { dataSources }) => {
+            //TODO Erase messages once a contact is deleted!
+            const { userA, userB, roomId } = friendInput;
 
             try {
-                const { updatedUserA } = await context.dataSources.userAPI.deleteFriend(friendInput);
+                const deletedRoom = await dataSources.chatAPI.deleteRoom(roomId);
 
-                return { success: true, errorMessage: null, value: updatedUserA };
+                //Erase friend
+                const { updatedUserA, updatedUserB } = await dataSources.userAPI.deleteFriend({ userA, userB });
+
+                //Erase rooms
+                //From main user
+                const updatedRooms = updatedUserA.rooms.filter((room) => room._id !== deletedRoom._id);
+                const updatedUser = await dataSources.userAPI.updateInfo(updatedUserA.username, { rooms: updatedRooms });
+
+                //From the other user
+                const updatedRoomsB = updatedUserB.rooms.filter((room) => room._id !== deletedRoom._id);
+                const secondaryUser = await dataSources.userAPI.updateInfo(updatedUserB.username, { rooms: updatedRoomsB });
+
+                //Erase messages
+                const deletedMessages = await dataSources.chatAPI.deleteAllRoomMessages(roomId);
+
+                return { success: true, errorMessage: null, value: updatedUser };
             } catch (err) {
+                console.log('fails');
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
             }

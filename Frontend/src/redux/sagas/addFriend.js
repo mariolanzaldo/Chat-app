@@ -19,6 +19,11 @@ function* addFriend(action) {
                     email
                     firstName
                     lastName
+                    rooms {
+                        _id
+                        name
+                        groupalRoom
+                      }
                     token
                 }
             }

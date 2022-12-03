@@ -10,6 +10,8 @@ import newMessage from "./sagas/newMessage";
 import addNewMessage from "./sagas/addNewMessage";
 import setConversation from "./sagas/setConversation";
 import queryMessages from "./sagas/queryMessages";
+import createGroup from "./sagas/createGroup";
+import deleteMember from "./sagas/deleteMember";
 
 export function* watchLogin() {
 
@@ -51,6 +53,14 @@ export function* watchQueryMessages() {
     yield takeLatest("queryMessages", queryMessages);
 };
 
+export function* watchCreateGroup() {
+    yield takeEvery("createGroup", createGroup);
+}
+
+export function* watchDeleteMembers() {
+    yield takeEvery("deleteMember", deleteMember);
+}
+
 export default function* rootSaga() {
     yield all([
         watchLogin(),
@@ -63,5 +73,7 @@ export default function* rootSaga() {
         watchAddMessage(),
         watchCurrentConv(),
         watchQueryMessages(),
+        watchCreateGroup(),
+        watchDeleteMembers(),
     ]);
 }

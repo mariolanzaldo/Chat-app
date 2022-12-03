@@ -2,7 +2,7 @@ import { Grid, List } from "@mui/material";
 import ComposeArea from "./ComposeArea";
 import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -17,11 +17,13 @@ subscription newMessage($roomId: ID) {
   }
 `;
 
-const ChatWindow = ({ messagesList }) => {
+const ChatWindow = () => {
 
     const { roomId } = useParams();
 
     const dispatch = useDispatch();
+
+    const { currentConversation } = useSelector((state) => state.messages);
 
     const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
@@ -33,12 +35,13 @@ const ChatWindow = ({ messagesList }) => {
         },
     });
 
-    if (!data) {
+    useEffect(() => {
         dispatch({
             type: "queryMessages",
             payload: { _id: roomId },
         });
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentConversation]);
 
     return (
         <Grid

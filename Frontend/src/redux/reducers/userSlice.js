@@ -28,10 +28,28 @@ const userSlice = createSlice({
         deleteContact: (state = null, action) => {
             state.isFetching = false;
             state.value = action.payload;
+        },
+        setGroupRoom: (state = null, action) => {
+            state.isFetching = false;
+            state.value.rooms = [...state.value.rooms, action.payload];
+        },
+        removeMember: (state = null, action) => {
+            state.isFetching = false;
+            const oldRooms = state.value.rooms;
+
+            const updatedRooms = oldRooms.map((room) => {
+                if (room._id === action.payload.deleteMember._id) {
+                    room.members = action.payload.deleteMember.members;
+                };
+
+                return room;
+            });
+
+            state.value.rooms = updatedRooms;
         }
     },
 });
 
-export const { setUser, setUserFetching, userErrorFetching, addContact, deleteContact } = userSlice.actions;
+export const { setUser, setUserFetching, userErrorFetching, addContact, deleteContact, setGroupRoom, removeMember } = userSlice.actions;
 
 export default userSlice.reducer;

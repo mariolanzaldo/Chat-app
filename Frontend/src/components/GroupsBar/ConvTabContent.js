@@ -1,11 +1,11 @@
-import Delete from '@mui/icons-material/Delete';
-import { IconButton, List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import GroupMenu from './GroupMenu';
 const ConvTabContent = ({ rooms }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
 
     //TODO: Work on delete conversations if the conversation is groupal
     return (
@@ -35,9 +35,7 @@ const ConvTabContent = ({ rooms }) => {
                     >
 
                         <ListItemText>{name}</ListItemText>
-                        <IconButton>
-                            <Delete />
-                        </IconButton>
+                        <GroupMenu />
                     </ListItem>
 
                 );

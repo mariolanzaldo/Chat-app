@@ -5,7 +5,7 @@ import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { contactStyles } from '../ContactsBar/styles';
 import TagInput from './TagInput';
-// import TagInput from './TagInput2';
+import { useState } from 'react';
 
 const ConvTabHeader = ({ open, setOpen }) => {
     //TODO: This is not finished yet. This is just a skleton!
@@ -15,12 +15,10 @@ const ConvTabHeader = ({ open, setOpen }) => {
         return state.user.value
     });
 
+    const [members, setMembers] = useState([]);
+
     const handleSearch = (value) => {
         console.log(value);
-    };
-
-    const handleSelectedTags = (items) => {
-        console.log(items)
     };
 
     const createConversation = (event) => {
@@ -31,23 +29,31 @@ const ConvTabHeader = ({ open, setOpen }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const form = new FormData(event.target);
-        const userB = form.get('username');
-        console.log(form)
+        const groupName = form.get('groupName');
 
-        // const friendReq = {
-        //     friendInput: {
-        //         userA: [{ username }],
-        //         userB: [{ username: userB }],
-        //     }
-        // };
+        const membersArray = members.map((member) => {
+            return { username: member };
+        });
 
-        // dispatch({
-        //     type: 'addFriend',
-        //     payload: friendReq,
-        // });
+        const createRoomReq = {
+
+            roomInput: {
+                name: groupName,
+                admin: [{ username }],
+                groupalRoom: true,
+                members: [...membersArray, { username }],
+            }
+        };
+
+        dispatch({
+            type: 'createGroup',
+            payload: createRoomReq,
+        });
 
         setOpen(false);
     };
+
+    //TODO: Change the TagInput component for <MuiChipnput />
 
     return (
         <Box component='span' sx={navbarStyles.wrapper}>
@@ -89,15 +95,12 @@ const ConvTabHeader = ({ open, setOpen }) => {
                     <Box sx={contactStyles.inputFields}>
                         <TextField
                             placeholder="Group name"
-                            name="GroupName"
+                            name="groupName"
                             label="GroupName"
                             required
                         />
 
-                        <TagInput
-                            selectedTags={handleSelectedTags}
-                        />
-                        {/* <TagInput /> */}
+                        <TagInput name="members" members={members} setMembers={setMembers} />
                     </Box>
                     <Box sx={contactStyles.buttons}>
                         <Button

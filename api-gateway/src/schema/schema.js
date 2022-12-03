@@ -11,6 +11,7 @@ const typeDefs = gql`
         lastName: String
         email: String
         avatar: String
+        joinedAt: Date
     }
 
     type User {
@@ -59,24 +60,24 @@ const typeDefs = gql`
         #room: [Room] ????
     }
 
-    type Member {
-        username: String
-        joinedAt: Date
-    }
+    #type Member {
+    #    username: String
+    #    joinedAt: Date
+    #}
 
     type Room {
         _id: String
         name: String
-        creator: User
+        admin: [UnauthUser]
         groupalRoom: Boolean
-        members: [Member]
+        members: [UnauthUser]
     }
 
     input RoomInput {
         _id: String
         name: String
         groupalRoom: Boolean
-        creator: UserInput
+        admin: [UserInput]
         members: [UserInput]
         #addMember: [UserInput]
     }
@@ -98,6 +99,7 @@ const typeDefs = gql`
         createMessage(messageInput: MessageInput): Message!
         createRoom(roomInput: RoomInput): Room!
         addMember(roomInput: RoomInput): Room!
+        deleteMember(roomInput: RoomInput): Room!
 
     }
 
@@ -106,6 +108,7 @@ const typeDefs = gql`
         users: [User]
         currentUser: User
         user(_id: String): User
+        #currentRoom(_id: String): Room
     }
 
     type Subscription {

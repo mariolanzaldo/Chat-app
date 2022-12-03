@@ -49,6 +49,13 @@ class ChatAPI extends RESTDataSource {
             { body: member }
         );
     };
+
+    async deleteMember(_id, members) {
+        return this.patch(
+            `/api/chat/room/deleteMember/${_id}`,
+            { body: members }
+        );
+    };
 }
 
 module.exports = ChatAPI;

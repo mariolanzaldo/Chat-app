@@ -18,9 +18,13 @@ function* login(action) {
               rooms {
                 _id
                 name
-                #members {
-                  #username
-                #}
+                admin {
+                  username
+                } 
+                members {
+                  username
+                  joinedAt
+                }
               }
               token
             }
@@ -35,6 +39,7 @@ function* login(action) {
     // yield put(setLoginFetching());
     const res = yield call(client.mutate, options);
     const user = res.data.login;
+
     yield put(setUser({ user }));
 
   } catch (err) {

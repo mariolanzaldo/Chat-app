@@ -54,12 +54,19 @@ router.patch('/update/:id', async (req, res) => {
 
         for (const key in infoToupdate) {
             if (key === 'rooms' && !Array.isArray(infoToupdate[key])) {
-                user[key].push(infoToupdate[key]);
+                //TODO: Proof this!
+                const isRoomExists = user[key].find((room) => room._id === infoToupdate[key]._id);
+
+                if (isRoomExists) {
+                    user[key] = user[key].filter((room) => room._id !== infoToupdate._id);
+                } else if (!isRoomExists) {
+                    user[key].push(infoToupdate[key]);
+                }
+
             } else if (key === 'rooms' && Array.isArray(infoToupdate[key])) {
                 user[key] = infoToupdate[key];
             } else {
                 user[key] = infoToupdate[key];
-
             }
         }
         user.save();

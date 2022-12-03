@@ -1,24 +1,13 @@
 const mongoose = require('mongoose');
 
-const memberSchema = new mongoose.Schema({
-    username: {
-        username: String,
-        // required: true
-    },
-    joinedAt: {
-        type: Date,
-        default: Date.now(),
-    }
-}, { _id: false });
-
 const roomSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
         trim: true,
     },
-    creator: {
-        type: Object,
+    admin: {
+        type: Array,
         required: true
     },
     // icon: {

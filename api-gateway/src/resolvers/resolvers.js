@@ -24,7 +24,6 @@ const resolvers = {
             return user;
         },
         currentUser: async (parent, input, { req, dataSources }) => {
-
             const { JWT } = req.cookies;
 
             if (!JWT) {
@@ -32,7 +31,6 @@ const resolvers = {
             }
 
             const response = await dataSources.authAPI.secureRoute(JWT);
-            // console.log(response);
 
             if (!response?.user) {
                 throw new GraphQLError('Not Authorized');
@@ -40,9 +38,54 @@ const resolvers = {
 
             const { user } = await dataSources.userAPI.getUser(response.user);
 
+            const roomsArray = user.rooms.map(async (room) => {
+                const newRoom = await dataSources.chatAPI.getRoom(room._id);
+
+                if (newRoom) {
+                    room = newRoom;
+                }
+                return room;
+            });
+
+            const completeRooms = await Promise.all(roomsArray);
+            user.rooms = completeRooms;
+
             return user;
 
         },
+        // currentRoom: async (_, input, { dataSources }) => {
+        //     const { _id } = input;
+        //     const room = await dataSources.chatAPI.getRoom(_id);
+
+        //     return room;
+        // },
+    },
+    User: {
+        rooms: async (parent, input, { dataSources }) => {
+            const completeRooms = await parent.rooms.map(async (room) => {
+                const completeRoom = await dataSources.chatAPI.getRoom(room._id);
+
+                return completeRoom;
+            });
+
+            return completeRooms;
+        },
+
+    },
+    Room: {
+        members: (parent) => {
+            const output = parent.members.map((member) => {
+                console.log(member);
+                return member
+            });
+
+            return output
+        },
+        admin: (parent) => {
+            const output = parent.admin.map((admin) => admin);
+
+            return output;
+        }
     },
     // Message: {
     //     room: (_, parent) => {
@@ -109,6 +152,18 @@ const resolvers = {
 
                 res.cookie("JWT", token, options);
 
+                const roomsArray = user.user.rooms.map(async (room) => {
+                    const newRoom = await dataSources.chatAPI.getRoom(room._id);
+
+                    if (newRoom) {
+                        room = newRoom;
+                    }
+                    return room;
+                });
+
+                const completeRooms = await Promise.all(roomsArray);
+                user.user.rooms = completeRooms;
+
                 return { ...user.user, token };
             } catch (err) {
                 const message = err.extensions.response.body.error;
@@ -129,15 +184,15 @@ const resolvers = {
                 throw new GraphQLError(message);
             }
         },
-        createRoom: async (parent, { roomInput }, context) => {
-            pubSub.publish("ROOM_CREATED", {
-                newRoom: roomInput,
-            });
-
-            const { creator } = roomInput;
-
+        createRoom: async (parent, { roomInput }, { dataSources }) => {
             try {
-                const createdRoom = await context.dataSources.chatAPI.createRoom(roomInput);
+                const createdRoom = await dataSources.chatAPI.createRoom(roomInput);
+
+                const { _id, name, members, admin } = createdRoom;
+
+                const updatedUsers = members.map(async ({ username }) => await dataSources.userAPI.updateInfo(username, { rooms: { _id } }));
+
+                await Promise.all(updatedUsers);
 
                 return createdRoom;
             } catch (err) {
@@ -146,17 +201,17 @@ const resolvers = {
             }
         },
 
-        addMember: async (parent, { roomInput }, context) => {
+        addMember: async (parent, { roomInput }, { dataSources }) => {
 
             const { _id, members } = roomInput;
             let updatedContact;
 
-            const updatedRoom = await context.dataSources.chatAPI.addMember(_id, members);
+            const updatedRoom = await dataSources.chatAPI.addMember(_id, members);
 
             const { name, members: updatedMembers } = updatedRoom;
 
             const updatedUsers = updatedMembers.map(async ({ username }) => {
-                updatedContact = await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
+                updatedContact = await dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
                 return updatedContact;
             });
 
@@ -164,6 +219,18 @@ const resolvers = {
 
         },
 
+        deleteMember: async (parent, { roomInput }, { dataSources }) => {
+            const updatedRoom = await dataSources.chatAPI.deleteMember(roomInput._id, roomInput.members);
+
+            const updatedMembers = await roomInput.members.map(async ({ username }) => {
+                const updatedMember = await dataSources.userAPI.updateInfo(username, { rooms: { _id: roomInput._id } });
+                return member;
+            });
+
+            await Promise.all(updatedMembers);
+
+            return updatedRoom;
+        },
         addFriend: async (parent, { friendInput }, context) => {
             try {
                 const { updatedUserA, updatedUserB } = await context.dataSources.userAPI.addFriend(friendInput);
@@ -174,18 +241,16 @@ const resolvers = {
                 const members = [{ username: updatedUserA.username }, { username: updatedUserB.username }];
 
                 const roomInput = {
-                    creator: {
-                        username: updatedUserA.username
-                    },
+                    admin: [{ username: updatedUserA.username }, { username: updatedUserB.username }],
                     groupalRoom: false,
                     name: `${updatedUserA.username} and ${updatedUserB.username} conversation`,
                     members: members,
                 };
 
-                const { _id, name } = await context.dataSources.chatAPI.createRoom(roomInput);
+                const { _id } = await context.dataSources.chatAPI.createRoom(roomInput);
 
                 const updatedUsers = members.map(async ({ username }) => {
-                    return await context.dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
+                    return await context.dataSources.userAPI.updateInfo(username, { rooms: { _id } });
                     // return updatedContact;
                 });
 
@@ -223,7 +288,6 @@ const resolvers = {
 
                 return { success: true, errorMessage: null, value: updatedUser };
             } catch (err) {
-                console.log('fails');
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
             }

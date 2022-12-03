@@ -38,16 +38,7 @@ const userSchema = new mongoose.Schema({
         default: [],
         required: false,
     }],
-    rooms: [{
-        type: new mongoose.Schema({
-            // _id: mongoose.Schema.Types.ObjectId,
-            name: {
-                type: String,
-                required: true,
-            },
-        }),
-        required: false,
-    }],
+    rooms: [Object],
     // requests: [{
     //     type: new mongoose.Schema({
     //         from: {

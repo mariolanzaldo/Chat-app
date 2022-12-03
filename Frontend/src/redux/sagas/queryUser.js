@@ -5,8 +5,8 @@ import { setUser, setUserFetching, userErrorFetching } from '../reducers/userSli
 import client from "../../client";
 
 function* queryUser(action) {
-    const options = {
-        query: gql`
+  const options = {
+    query: gql`
         query {
             currentUser{
                 _id
@@ -18,26 +18,30 @@ function* queryUser(action) {
                 rooms {
                   _id
                   name
-                  #members {
-                    #username
-                  #}
+                  admin {
+                    username
+                  } 
+                  members {
+                    username
+                    joinedAt
+                  }
                 }
                 token
             }
         }
         `,
-    };
-    try {
-        // yield put(setUserFetching());
-        const res = yield call(client.query, options);
-        const { currentUser } = res.data;
+  };
+  try {
+    // yield put(setUserFetching());
+    const res = yield call(client.query, options);
+    const { currentUser } = res.data;
 
-        yield put(setUser({ user: currentUser }));
+    yield put(setUser({ user: currentUser }));
 
-    } catch (err) {
-        //TODO: change fetching  to false
-        yield put(userErrorFetching({ err }));
-    }
+  } catch (err) {
+    //TODO: change fetching  to false
+    yield put(userErrorFetching({ err }));
+  }
 };
 
 export default queryUser;

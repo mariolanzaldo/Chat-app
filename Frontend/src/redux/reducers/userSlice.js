@@ -46,10 +46,71 @@ const userSlice = createSlice({
             });
 
             state.value.rooms = updatedRooms;
-        }
+        },
+        newMember: (state = null, action) => {
+            state.isFetching = false;
+
+            const oldRooms = state.value.rooms;
+
+            const updatedRooms = oldRooms.map((room) => {
+                if (room._id === action.payload.addMember._id) {
+                    room.members = action.payload.addMember.members;
+                }
+
+                return room;
+            });
+
+            state.value.rooms = updatedRooms;
+        },
+        newAdmin: (state = null, action) => {
+            state.isFetching = false;
+
+            const oldRooms = state.value.rooms;
+
+            const updatedRooms = oldRooms.map((room) => {
+                if (room._id === action.payload.addAdmin._id) {
+                    room.admin = action.payload.addAdmin.admin;
+                }
+
+                return room;
+            });
+
+            state.value.rooms = updatedRooms;
+        },
+        removeAdmin: (state = null, action) => {
+            state.isFetching = false;
+
+            const oldRooms = state.value.rooms;
+
+            const updatedRooms = oldRooms.map((room) => {
+                if (room._id === action.payload.addAdmin._id) {
+                    room.admin = action.payload.addAdmin.admin;
+                }
+
+                return room;
+            });
+
+            state.value.rooms = updatedRooms;
+        },
+        userSetLogout: (state = null, action) => {
+            state.isFetching = false;
+            state.value = null;
+        },
     },
 });
 
-export const { setUser, setUserFetching, userErrorFetching, addContact, deleteContact, setGroupRoom, removeMember } = userSlice.actions;
+export const {
+    setUser,
+    setUserFetching,
+    userErrorFetching,
+    addContact,
+    deleteContact,
+    setGroupRoom,
+    removeMember,
+    newMember,
+    newAdmin,
+    removeAdmin,
+    userSetLogout,
+} = userSlice.actions;
 
 export default userSlice.reducer;

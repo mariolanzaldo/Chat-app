@@ -19,6 +19,10 @@ const messageSchema = new mongoose.Schema({
         required: true,
         ref: "Room",
     },
+    isScribble: {
+        type: Boolean,
+        required: true
+    }
     // createdAt: {
     //     type: Date,
     //     default: Date.now(),

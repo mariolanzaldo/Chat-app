@@ -10,6 +10,7 @@ function* queryMessages(action) {
             messages (_id: $_id) {
               _id
               content
+              isScribble
               roomId
               sendBy
               createdAt

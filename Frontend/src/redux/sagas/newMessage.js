@@ -12,6 +12,7 @@ function* newMessage(action) {
                 roomId
                 sendBy
                 content
+                isScribble
             }
           }  
         `,

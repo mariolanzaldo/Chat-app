@@ -14,7 +14,13 @@ function* addFriend(action) {
                 errorMessage
                 value {
                     username
-                    contactList
+                    contactList {
+                        username
+                        firstName
+                        lastName
+                        email
+                        avatar
+                      }
                     avatar
                     email
                     firstName
@@ -37,7 +43,6 @@ function* addFriend(action) {
     try {
         // yield put(setUserFetching());
         const res = yield call(client.mutate, options);
-        console.log(res.data);
 
         // if (!res.data.addFriend.succes) {
         //     throw new GraphQLError(res.data.addFriend.errorMessage)

@@ -1,15 +1,17 @@
-import { Grid, List } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import ComposeArea from "./ComposeArea";
 import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const MESSAGES_SUBSCRIPTION = gql`
 subscription newMessage($roomId: ID) {
     newMessage(roomId: $roomId) {
       content
+      isScribble
       roomId
       sendBy
       createdAt
@@ -19,11 +21,16 @@ subscription newMessage($roomId: ID) {
 
 const ChatWindow = () => {
 
+    const { t } = useTranslation();
+
     const { roomId } = useParams();
 
     const dispatch = useDispatch();
 
     const { currentConversation } = useSelector((state) => state.messages);
+    const { rooms } = useSelector((state) => state.user.value);
+
+    const { name, members } = rooms.find((room) => room._id === roomId);
 
     const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
@@ -35,11 +42,13 @@ const ChatWindow = () => {
         },
     });
 
+
     useEffect(() => {
         dispatch({
             type: "queryMessages",
             payload: { _id: roomId },
         });
+        //dispatch subcription
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentConversation]);
 
@@ -53,6 +62,29 @@ const ChatWindow = () => {
                 height: "100vh",
             }}
         >
+            <Grid
+                item
+                sx={{
+                    padding: 1,
+                    width: '100%',
+                    height: '10vh',
+                    color: 'whitesmoke',
+                    borderRadius: '5px',
+                    backgroundColor: "rgba(29, 77, 213, 0.8)",
+                }}
+            >
+                <Typography
+                    variant="h5"
+                >{name}</Typography>
+                <Typography
+                    variant="body1"
+                >
+                    {`${t("members")}:`}
+                    {members.map((user) => {
+                        return ` ${user.username},`;
+                    })}
+                </Typography>
+            </Grid>
             <Grid
                 item
                 sx={{

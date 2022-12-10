@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { call, put } from 'redux-saga/effects';
-import { setUser, setUserFetching, userErrorFetching } from '../reducers/userSlice';
+import { setUser, userErrorFetching } from '../reducers/userSlice';
 
 import client from "../../client";
 
@@ -14,10 +14,17 @@ function* queryUser(action) {
                 firstName
                 lastName
                 avatar
-                contactList
+                contactList {
+                  username
+                  firstName
+                  lastName
+                  email
+                  avatar
+                }
                 rooms {
                   _id
                   name
+                  groupalRoom
                   admin {
                     username
                   } 
@@ -39,7 +46,6 @@ function* queryUser(action) {
     yield put(setUser({ user: currentUser }));
 
   } catch (err) {
-    //TODO: change fetching  to false
     yield put(userErrorFetching({ err }));
   }
 };

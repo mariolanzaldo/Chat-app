@@ -25,9 +25,15 @@ const conversationSlice = createSlice({
         getRoomMessages: (state = null, action) => {
             state.value = action.payload;
         },
+        conversationSetLogout: (state = null, action) => {
+            state.isFetching = false;
+            state.error = null;
+            state.currentConversation = null;
+            state.value = [];
+        }
     },
 });
 
-export const { addMessage, conversationErrorFetching, currentConversation, getRoomMessages } = conversationSlice.actions;
+export const { addMessage, conversationErrorFetching, currentConversation, getRoomMessages, conversationSetLogout } = conversationSlice.actions;
 
 export default conversationSlice.reducer;

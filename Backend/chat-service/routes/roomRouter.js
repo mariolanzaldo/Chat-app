@@ -74,11 +74,9 @@ router.patch('/addMember/:id', async (req, res) => {
 
 router.patch('/deleteMember/:id', async (req, res) => {
     const _id = req.params.id;
-    console.log(req.body);
+
     try {
         const room = await roomModel.findById({ _id });
-        //TODO: Remove the user from array req.body... map members and apply findByIdAndUpdate individualy!!!
-        //Check if the above works!
 
         if (!room) return res.status(404).send({ error: 'Room not found' });
 
@@ -96,6 +94,62 @@ router.patch('/deleteMember/:id', async (req, res) => {
 
         const updatedRoom = await roomModel.findById({ _id });
         return res.status(200).send(updatedRoom);
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
+    }
+});
+
+router.patch('/addAdmin/:id', async (req, res) => {
+    const _id = req.params.id;
+
+    try {
+        const room = await roomModel.findById({ _id });
+
+        if (!room) return res.status(404).send({ error: 'Room not found' });
+
+        if (!room.groupalRoom) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
+
+        const roomArray = await req.body.map(async (user) => {
+            const updatedRoom = await roomModel.findByIdAndUpdate(
+                { _id: room._id, },
+                { $push: { admin: user } },
+                { upsert: true, new: true }
+            );
+
+            return updatedRoom;
+        });
+
+        const updatedRoom = await roomModel.findById({ _id });
+
+        return res.status(201).send(updatedRoom);
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
+    }
+});
+
+router.patch('/deleteAdmin/:id', async (req, res) => {
+    const _id = req.params.id;
+
+    try {
+        const room = await roomModel.findById({ _id });
+
+        if (!room) return res.status(404).send({ error: 'Room not found' });
+
+        if (!room.groupalRoom) return res.status(405).send({ error: 'Not allowed in one to one conversations' });
+
+        const roomArray = await req.body.map(async (user) => {
+            const updatedRoom = await roomModel.findByIdAndUpdate(
+                { _id: room._id, },
+                { $pull: { admin: user } },
+                { upsert: true, new: true }
+            );
+
+            return updatedRoom;
+        });
+
+        const updatedRoom = await roomModel.findById({ _id });
+
+        return res.status(201).send(updatedRoom);
     } catch (err) {
         return res.status(500).send({ error: err.message });
     }

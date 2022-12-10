@@ -29,10 +29,6 @@ class UserAPI extends RESTDataSource {
         return this.get(`/api/users/getUser/${userInput.username}`);
     };
 
-    async getUsers() {
-        return this.get(`api/users/getUsers`);
-    };
-
     async updateInfo(username, infoToupdate) {
         return this.patch(
             `/api/users/update/${username}`,

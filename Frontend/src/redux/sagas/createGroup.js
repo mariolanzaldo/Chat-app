@@ -27,9 +27,8 @@ function* createGroup(action) {
     };
 
     const res = yield call(client.mutate, options);
-    console.log(res.data);
     const value = res.data.createRoom;
-    console.log(value);
+
     yield put(setGroupRoom(value));
 };
 

@@ -6,8 +6,11 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const TagInput = ({ members, setMembers }) => {
+    const { t } = useTranslation();
+
     const { contactList } = useSelector((state) => state.user.value);
 
     const handleChange = (event) => {
@@ -22,12 +25,12 @@ const TagInput = ({ members, setMembers }) => {
     return (
         <div>
             <FormControl sx={{ mt: 2, width: 300 }}>
-                <InputLabel>Members</InputLabel>
+                <InputLabel>{t("members")}</InputLabel>
                 <Select
                     multiple
                     value={members}
                     onChange={handleChange}
-                    input={<OutlinedInput label="Members" />}
+                    input={<OutlinedInput label={t("members")} />}
                     renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             {selected.map((value) => (
@@ -39,14 +42,13 @@ const TagInput = ({ members, setMembers }) => {
                             ))}
                         </Box>
                     )}
-                // MenuProps={MenuProps}
                 >
-                    {contactList.map((name) => (
+                    {contactList.map((item) => (
                         <MenuItem
-                            key={name}
-                            value={name}
+                            key={item.username}
+                            value={item.username}
                         >
-                            {name}
+                            {item.username}
                         </MenuItem>
                     ))}
                 </Select>

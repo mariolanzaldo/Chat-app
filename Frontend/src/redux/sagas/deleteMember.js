@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
-import { setUserFetching, userErrorFetching, removeMember } from "../reducers/userSlice";
+import { userErrorFetching, removeMember } from "../reducers/userSlice";
 
 function* deleteMember(action) {
   const options = {

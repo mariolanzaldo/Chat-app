@@ -4,8 +4,15 @@ import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import SearchBar from "../common/SearchBar/SearchBar";
 import { contactStyles } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
-const TabHeader = ({ open, setOpen }) => {
+const TabHeader = ({ open, setOpen, filterData }) => {
+
+    const { t } = useTranslation();
+
+    const { t: i } = i18n;
 
     const dispatch = useDispatch();
 
@@ -13,14 +20,31 @@ const TabHeader = ({ open, setOpen }) => {
         return state.user.value
     });
 
+    const [value, setValue] = useState(null);
+    const [formError, setFormError] = useState(null);
+
     const handleSearch = (value) => {
-        console.log(value);
+        filterData(value);
     };
 
     const addContact = (event) => {
         event.preventDefault();
         setOpen(true);
     };
+
+    const handleChange = (event) => {
+        event.preventDefault();
+        setValue(event.target.value);
+    };
+
+    const handleBlur = (event) => {
+        event.preventDefault();
+        if (value === username) {
+            setFormError(i("addFriendError1"));
+        } else if (value.trim() === "") {
+            setFormError(i("addFriendError2"));
+        }
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -47,7 +71,7 @@ const TabHeader = ({ open, setOpen }) => {
 
             <Box>
                 <SearchBar
-                    placeholder="Search a friend!"
+                    placeholder={t("searchFriend")}
                     onChange={(event) => handleSearch(event.target.value)}
                 />
             </Box>
@@ -64,7 +88,7 @@ const TabHeader = ({ open, setOpen }) => {
                     onClick={addContact}
                     sx={navbarStyles.addUserButton}
                 >
-                    Add
+                    {t("add")}
                 </CommonButton>
             </Box>
 
@@ -74,16 +98,20 @@ const TabHeader = ({ open, setOpen }) => {
                         variant='h6'
                         component='h2'
                     >
-                        New User
+                        {t("newUser")}
                     </Typography>
                     <Typography sx={{ mt: 2 }}>
-                        Fill out the form and submit.
+                        {t("fillForm")}
                     </Typography>
                     <Box sx={contactStyles.inputFields}>
                         <TextField
                             placeholder="username"
                             name="username"
-                            label="username"
+                            label={t("username")}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={formError ? true : false}
+                            helperText={formError}
                             required
                         />
                     </Box>
@@ -92,7 +120,7 @@ const TabHeader = ({ open, setOpen }) => {
                             type='submit'
                             variant='contained'
                         >
-                            Submit
+                            {t("submit")}
                         </Button>
                         <CommonButton
                             variant="outlined"
@@ -101,17 +129,12 @@ const TabHeader = ({ open, setOpen }) => {
                                 return setOpen(false)
                             }}
                         >
-                            Cancel
+                            {t("cancel")}
                         </CommonButton>
                     </Box>
                 </Box>
             </Modal>
-
-
-
         </Box>
-
-
     );
 };
 

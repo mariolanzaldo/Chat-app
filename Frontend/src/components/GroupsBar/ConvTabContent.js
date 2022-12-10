@@ -1,47 +1,19 @@
-import { List, ListItem, ListItemText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import GroupMenu from './GroupMenu';
+import { useSelector } from 'react-redux';
+import GroupList from './GroupList';
+
 const ConvTabContent = ({ rooms }) => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
+    const { rooms: allUserRooms } = useSelector((state) => state.user.value);
 
-    //TODO: Work on delete conversations if the conversation is groupal
-    return (
-        <List spacing={2}>
-            {rooms.map((item) => {
-                const { _id, name } = item;
-                return (
-                    <ListItem
-                        button
-                        key={name}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            padding: '0 0 0 10px',
-                            width: '98%',
-                        }}
-                        onClick={() => {
-                            dispatch({
-                                type: 'setConversation',
-                                payload: {
-                                    _id
-                                },
-                            });
-
-                            navigate(`conversation/${_id}`);
-                        }}
-                    >
-
-                        <ListItemText>{name}</ListItemText>
-                        <GroupMenu />
-                    </ListItem>
-
-                );
-            })}
-        </List>
-    );
+    if (rooms.length === 0) {
+        return (
+            <GroupList rooms={allUserRooms} />
+        );
+    } else {
+        return (
+            <GroupList rooms={rooms} />
+        );
+    }
 };
 
 export default ConvTabContent;

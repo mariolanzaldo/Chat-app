@@ -20,16 +20,6 @@ router.get('/getUser/:id', async (req, res, next) => {
     }
 });
 
-router.get('/getUsers', async (req, res) => {
-    try {
-        const users = await UserModel.find({});
-        return res.status(200).send({ users });
-
-    } catch (err) {
-        return res.status.apply(500).send({ error: err.message })
-    }
-});
-
 router.post('/', async (req, res) => {
     if (!req.body) {
         return res.status(400).send({ error: 'Invalid body' });
@@ -54,11 +44,10 @@ router.patch('/update/:id', async (req, res) => {
 
         for (const key in infoToupdate) {
             if (key === 'rooms' && !Array.isArray(infoToupdate[key])) {
-                //TODO: Proof this!
                 const isRoomExists = user[key].find((room) => room._id === infoToupdate[key]._id);
 
                 if (isRoomExists) {
-                    user[key] = user[key].filter((room) => room._id !== infoToupdate._id);
+                    user[key] = user[key].filter((room) => room._id !== infoToupdate[key]._id);
                 } else if (!isRoomExists) {
                     user[key].push(infoToupdate[key]);
                 }

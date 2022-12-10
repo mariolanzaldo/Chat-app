@@ -25,6 +25,7 @@ const useForm = ({ initState, callback, validator }) => {
         event.preventDefault();
         const { name: fieldName } = event.target;
         const faildFields = validator(state, fieldName);
+        console.log(faildFields);
         return setErrors(() => ({
             ...errors,
             [fieldName]: Object.values(faildFields)[0]

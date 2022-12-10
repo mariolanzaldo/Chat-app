@@ -1,29 +1,36 @@
 import { Box, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import TabHeader from "./TabHeader";
 import TabContent from "./TabContent";
+import { useTranslation } from "react-i18next";
 
 const ContactsBar = () => {
-    const dispatch = useDispatch();
+
+    const { t } = useTranslation();
 
     const { username, contactList } = useSelector((state) => {
         return state.user.value
     });
 
-    const users = useSelector((state) => {
-        return state.users.value;
-    });
-
     const [open, setOpen] = useState(false);
+    const [search, setSearch] = useState(contactList);
+    const [users, setUsers] = useState([]);
 
-    useEffect(() => {
-        dispatch({
-            type: 'showFriends',
-        });
-    });
+    const filterData = (value) => {
+        const lowerdCaseValue = value.toLowerCase().trim();
 
-    if (contactList.length > 0 && users && username) {
+        if (lowerdCaseValue === "") setUsers(search);
+        else {
+            const filteredData = search.filter((item) => {
+                return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
+            });
+
+            setUsers(filteredData);
+        }
+    };
+
+    if (contactList.length > 0 && contactList && username) {
         return (
 
             <Box
@@ -35,8 +42,8 @@ const ContactsBar = () => {
                     padding: 0,
                 }}
             >
-                <TabHeader open={open} setOpen={setOpen} />
-                <TabContent users={users} contactList={contactList} />
+                <TabHeader open={open} setOpen={setOpen} filterData={filterData} />
+                <TabContent users={users} />
 
             </ Box>
         );
@@ -46,7 +53,7 @@ const ContactsBar = () => {
             <Box>
                 <TabHeader open={open} setOpen={setOpen} />
 
-                <Typography> No contacts yet!</Typography>
+                <Typography>{t("noContacts")}</Typography>
             </Box>
         );
     }

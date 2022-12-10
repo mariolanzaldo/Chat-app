@@ -1,4 +1,5 @@
 import validate from 'validator';
+import { t } from 'i18next';
 
 export const validator = (values, fieldName) => {
     let errors = {};
@@ -31,7 +32,7 @@ function validateFirstName(firstName, errors) {
     let result = true;
 
     if (!firstName) {
-        errors.firstName = "First name is required";
+        errors.firstName = t("firstNameError");
         result = false;
     }
 
@@ -42,7 +43,7 @@ function validateLastName(lastName, errors) {
     let result = true;
 
     if (!lastName) {
-        errors.lastName = "Last name is required";
+        errors.lastName = t("lastNameError");
         result = false;
     }
 
@@ -52,7 +53,7 @@ function validateLastName(lastName, errors) {
 function validateUsername(username, errors) {
     let result = true;
     if (!username) {
-        errors.username = "Username is required";
+        errors.username = t("usernameError");
         result = false;
     }
 
@@ -76,10 +77,10 @@ function validatePassword(password, errors) {
         pointsForContainingSymbol: 10,
     });
     if (!password) {
-        errors.password = "Password is required";
+        errors.password = t("passwordErrorReq");
         result = false;
     } else if (valid < 50) {
-        errors.password = 'Password must contain at least one lowercase, uppercase, number, and symbol';
+        errors.password = t("passwordError");
     }
 
     return result;
@@ -88,10 +89,10 @@ function validatePassword(password, errors) {
 function validateConfirmPassword(password, confirmPassword, errors) {
     let result = true;
     if (!confirmPassword) {
-        errors.password = "Confirm password is required";
+        errors.password = t("confirmPasswordErrorReq");
         result = false;
     } else if (password !== confirmPassword) {
-        errors.confirmPassword = 'Password must be the same'
+        errors.confirmPassword = t("confirmPasswordError");
         result = false;
     }
 
@@ -101,11 +102,11 @@ function validateConfirmPassword(password, confirmPassword, errors) {
 function validateEmail(email, errors) {
     let result = true;
     if (!email) {
-        errors.email = "Email is Required";
+        errors.email = t("emailErrorReq");
         result = false;
     } else {
         result = validate.isEmail(String(email).toLocaleLowerCase());
-        if (!result) errors.email = "Invalid Email address";
+        if (!result) errors.email = t("emailError");
     }
     return result;
 }

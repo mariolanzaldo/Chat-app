@@ -5,8 +5,11 @@ import { Box } from '@mui/material';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+
+    const { t } = useTranslation();
 
     const { user } = useSelector((state) => {
         return state
@@ -34,12 +37,6 @@ const Login = () => {
                 user: inputFields,
             }
         });
-        // dispatch({
-        //     type: 'showFriends',
-        //     payload: {
-        //         user: '',
-        //     },
-        // });
     };
 
     if (user.value) return <Navigate to="/" />;
@@ -63,23 +60,23 @@ const Login = () => {
                 >
                     <div>
                         <Typography level="h4" component="h1">
-                            <b>Welcome!</b>
+                            <b>{t("welcome")}</b>
                         </Typography>
-                        <Typography level="body2">Sign in to continue.</Typography>
+                        <Typography level="body2">{t('signinToContinue')}</Typography>
                     </div>
                     <Box component='form' onSubmit={handleSubmit}>
                         <TextField
                             name="username"
                             type="text"
                             placeholder="username123"
-                            label="Username"
+                            label={t("username")}
                             onChange={handleChange}
                         />
                         <TextField
                             name="password"
                             type="password"
-                            placeholder="password"
-                            label="Password"
+                            placeholder={t("password")}
+                            label={t("password")}
                             onChange={handleChange}
                         />
                         <Button
@@ -89,15 +86,16 @@ const Login = () => {
                                 mt: 1,
                                 backgroundColor: '#3f51b5'
                             }}>
-                            Log in
+                            {t("login")}
                         </Button>
                     </Box>
                     <Typography
-                        endDecorator={<Link href="/signup">Sign up</Link>}
+                        endDecorator={<Link href="/signup">{t('signup')}</Link>}
                         fontSize="sm"
                         sx={{ alignSelf: 'center' }}
                     >
-                        Don&apos;t have an account?
+
+                        {t('Donthaveanaccount')}
                     </Typography>
                 </Sheet>
             </main>

@@ -1,4 +1,4 @@
-import { Box, ListItem, ListItemText } from "@mui/material";
+import { Box, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const MessageItem = ({ message }) => {
@@ -21,32 +21,78 @@ const MessageItem = ({ message }) => {
                 // backgroundColor: color,
                 borderRadius: '10px',
             }}>
-                <ListItemText
-                    primary={message.sendBy}
-                    secondary={message.content}
-                    sx={{
-                        backgroundColor: color,
-                        borderRadius: '10px',
-                        padding: 1,
-                        '& .MuiListItemText-primary': {
+                {!message.isScribble ? (<>
+                    <ListItemText
+                        primary={message.sendBy}
+                        secondary={message.content}
+                        sx={{
+                            backgroundColor: color,
+                            borderRadius: '10px',
+                            padding: 1,
+                            '& .MuiListItemText-primary': {
 
-                            fontWeight: 'bold',
-                        },
-                        '& .MuiListItemText-secondary': {
+                                fontWeight: 'bold',
+                            },
+                            '& .MuiListItemText-secondary': {
 
-                            color: 'rgba(14, 14, 14, 1)',
-                        }
-                    }}
-                />
-                <ListItemText
-                    secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
-                    sx={{
-                        padding: 0,
-                        margin: 0,
-                        width: '100%',
-                        textAlign: 'right',
-                    }}
-                />
+                                color: 'rgba(14, 14, 14, 1)',
+                            }
+                        }}
+                    />
+                    <ListItemText
+                        secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        sx={{
+                            padding: 0,
+                            margin: 0,
+                            width: '100%',
+                            textAlign: 'right',
+                        }}
+                    />
+                </>) : (<>
+                    <Box
+                        sx={{
+                            backgroundColor: color,
+                            width: "97%",
+                            // height: "20%",
+                            borderRadius: '10px',
+                            margin: 1,
+                            padding: 1,
+                        }}
+                    >
+                        <ListItemText
+                            primary={message.sendBy}
+                            sx={{
+
+                                '& .MuiListItemText-primary': {
+
+                                    fontWeight: 'bold',
+                                },
+                                '& .MuiListItemText-secondary': {
+
+                                    color: 'rgba(14, 14, 14, 1)',
+                                }
+                            }}
+                        />
+                        <ListItemIcon
+                            sx={{
+                                borderRadius: "5px",
+                                backgroundColor: 'whitesmoke'
+                            }}
+                        >
+                            <img alt="" src={message.content} />
+                        </ListItemIcon>
+                    </Box>
+
+                    <ListItemText
+                        secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        sx={{
+                            padding: 0,
+                            margin: 0,
+                            width: '100%',
+                            textAlign: 'right',
+                        }}
+                    />
+                </>)}
             </ListItem>
         </Box>
     );

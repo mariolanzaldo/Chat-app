@@ -3,7 +3,6 @@ const { RESTDataSource } = require('@apollo/datasource-rest');
 class AuthAPI extends RESTDataSource {
     baseURL = "http://localhost:5000";
 
-    //TODO: ensure this the proper config to cache GET requests
     constructor(options = {}) {
         super(options);
         // this.token = options.token;

@@ -1,58 +1,57 @@
 import { useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Button, IconButton, ListItemIcon, Menu, MenuItem, Modal } from '@mui/material';
+import { IconButton, Menu } from '@mui/material';
 import { useSelector } from 'react-redux';
-import GroupOptions from './AdminGroupOptions';
 import AdminGroupOptions from './AdminGroupOptions';
-import { useParams } from 'react-router-dom';
+import MemberGroupOptions from './MemberGroupOptions';
 
-const GroupMenu = () => {
-    const { roomId } = useParams();
+const GroupMenu = ({ id }) => {
+
     const { username, rooms } = useSelector(state => state.user.value);
     const [anchorEl, setAnchorEl] = useState(null);
 
-    if (roomId) {
-        const currentChat = rooms.find((room) => room._id === roomId);
+    let currentChat, isAdmin;
 
-        const isAdmin = currentChat.admin.find((user) => user.username === username);
+    currentChat = rooms.find((room) => room._id === id);
 
-        const open = Boolean(anchorEl);
+    isAdmin = currentChat.admin.find((user) => user.username === username);
 
-        const handleClick = (event) => {
-            setAnchorEl(event.currentTarget);
-        };
+    const open = Boolean(anchorEl);
 
-        const handleClose = () => {
-            setAnchorEl(null);
-        };
+    const handleClick = (event) => {
+        event.preventDefault();
+        setAnchorEl(event.currentTarget);
+    };
 
-        return (
-            <>
-                <IconButton
-                    id="basic-button"
-                    aria-controls={open ? 'basic-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                >
-                    <MoreVertIcon />
-                </IconButton>
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    {(isAdmin && currentChat) ? <AdminGroupOptions currentChat={currentChat} setAnchorEl={setAnchorEl} /> : <GroupOptions />}
-                </Menu>
-            </>
-        );
-    }
+    const handleClose = (event) => {
+        event.preventDefault();
+        setAnchorEl(null);
+    };
 
-
+    return (
+        <>
+            <IconButton
+                id={id}
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+            >
+                <MoreVertIcon />
+            </IconButton>
+            <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                }}
+            >
+                {(isAdmin && currentChat) ? <AdminGroupOptions currentChat={currentChat} setAnchorEl={setAnchorEl} /> : <MemberGroupOptions currentChat={currentChat} setAnchorEl={setAnchorEl} />}
+            </Menu>
+        </>
+    );
 };
 
 export default GroupMenu;

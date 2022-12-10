@@ -20,9 +20,7 @@ class ChatAPI extends RESTDataSource {
 
     async deleteAllRoomMessages(_id) {
         return this.delete(`api/chat/message/deleteAllRoomMessages/${_id}`)
-    }
-
-
+    };
 
     async createRoom(roomInput) {
         return this.post(
@@ -56,6 +54,26 @@ class ChatAPI extends RESTDataSource {
             { body: members }
         );
     };
+
+    async addAdmin(_id, admin) {
+        return this.patch(
+            `api/chat/room/addAdmin/${_id}`,
+            { body: admin }
+        );
+    };
+
+    async deleteAdmin(_id, admin) {
+        return this.patch(
+            `api/chat/room/deleteAdmin/${_id}`,
+            { body: admin }
+        )
+    };
+
+    async deleteRoom(_id) {
+        return this.delete(
+            `api/chat/room/deleteRoom/${_id}`
+        );
+    }
 }
 
 module.exports = ChatAPI;

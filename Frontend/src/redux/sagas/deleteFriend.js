@@ -4,29 +4,44 @@ import client from "../../client";
 
 import { setUserFetching, userErrorFetching, deleteContact } from "../reducers/userSlice";
 
-function* deleteFriend(action) {
+function* deleteFrien(action) {
+  console.log('enters');
   const options = {
     mutation: gql`
-        mutation DeleteFriend($friendInput: FriendInput) {
-            deleteFriend(friendInput: $friendInput) {
-              success
-              errorMessage
-              value {
-                username
-                contactList
-                avatar
-                email
-                firstName
-                lastName
-                token
-              }
-            }
+    mutation DeleteFriend($friendInput: FriendInput) {
+      deleteFriend(friendInput: $friendInput) {
+        success
+        errorMessage
+        value {
+          username
+          contactList {
+            _id
+            username
+            email
+            firstName
+            lastName
+            avatar
           }
+          avatar
+          email
+          firstName
+          lastName
+          rooms {
+            _id
+            name
+            groupalRoom
+          }
+          _id
+          token
+        }
+      }
+    }
         `,
     variables: action.payload,
   };
   try {
-    yield put(setUserFetching());
+    // yield put(setUserFetching());
+    console.log(action.payload);
 
     const res = yield call(client.mutate, options);
     const value = res.data.deleteFriend.value;
@@ -38,4 +53,4 @@ function* deleteFriend(action) {
   }
 };
 
-export default deleteFriend;
+export default deleteFrien;

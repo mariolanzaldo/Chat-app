@@ -21,7 +21,7 @@ const typeDefs = gql`
         lastName: String
         email: String
         avatar: String
-        contactList: [ID]
+        contactList: [UnauthUser]
         rooms: [Room]
         #rooms: [ID]
         token: String
@@ -47,6 +47,7 @@ const typeDefs = gql`
     type Message {
         _id: ID
         content: String
+        isScribble: Boolean
         sendBy: String
         roomId: ID
         createdAt: Date
@@ -55,6 +56,7 @@ const typeDefs = gql`
 
     input MessageInput {
         content: String
+        isScribble: Boolean
         sendBy: String
         roomId: ID
         #room: [Room] ????
@@ -82,6 +84,10 @@ const typeDefs = gql`
         #addMember: [UserInput]
     }
 
+    input CookieInput {
+        name: String
+    }
+
     type Res{
         success: Boolean
         errorMessage: String
@@ -91,21 +97,27 @@ const typeDefs = gql`
     type Mutation {
         #User info and login
         login(userInput: UserInput): User!
+        logout(cookieInput: CookieInput): Res!
         createUser(userInput: UserInput): Res!
         addFriend(friendInput: FriendInput): Res!
         deleteFriend(friendInput: FriendInput ): Res!
 
-        #Messages and rooms
+        #Messages 
         createMessage(messageInput: MessageInput): Message!
         createRoom(roomInput: RoomInput): Room!
+
+        #Rooms
         addMember(roomInput: RoomInput): Room!
         deleteMember(roomInput: RoomInput): Room!
+        addAdmin(roomInput: RoomInput): Room!
+        deleteAdmin(roomInput: RoomInput): Room!
+        leaveGroup(roomInput: RoomInput): Res!
+        deleteRoom(roomInput: RoomInput): Res!
 
     }
 
     type Query {
         messages(_id: String): [Message]
-        users: [User]
         currentUser: User
         user(_id: String): User
         #currentRoom(_id: String): Room

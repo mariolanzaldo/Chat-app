@@ -1,14 +1,19 @@
-import { Box, Button, Modal, TextField, Typography, MenuItem, FormControl, InputLabel, Select, OutlinedInput, Chip } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
-import { contactStyles } from "../../ContactsBar/styles";
 import CommonButton from "../../common/CommonButton/CommonButton";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { MuiChipsInput } from 'mui-chips-input';
+import { useTranslation } from "react-i18next";
 
-const DeleteMember = ({ currentChat, open, setOpen }) => {
+const DeleteMember = ({ currentChat, setOpen }) => {
+
+    const { t } = useTranslation();
+
     const dispatch = useDispatch();
     const { _id, members } = currentChat;
+
+    const { username } = useSelector((state) => state.user.value);
+
 
     // const [error, setError] = useState();
     const [chips, setChips] = useState([]);
@@ -40,10 +45,10 @@ const DeleteMember = ({ currentChat, open, setOpen }) => {
     };
 
     const handleValidation = (chip) => {
-        const isValid = members.find((user) => user.username === chip);
+        const isValid = members.find((user) => (user.username === chip && user.username !== username));
         return {
             isError: !isValid,
-            textError: 'The user is not a member',
+            textError: t("deleteYourself"),
         }
     };
 
@@ -57,8 +62,8 @@ const DeleteMember = ({ currentChat, open, setOpen }) => {
                     p: 1,
                 }}
             >
-                <Typography sx={{ textAlign: 'center' }}>Add a member.</Typography>
-                <Typography sx={{ textAlign: 'center' }}>Fill the form and submit</Typography>
+                <Typography sx={{ textAlign: 'center' }}>{t("removeMember")}</Typography>
+                <Typography sx={{ textAlign: 'center' }}>{t("fillForm")}</Typography>
                 <Box
                     sx={{
                         width: '70%',
@@ -68,8 +73,9 @@ const DeleteMember = ({ currentChat, open, setOpen }) => {
                     <MuiChipsInput
                         name="deleteMembers"
                         value={chips}
-                        label="Member(s)"
-                        placeholder="Type the username and press enter"
+                        label={t("members")}
+                        placeholder={t("typeUsername")}
+                        helperText={chips.length > 0 ? t("doubleClickErrorHelp") : ""}
                         onChange={handleChange}
                         validate={handleValidation}
                         clearInputOnBlur
@@ -96,7 +102,7 @@ const DeleteMember = ({ currentChat, open, setOpen }) => {
                         type='submit'
                         variant='contained'
                     >
-                        Remove
+                        {t("delete")}
                     </Button>
                     <CommonButton
                         variant="outlined"
@@ -105,7 +111,7 @@ const DeleteMember = ({ currentChat, open, setOpen }) => {
                             return setOpen(false)
                         }}
                     >
-                        Cancel
+                        {t("cancel")}
                     </CommonButton>
                 </Box>
             </Box>

@@ -27,7 +27,7 @@ const loginSlice = createSlice({
             if (action.payload.user) {
                 state.errorMessage = action.payload.user.errorMessage;
             }
-        }
+        },
     },
 });
 

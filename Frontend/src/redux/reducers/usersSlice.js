@@ -21,9 +21,14 @@ const usersSlice = createSlice({
             state.isFetching = false;
             state.error = action.payload.message
         },
+        usersSetLogout: (state = null, action) => {
+            state.isFetching = false;
+            state.error = null;
+            state.value = null;
+        }
     },
 });
 
-export const { setUsers, setUsersFetching, usersErrorFetching } = usersSlice.actions;
+export const { setUsers, setUsersFetching, usersErrorFetching, usersSetLogout } = usersSlice.actions;
 
 export default usersSlice.reducer;

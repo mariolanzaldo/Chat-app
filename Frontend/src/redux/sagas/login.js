@@ -14,10 +14,17 @@ function* login(action) {
               firstName
               lastName
               avatar
-              contactList
+              contactList {
+                username
+                firstName
+                lastName
+                email
+                avatar
+              }
               rooms {
                 _id
                 name
+                groupalRoom
                 admin {
                   username
                 } 

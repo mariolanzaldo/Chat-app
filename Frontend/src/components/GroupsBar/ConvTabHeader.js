@@ -6,9 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { contactStyles } from '../ContactsBar/styles';
 import TagInput from './TagInput';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-const ConvTabHeader = ({ open, setOpen }) => {
-    //TODO: This is not finished yet. This is just a skleton!
+const ConvTabHeader = ({ open, setOpen, filterData }) => {
+    const { t } = useTranslation();
+
     const dispatch = useDispatch();
 
     const { username } = useSelector((state) => {
@@ -18,7 +20,7 @@ const ConvTabHeader = ({ open, setOpen }) => {
     const [members, setMembers] = useState([]);
 
     const handleSearch = (value) => {
-        console.log(value);
+        filterData(value);
     };
 
     const createConversation = (event) => {
@@ -53,14 +55,12 @@ const ConvTabHeader = ({ open, setOpen }) => {
         setOpen(false);
     };
 
-    //TODO: Change the TagInput component for <MuiChipnput />
-
     return (
         <Box component='span' sx={navbarStyles.wrapper}>
 
             <Box>
                 <SearchBar
-                    placeholder="Search a conversation!"
+                    placeholder={t("searchConversation")}
                     onChange={(event) => handleSearch(event.target.value)}
                 />
             </Box>
@@ -77,7 +77,7 @@ const ConvTabHeader = ({ open, setOpen }) => {
                     onClick={createConversation}
                     sx={navbarStyles.addUserButton}
                 >
-                    Add
+                    {t("add")}
                 </CommonButton>
             </Box>
 
@@ -87,19 +87,18 @@ const ConvTabHeader = ({ open, setOpen }) => {
                         variant='h6'
                         component='h2'
                     >
-                        New User
+                        {t("newGroup")}
                     </Typography>
                     <Typography sx={{ mt: 2 }}>
-                        Fill out the form and submit.
+                        {t("fillForm")}
                     </Typography>
                     <Box sx={contactStyles.inputFields}>
                         <TextField
-                            placeholder="Group name"
+                            placeholder={t("groupName")}
                             name="groupName"
-                            label="GroupName"
+                            label={t("groupName")}
                             required
                         />
-
                         <TagInput name="members" members={members} setMembers={setMembers} />
                     </Box>
                     <Box sx={contactStyles.buttons}>
@@ -107,7 +106,7 @@ const ConvTabHeader = ({ open, setOpen }) => {
                             type='submit'
                             variant='contained'
                         >
-                            Submit
+                            {t("submit")}
                         </Button>
                         <CommonButton
                             variant="outlined"
@@ -116,7 +115,7 @@ const ConvTabHeader = ({ open, setOpen }) => {
                                 return setOpen(false)
                             }}
                         >
-                            Cancel
+                            {t("cancel")}
                         </CommonButton>
                     </Box>
                 </Box>

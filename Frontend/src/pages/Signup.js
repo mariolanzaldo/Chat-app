@@ -1,24 +1,22 @@
 import * as React from 'react';
-// import { useState } from 'react';
 import { Avatar, Button, CssBaseline, Link, Grid, Box, Typography, Container, TextField, Paper } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { validator } from '../validator/validator';
 import useForm from '../hooks/useForm';
 import { createAvatar } from "@dicebear/avatars";
 import * as style from '@dicebear/adventurer-neutral';
-// import { Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function App() {
 
+    const { t } = useTranslation();
+
     const dispatch = useDispatch();
 
-    const isCreated = useSelector(state => {
-        if (!state.signup) {
-            return state.signup;
-        }
-        // return state;
-    });
+    const navigate = useNavigate();
 
     const paperStyle = { padding: 20, height: '85vh', width: 380, margin: "20px auto" };
 
@@ -31,7 +29,6 @@ export default function App() {
         confirmPassword: "",
     };
 
-    //TODO: Check the created avatar!
     const submit = (userInput) => {
         userInput.avatar = createAvatar(style, {
             dataUri: true,
@@ -43,6 +40,8 @@ export default function App() {
                 signup: userInput,
             }
         });
+
+        navigate('/login');
     };
 
     const {
@@ -56,9 +55,6 @@ export default function App() {
         callback: submit,
         validator
     });
-
-    // console.log(isCreated);
-    // if (isCreated.success) return <Navigate to='/login' />
 
     return (
         <Paper elevation={5} style={paperStyle}>
@@ -76,7 +72,7 @@ export default function App() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography level="h1" component="h1" variant="h5" sx={{ mb: 2 }}>
-                        Sign up
+                        {t("signup")}
                     </Typography>
                 </Box>
                 <Box component="form" onSubmit={handleSubmit}>
@@ -85,7 +81,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="Username"
+                                label={t("username")}
                                 placeholder='Username'
                                 name="username"
                                 defaultValue={state.username}
@@ -99,7 +95,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="FirstName"
+                                label={t("firstName")}
                                 name="firstName"
                                 defaultValue={state.firstName}
                                 onChange={handleChange}
@@ -112,7 +108,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="LastName"
+                                label={t("lastName")}
                                 name="lastName"
                                 defaultValue={state.lastName}
                                 onChange={handleChange}
@@ -125,7 +121,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="Email"
+                                label={t("email")}
                                 name="email"
                                 defaultValue={state.email}
                                 onChange={handleChange}
@@ -138,7 +134,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="Password"
+                                label={t("password")}
                                 name="password"
                                 type="password"
                                 defaultValue={state.password}
@@ -152,7 +148,7 @@ export default function App() {
                             <TextField
                                 fullWidth
                                 required
-                                label="Confirm Password"
+                                label={t("confirmPassword")}
                                 name="confirmPassword"
                                 type="password"
                                 defaultValue={state.confirmPassword}
@@ -169,13 +165,13 @@ export default function App() {
                         variant="contained"
                         sx={{ mt: 1, mb: 1, backgroundColor: '#3f51b5' }}
                     >
-                        Sign up
+                        {t("signup")}
                     </Button>
                     <Grid container>
                         <Grid item textAlign='center'>
-                            Already have an account?
+                            {t("alreadyHave")}
                             <Link href="login">
-                                Login
+                                {t("login")}
                             </Link>
                         </Grid>
                     </Grid>

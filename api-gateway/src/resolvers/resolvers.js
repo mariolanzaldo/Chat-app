@@ -12,10 +12,6 @@ const resolvers = {
 
             return roomMessages;
         },
-        users: async (_, __, context) => {
-            const { users } = await context.dataSources.userAPI.getUsers();
-            return users;
-        },
         user: async (_, { _id }, { req, dataSources }) => {
             const userToFind = { username: _id };
 
@@ -70,12 +66,22 @@ const resolvers = {
 
             return completeRooms;
         },
+        contactList: async (parent, input, { dataSources }) => {
+            const response = parent.contactList.map(async (contact) => {
+                const { user } = await dataSources.userAPI.getUser({ username: contact });
+                const { _id, username, email, firstName, lastName, avatar } = user;
+                return { _id, username, email, firstName, lastName, avatar };
+            });
+
+            const completeContacts = await Promise.all(response);
+
+            return completeContacts;
+        },
 
     },
     Room: {
         members: (parent) => {
             const output = parent.members.map((member) => {
-                console.log(member);
                 return member
             });
 
@@ -170,13 +176,35 @@ const resolvers = {
                 throw new GraphQLError(message.error ? message.error : message);
             }
         },
-        createMessage: async (parent, { messageInput }, context) => {
+        logout: async (parent, { cookieInput }, { dataSources, req, res }) => {
+            const { name } = cookieInput;
+
+            try {
+                const options = {
+                    maxAge: 1e9,
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
+                };
+
+                res.clearCookie(name, options);
+
+                return { sucess: true, messageError: null, value: null };
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+
+                return { sucess: false, messageError: message, value: null };
+            }
+
+
+        },
+        createMessage: async (parent, { messageInput }, { dataSources }) => {
             pubSub.publish("MESSAGE_CREATED", {
                 newMessage: messageInput,
             });
 
             try {
-                const createdMessage = await context.dataSources.chatAPI.createMessage(messageInput);
+                const createdMessage = await dataSources.chatAPI.createMessage(messageInput);
 
                 return createdMessage.message;
             } catch (err) {
@@ -210,7 +238,7 @@ const resolvers = {
 
             const { name, members: updatedMembers } = updatedRoom;
 
-            const updatedUsers = updatedMembers.map(async ({ username }) => {
+            const updatedUsers = members.map(async ({ username }) => {
                 updatedContact = await dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
                 return updatedContact;
             });
@@ -224,7 +252,7 @@ const resolvers = {
 
             const updatedMembers = await roomInput.members.map(async ({ username }) => {
                 const updatedMember = await dataSources.userAPI.updateInfo(username, { rooms: { _id: roomInput._id } });
-                return member;
+                return updatedMember;
             });
 
             await Promise.all(updatedMembers);
@@ -265,7 +293,6 @@ const resolvers = {
         },
 
         deleteFriend: async (parent, { friendInput }, { dataSources }) => {
-            //TODO Erase messages once a contact is deleted!
             const { userA, userB, roomId } = friendInput;
 
             try {
@@ -291,7 +318,81 @@ const resolvers = {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
             }
-        }
+        },
+
+        addAdmin: async (parent, { roomInput }, { dataSources }) => {
+            const { _id, admin } = roomInput;
+
+            try {
+                const updatedRoom = await dataSources.chatAPI.addAdmin(_id, admin);
+
+                return updatedRoom;
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return message;
+            }
+        },
+        deleteAdmin: async (parent, { roomInput }, { dataSources }) => {
+            const { _id, admin } = roomInput;
+
+            try {
+                const updatedRoom = await dataSources.chatAPI.deleteAdmin(_id, admin);
+
+                return updatedRoom;
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return message;
+            }
+        },
+        leaveGroup: async (parent, { roomInput }, { dataSources }) => {
+            let removedFromAdmin, removedFromMembers;
+            const { _id, admin, members } = roomInput;
+
+            try {
+                if (admin) {
+                    removedFromAdmin = dataSources.chatAPI.deleteAdmin(_id, admin);
+                    removedFromMembers = dataSources.chatAPI.deleteMember(_id, members);
+
+                    await Promise.all([removedFromAdmin, removedFromMembers]);
+                } else if (!admin) {
+                    await dataSources.chatAPI.deleteMember(_id, members);
+                }
+
+                const updatedUser = await dataSources.userAPI.updateInfo(members[0].username, { rooms: { _id } });
+
+                return { success: true, errorMessage: null, value: updatedUser };
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return { success: false, errorMessage: message };
+            }
+        },
+        deleteRoom: async (parent, { roomInput }, { dataSources }) => {
+            const { _id, members: currentUser } = roomInput;
+
+            try {
+                //delete room
+                const deletedRoom = await dataSources.chatAPI.deleteRoom(_id);
+                //delete messages
+                const deletedMessages = await dataSources.chatAPI.deleteAllRoomMessages(_id);
+
+                const { members } = deletedRoom;
+
+                const promiseMembers = members.map(async (user) => {
+                    const updatedMember = await dataSources.userAPI.updateInfo(user.username, { rooms: { _id } });
+
+                    return updatedMember;
+                });
+
+                const updatedMembers = await Promise.all(promiseMembers);
+
+                const updatedUser = updatedMembers.find((user) => user.username === currentUser[0].username);
+
+                return { success: true, errorMessage: null, value: updatedUser };
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return { success: false, errorMessage: message };
+            }
+        },
     },
     Subscription: {
         newMessage: {

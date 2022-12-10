@@ -17,7 +17,7 @@ const store = configureStore({
         login: authReducer,
         user: userReducer,
         signup: signupReducer,
-        users: usersReducer,
+        // users: usersReducer,
         messages: messageReducer,
     },
     middleware: (getDefaultMiddleware) => {

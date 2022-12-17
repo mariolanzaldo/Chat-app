@@ -1,20 +1,27 @@
 import { gql } from "@apollo/client";
-import { call, put } from 'redux-saga/effects';
-import { setUser, userErrorFetching } from '../reducers/userSlice';
-
+import { call, put } from "redux-saga/effects";
 import client from "../../client";
+import { rejectFriend, userErrorFetching } from "../reducers/userSlice";
 
-function* queryUser(action) {
+function* rejectContact(action) {
   const options = {
-    query: gql`
-        query {
-            currentUser{
+    mutation: gql`
+        mutation rejectFriend($friendInput: FriendInput) {
+            rejectFriend(friendInput: $friendInput) {
+              success
+              errorMessage
+              value {
                 _id
                 username
                 firstName
                 lastName
+                email
                 avatar
+                settings {
+                  language
+                }
                 contactList {
+                  _id
                   username
                   firstName
                   lastName
@@ -40,30 +47,33 @@ function* queryUser(action) {
                 rooms {
                   _id
                   name
-                  groupalRoom
                   admin {
                     username
-                  } 
+                  }
+                  groupalRoom
                   members {
                     username
                     joinedAt
                   }
                 }
-                token
+              }
             }
-        }
+          }
         `,
+    variables: action.payload
   };
+
   try {
-    // yield put(setUserFetching());
-    const res = yield call(client.query, options);
-    const { currentUser } = res.data;
+    const res = yield call(client.mutate, options);
 
-    yield put(setUser({ user: currentUser }));
+    const user = res.data.rejectFriend?.value;
 
-  } catch (err) {
-    yield put(userErrorFetching({ err }));
+    yield put(rejectFriend(user));
+
+  } catch (error) {
+    yield put(userErrorFetching(error));
+
   }
 };
 
-export default queryUser;
+export default rejectContact;

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-service-db-deployment
+  labels:
+    app: chat-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-service-db
+  template:
+    metadata:
+      labels:
+        app: chat-service-db
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 27017

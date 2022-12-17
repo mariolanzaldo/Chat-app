@@ -17,6 +17,10 @@ import deleteAdmin from "./sagas/deleteAdmin";
 import leaveGroup from "./sagas/leaveGroup";
 import deleteGroup from "./sagas/deleteGroup";
 import logout from "./sagas/logout";
+import setLanguage from "./sagas/setLanguage";
+import rejectContact from "./sagas/rejectContact";
+import acceptContact from "./sagas/acceptContact";
+import addNewRequest from "./sagas/addNewRequest";
 
 export function* watchLogin() {
 
@@ -86,6 +90,22 @@ export function* watchLogout() {
     yield takeLatest("logout", logout);
 };
 
+export function* watchSetLanguage() {
+    yield takeEvery("setLanguage", setLanguage);
+};
+
+export function* watchAcceptFriend() {
+    yield takeEvery("acceptContact", acceptContact);
+};
+
+export function* watchRejectFriend() {
+    yield takeEvery("rejectFriend", rejectContact);
+};
+
+export function* watchAddNewRequest() {
+    yield takeEvery("addNewRequest", addNewRequest);
+};
+
 export default function* rootSaga() {
     yield all([
         watchLogin(),
@@ -105,5 +125,9 @@ export default function* rootSaga() {
         watchLeaveGroup(),
         watchDeleteGroup(),
         watchLogout(),
+        watchSetLanguage(),
+        watchAddNewRequest(),
+        watchAcceptFriend(),
+        watchRejectFriend(),
     ]);
 }

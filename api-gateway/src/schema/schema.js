@@ -23,6 +23,8 @@ const typeDefs = gql`
         avatar: String
         contactList: [UnauthUser]
         rooms: [Room]
+        settings: Settings
+        requests: [Request]
         #rooms: [ID]
         token: String
     }
@@ -34,8 +36,22 @@ const typeDefs = gql`
         email: String
         password: String
         confirmPassword: String
+        settings: SettingsInput
         avatar: String
         joinedAt: Date
+    }
+
+    type Settings {
+        language: String
+    }
+
+    input SettingsInput {
+        language: String
+    }
+
+    type Request {
+        from: UnauthUser!
+        to: UnauthUser!
     }
 
     input FriendInput {
@@ -99,8 +115,11 @@ const typeDefs = gql`
         login(userInput: UserInput): User!
         logout(cookieInput: CookieInput): Res!
         createUser(userInput: UserInput): Res!
-        addFriend(friendInput: FriendInput): Res!
-        deleteFriend(friendInput: FriendInput ): Res!
+        addFriend(friendInput: FriendInput): Request!
+        deleteFriend(friendInput: FriendInput): Res!
+        acceptFriend(friendInput: FriendInput): Res!
+        rejectFriend(friendInput: FriendInput): Res! 
+        changeLanguage(userInput: UserInput): Res!
 
         #Messages 
         createMessage(messageInput: MessageInput): Message!
@@ -126,7 +145,7 @@ const typeDefs = gql`
     type Subscription {
         newMessage(roomId: ID): Message
         newRoom: Room
-        addFriend: User
+        addFriend: Request
     }
 `;
 

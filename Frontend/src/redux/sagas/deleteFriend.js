@@ -31,6 +31,22 @@ function* deleteFrien(action) {
             name
             groupalRoom
           }
+          requests {
+            from {
+              _id
+              username
+              firstName
+              lastName
+              avatar
+            }
+            to{
+              _id
+              username
+              firstName
+              lastName
+              avatar
+            }
+          }
           _id
           token
         }

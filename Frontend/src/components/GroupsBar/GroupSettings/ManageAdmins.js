@@ -101,8 +101,8 @@ const ManageAdmins = ({ currentChat }) => {
                                 variant="fullWidth"
                                 aria-label="full width tabs example"
                             >
-                                <Tab label="Add admin" {...a11yProps(0)} />
-                                <Tab label="Remove admin" {...a11yProps(1)} />
+                                <Tab label={t("addAdmin")} {...a11yProps(0)} />
+                                <Tab label={t("removeAdmin")} {...a11yProps(1)} />
                             </Tabs>
                         </AppBar>
 

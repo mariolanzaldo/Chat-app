@@ -7,6 +7,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import { gql, useSubscription } from '@apollo/client';
+
+const FRIEND_REQUEST = gql`
+subscription FriendSub {
+    addFriend {
+        from {
+            username
+            firstName
+            lastName
+            avatar
+          }
+          to {
+            username
+            firstName
+            lastName
+            avatar
+          }
+  }
+}
+`;
 
 const TabHeader = ({ open, setOpen, filterData }) => {
 
@@ -16,12 +36,21 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
     const dispatch = useDispatch();
 
-    const { username } = useSelector((state) => {
+    const { username, requests } = useSelector((state) => {
         return state.user.value
     });
 
     const [value, setValue] = useState(null);
     const [formError, setFormError] = useState(null);
+
+    const { data, loading } = useSubscription(FRIEND_REQUEST, {
+        onData: ({ data }) => {
+            dispatch({
+                type: "addNewRequest",
+                payload: data?.data.addFriend
+            });
+        },
+    });
 
     const handleSearch = (value) => {
         filterData(value);

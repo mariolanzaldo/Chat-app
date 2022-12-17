@@ -34,6 +34,22 @@ function* leaveGroup(action) {
                   username
                 }
               }
+              requests {
+                from {
+                  _id
+                  username
+                  firstName
+                  lastName
+                  avatar
+                }
+                to{
+                  _id
+                  username
+                  firstName
+                  lastName
+                  avatar
+                }
+              }
               token
               }
             }

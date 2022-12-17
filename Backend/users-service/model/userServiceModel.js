@@ -39,17 +39,24 @@ const userSchema = new mongoose.Schema({
         required: false,
     }],
     rooms: [Object],
-    // requests: [{
-    //     type: new mongoose.Schema({
-    //         from: {
-    //             type: String,
-    //             required: true
-    //         },
-    //         accepted: {
-    //             type: Boolean
-    //         }
-    //     })
-    // }],
+    settings: {
+        language: {
+            type: String,
+            default: "en",
+        },
+    },
+    requests: [{
+        type: new mongoose.Schema({
+            from: {
+                type: String,
+                required: true
+            },
+            to: {
+                type: String,
+                required: true,
+            }
+        })
+    }],
 }, { timestamps: true, _id: false });
 
 const userServiceModel = mongoose.model("Users", userSchema);

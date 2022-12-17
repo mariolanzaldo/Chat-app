@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { User } = require('../../../api-gateway/src/resolvers/resolvers');
 const userServiceModel = require('../model/userServiceModel');
 const { findOne } = require('../model/userServiceModel');
 const UserModel = require('../model/userServiceModel');
@@ -106,6 +107,96 @@ router.patch('/addFriend', async (req, res, next) => {
     } catch (err) {
         return res.status(500).send({ error: err.message });
 
+    }
+});
+
+router.patch("/acceptFriend", async (req, res) => {
+    const { userA, userB } = req.body;
+
+    try {
+        const user = await userServiceModel.findById({ _id: userA.username });
+
+        const friend = await userServiceModel.findById({ _id: userB.username });
+
+        if (!user || !friend) return res.status(404).send({ error: "User(s) not found" });
+
+        if (user.contactList.includes(userB.username)) {
+            return res.status(400).send({ error: "Already friends" });
+        }
+
+        const updatedUserA = await userServiceModel.findByIdAndUpdate(
+            { _id: user.username, },
+            {
+                $push: { contactList: friend._id },
+                $pull: { requests: { from: friend._id } }
+            },
+            { upsert: true, new: true }
+        );
+
+        const updatedUserB = await userServiceModel.findByIdAndUpdate(
+            { _id: friend._id, },
+            { $push: { contactList: user._id } },
+            { upsert: true, new: true }
+        );
+
+        return res.status(200).send({ updatedUserA, updatedUserB });
+
+    } catch (err) {
+        return res.status(400).send({ error: err.message });
+    }
+});
+
+router.post("/friendRequest", async (req, res) => {
+    const { userA, userB } = req.body;
+    try {
+        const user = await userServiceModel.findById({ _id: userA.username });
+
+        const friend = await userServiceModel.findById({ _id: userB.username });
+
+        if (!user || !friend) return res.status(404).send({ error: "User not found" });
+
+        if (user.contactList.includes(userB.username)) {
+            return res.status(400).send({ error: "Already friends" });
+        }
+
+        if (friend.requests.includes(userA.username)) {
+            return res.status(400).send({ error: "Request already sent" });
+        }
+
+        const friendReq = { from: userA.username, to: userB.username };
+
+        await userServiceModel.findOneAndUpdate(
+            { _id: userB.username },
+            { $push: { requests: friendReq } },
+            { new: true }
+        );
+
+        return res.status(200).send(friendReq);
+
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
+    }
+});
+
+router.post("/rejectFriend", async (req, res) => {
+    const { userA, userB } = req.body;
+
+    try {
+        const user = await userServiceModel.findById({ _id: userA.username });
+
+        const friend = await userServiceModel.findById({ _id: userB.username });
+
+        if (!user || !friend) return res.status(404).send({ error: "User not found" });
+
+        const updatedUser = await userServiceModel.findByIdAndUpdate(
+            { _id: userA.username },
+            { $pull: { requests: { from: userB.username } } },
+            { new: true }
+        );
+
+        return res.status(200).send(updatedUser);
+    } catch (err) {
+        return res.status(500).send({ error: err.message });
     }
 });
 

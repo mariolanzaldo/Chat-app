@@ -1,6 +1,6 @@
 const express = require('express');
 const { GraphQLError, GraphQLScalarType, Kind, PossibleFragmentSpreadsRule } = require('graphql');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 
 const router = express.Router();
 const pubSub = new PubSub();
@@ -93,14 +93,23 @@ const resolvers = {
             return output;
         }
     },
-    // Message: {
-    //     room: (_, parent) => {
-    //         console.log(parent);
-    //         const found = rooms.filter((room) => room._id === parent.room);
-    //         return found;
-    //         return null;
-    //     }
-    // },
+    Request: {
+        from: async (parent, _, { dataSources }) => {
+            const { from: username } = parent;
+
+            const { user } = await dataSources.userAPI.getUser(username);
+
+            return user;
+        },
+        to: async (parent, _, { dataSources }) => {
+
+            const { to: username } = parent;
+
+            const { user } = await dataSources.userAPI.getUser(username);
+
+            return user;
+        }
+    },
     Date: new GraphQLScalarType({
         name: 'Date',
         description: 'Date custom scalar type',
@@ -259,12 +268,39 @@ const resolvers = {
 
             return updatedRoom;
         },
-        addFriend: async (parent, { friendInput }, context) => {
+        addFriend: async (parent, { friendInput }, { dataSources }) => {
+            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+
             try {
-                const { updatedUserA, updatedUserB } = await context.dataSources.userAPI.addFriend(friendInput);
+                const response = await dataSources.userAPI.friendRequest(request);
+
+                const req = {
+                    from: {
+                        username: response.from,
+                    },
+                    to: {
+                        username: response.to,
+                    }
+                }
+
                 pubSub.publish("FRIEND_REQUEST", {
-                    addFriend: updatedUserA,
+                    addFriend: req,
                 });
+                // const currentItem = requests.find((item) => item.from === friendInput.userA[0].username)
+
+                return response;
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return { success: false, errorMessage: message };
+            }
+
+        },
+
+        acceptFriend: async (parent, { friendInput }, { dataSources }) => {
+            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+
+            try {
+                const { updatedUserA, updatedUserB } = await dataSources.userAPI.acceptFriend(request);
 
                 const members = [{ username: updatedUserA.username }, { username: updatedUserB.username }];
 
@@ -275,21 +311,34 @@ const resolvers = {
                     members: members,
                 };
 
-                const { _id } = await context.dataSources.chatAPI.createRoom(roomInput);
+                const { _id } = await dataSources.chatAPI.createRoom(roomInput);
 
                 const updatedUsers = members.map(async ({ username }) => {
-                    return await context.dataSources.userAPI.updateInfo(username, { rooms: { _id } });
-                    // return updatedContact;
+                    return await dataSources.userAPI.updateInfo(username, { rooms: { _id } });
                 });
 
                 const values = await Promise.all(updatedUsers);
 
                 return { success: true, messageError: null, value: values[0] };
+
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+                return { succes: false, errorMessage: message };
+            }
+        },
+
+        rejectFriend: async (parent, { friendInput }, { dataSources }) => {
+
+            try {
+                const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+
+                const updatedUser = await dataSources.userAPI.rejectFriend(request);
+
+                return { success: false, errorMessage: null, value: updatedUser };
             } catch (err) {
                 const message = err.extensions.response.body.error;
                 return { success: false, errorMessage: message };
             }
-
         },
 
         deleteFriend: async (parent, { friendInput }, { dataSources }) => {
@@ -393,6 +442,20 @@ const resolvers = {
                 return { success: false, errorMessage: message };
             }
         },
+
+        changeLanguage: async (parent, { userInput }, { dataSources }) => {
+            const { username, settings } = userInput;
+
+            try {
+                const updatedUser = await dataSources.userAPI.updateInfo(username, { settings });
+
+                return { success: true, errorMessage: null, value: updatedUser }
+            } catch (err) {
+                const message = err.extensions.response.body.error;
+
+                return { success: false, errorMessage: message }
+            }
+        },
     },
     Subscription: {
         newMessage: {
@@ -403,6 +466,15 @@ const resolvers = {
         },
         addFriend: {
             subscribe: () => pubSub.asyncIterator("FRIEND_REQUEST"),
+            // subscribe: withFilter(
+            //     () => {
+            //         return pubSub.asyncIterator("FRIEND_REQUEST");
+            //     },
+            //     ({ addFriend }, { to }) => {
+            //         console.log(addFriend, to);
+            //         return true;
+            //     }
+            // )
         },
 
     }

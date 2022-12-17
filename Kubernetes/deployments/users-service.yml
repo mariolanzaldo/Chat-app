@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service-deployment
+  labels: 
+    app: users-service
+spec:
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+      - name: users-service
+        image: mariolanzaldo/users-service
+        env:
+          - name: MONGO_URL
+            value: mongodb://127.0.0.1:27017/users-service
+          - name: PORT
+            value: "5500"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        #ports:
+        #- containerPort: <Port>

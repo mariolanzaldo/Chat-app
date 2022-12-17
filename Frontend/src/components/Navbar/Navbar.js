@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Drawer, Grid, Divider, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, Drawer, Grid, Divider, Typography, IconButton, Menu, MenuItem, Tooltip, Badge } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { navbarStyles } from './styles';
 import Image from "./consts/avatar";
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import BasicTabs from "./consts/BasicTabs";
 import { useTranslation } from "react-i18next";
 import Settings from "./Settings";
+import FriendRequests from "./FriendRequests";
 
 const Navbar = () => {
 
@@ -16,9 +17,12 @@ const Navbar = () => {
 
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const { username } = useSelector((state) => state.user.value);
+    const { username, requests } = useSelector((state) => state.user.value);
+    console.log(username, requests);
 
     const open = Boolean(anchorEl);
+
+    const newNotifications = `You have ${requests.length} friend requests!`;
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -60,9 +64,16 @@ const Navbar = () => {
                             <Typography variant='h4' component='div'>{username}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <IconButton onClick={handleClick}>
-                                <MoreVertIcon />
-                            </IconButton>
+                            <Tooltip title={requests.length ? newNotifications : null}>
+                                <IconButton onClick={handleClick}>
+                                    <Badge
+                                        badgeContent={requests.length}
+                                        color="secondary"
+                                    >
+                                        <MoreVertIcon />
+                                    </Badge>
+                                </IconButton>
+                            </Tooltip>
                             <Menu
                                 id="basic-menu"
                                 anchorEl={anchorEl}
@@ -78,6 +89,7 @@ const Navbar = () => {
                                     <Typography>{t("logout")}</Typography>
                                 </MenuItem>
                                 <Settings />
+                                <FriendRequests />
                             </Menu>
                         </Grid>
                     </Grid>

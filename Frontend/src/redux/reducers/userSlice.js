@@ -96,6 +96,20 @@ const userSlice = createSlice({
             state.isFetching = false;
             state.value = null;
         },
+        addRequest: (state = null, action) => {
+            state.isFetching = false;
+            if (state.value.username === action.payload.to.username) {
+                state.value.requests = [...state.value.requests, action.payload];
+            }
+        },
+        acceptFriend: (state = null, action) => {
+            state.isFetching = false;
+            state.value = action.payload;
+        },
+        rejectFriend: (state, action) => {
+            state.isFetching = false;
+            state.value = action.payload;
+        }
     },
 });
 
@@ -111,6 +125,9 @@ export const {
     newAdmin,
     removeAdmin,
     userSetLogout,
+    addRequest,
+    acceptFriend,
+    rejectFriend,
 } = userSlice.actions;
 
 export default userSlice.reducer;

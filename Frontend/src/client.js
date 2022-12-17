@@ -8,7 +8,6 @@ import { createClient } from 'graphql-ws';
 const httpLink = new HttpLink({
     uri: 'http://localhost:3500/graphql',
     credentials: 'include', //TODO change to  same-origin when deactivate cors!
-    // uri: 'http://localhost:3000/graphql',
 });
 
 const wsLink = new GraphQLWsLink(createClient({
@@ -16,7 +15,6 @@ const wsLink = new GraphQLWsLink(createClient({
     connectionParams: {
         credentials: 'include',
     },
-    // url: 'ws://localhost:3000/subs',
 }));
 
 const splitLink = split(

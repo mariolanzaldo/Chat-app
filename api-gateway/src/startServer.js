@@ -35,7 +35,20 @@ const startServer = async () => {
         path: '/graphql',
     });
 
-    const serverCleanup = useServer({ schema }, wsServer);
+    const serverCleanup = useServer({
+        schema,
+        context: async () => {
+            const dataSources = {
+                chatAPI: new ChatAPI(),
+                userAPI: new UserAPI(),
+                authAPI: new AuthAPI(),
+
+            };
+            return {
+                dataSources,
+            }
+        },
+    }, wsServer);
 
     const server = new ApolloServer({
         schema,

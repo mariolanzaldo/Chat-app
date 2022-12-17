@@ -42,7 +42,6 @@ const ChatWindow = () => {
         },
     });
 
-
     useEffect(() => {
         dispatch({
             type: "queryMessages",

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service-db-deployment
+  labels:
+    app: users-service-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service-db
+  template:
+    metadata:
+      labels:
+        app: users-service-db
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 27017

@@ -26,7 +26,8 @@ class UserAPI extends RESTDataSource {
     };
 
     async getUser(userInput) {
-        return this.get(`/api/users/getUser/${userInput.username}`);
+        const user = userInput.username ? userInput.username : userInput;
+        return this.get(`/api/users/getUser/${user}`);
     };
 
     async updateInfo(username, infoToupdate) {
@@ -35,6 +36,27 @@ class UserAPI extends RESTDataSource {
             { body: infoToupdate },
         );
     };
+
+    async friendRequest(friendInput) {
+        return this.post(
+            `api/users/friendRequest`,
+            { body: friendInput },
+        )
+    };
+
+    async acceptFriend(friendInput) {
+        return this.patch(
+            `api/users/acceptFriend`,
+            { body: friendInput },
+        )
+    };
+
+    async rejectFriend(friendInput) {
+        return this.post(
+            `api/users/rejectFriend`,
+            { body: friendInput },
+        )
+    }
 
     async addFriend(friendInput) {
         return this.patch(

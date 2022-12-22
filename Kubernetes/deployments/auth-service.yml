@@ -30,7 +30,7 @@ spec:
           value: "5000"
         resources:
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "500m"
       
         #ports:

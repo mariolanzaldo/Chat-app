@@ -17,14 +17,15 @@ spec:
       containers:
       - name: chat-service
         image: mariolanzaldo/chat-service
+        #command: ["tail", "-f", "/dev/null"]
         env:
           - name: MONGO_URL
-            value: mongodb://127.0.0.1:27017/chat-service
+            value: mongodb://chat-db-svc:27017/
           - name: PORT
             value: "4500"
         resources:
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "500m"
         #ports:
         #- containerPort: <Port>

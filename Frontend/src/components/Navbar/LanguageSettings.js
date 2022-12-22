@@ -8,7 +8,7 @@ import { contactStyles } from "../ContactsBar/styles";
 
 const LanguageSettings = ({ setOpen }) => {
 
-    const { i, i18n } = useTranslation();
+    const { i18n } = useTranslation();
 
     const dispatch = useDispatch();
 

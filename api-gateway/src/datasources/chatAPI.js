@@ -1,7 +1,7 @@
 const { RESTDataSource } = require('@apollo/datasource-rest');
 
 class ChatAPI extends RESTDataSource {
-    baseURL = 'http://localhost:4500';
+    baseURL = process.env.API_CHAT;
 
     async createMessage(messageInput) {
         return this.post(

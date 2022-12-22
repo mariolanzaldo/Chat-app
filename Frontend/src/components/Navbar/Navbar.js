@@ -18,7 +18,6 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const { username, requests } = useSelector((state) => state.user.value);
-    console.log(username, requests);
 
     const open = Boolean(anchorEl);
 

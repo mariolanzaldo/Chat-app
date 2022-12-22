@@ -1,7 +1,8 @@
 const { RESTDataSource } = require('@apollo/datasource-rest');
 
 class UserAPI extends RESTDataSource {
-    baseURL = 'http://localhost:5500';
+
+    baseURL = process.env.API_USERS;
 
     constructor(options = {}) {
         super(options);

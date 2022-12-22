@@ -49,12 +49,6 @@ const resolvers = {
             return user;
 
         },
-        // currentRoom: async (_, input, { dataSources }) => {
-        //     const { _id } = input;
-        //     const room = await dataSources.chatAPI.getRoom(_id);
-
-        //     return room;
-        // },
     },
     User: {
         rooms: async (parent, input, { dataSources }) => {
@@ -157,7 +151,7 @@ const resolvers = {
                 const [auth, user] = await Promise.all([authRes, userRes]);
 
                 const { token } = auth;
-                //TODO: Search about sameSite (:
+
                 const options = {
                     maxAge: 1e9,
                     httpOnly: true,
@@ -286,7 +280,6 @@ const resolvers = {
                 pubSub.publish("FRIEND_REQUEST", {
                     addFriend: req,
                 });
-                // const currentItem = requests.find((item) => item.from === friendInput.userA[0].username)
 
                 return response;
             } catch (err) {

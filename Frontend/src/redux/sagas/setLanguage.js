@@ -5,8 +5,8 @@ import { errorChangeLanguage } from "../reducers/settingSlice";
 import { setUser } from "../reducers/userSlice";
 
 function* setLanguage(action) {
-    const options = {
-        mutation: gql`
+  const options = {
+    mutation: gql`
         mutation ChangeLanguage($userInput: UserInput) {
             changeLanguage(userInput: $userInput) {
               value {
@@ -26,6 +26,22 @@ function* setLanguage(action) {
                   email
                   avatar
                 }
+                requests {
+                  from {
+                    _id
+                    username
+                    firstName
+                    lastName
+                    avatar
+                  }
+                  to{
+                    _id
+                    username
+                    firstName
+                    lastName
+                    avatar
+                  }
+                }
                 rooms {
                   _id
                   name
@@ -43,21 +59,21 @@ function* setLanguage(action) {
             }
           }
         `,
-        variables: {
-            userInput: action.payload
-        }
+    variables: {
+      userInput: action.payload
     }
+  }
 
-    try {
-        const res = yield call(client.mutate, options);
+  try {
+    const res = yield call(client.mutate, options);
 
-        const { changeLanguage } = res.data;
-        const { value: user } = changeLanguage;
+    const { changeLanguage } = res.data;
+    const { value: user } = changeLanguage;
 
-        yield put(setUser({ user }));
-    } catch (err) {
-        yield put(errorChangeLanguage({ err }));
-    }
+    yield put(setUser({ user }));
+  } catch (err) {
+    yield put(errorChangeLanguage({ err }));
+  }
 };
 
 export default setLanguage;

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { ApolloServer } = require('@apollo/server');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
@@ -6,7 +7,6 @@ const { useServer } = require('graphql-ws/lib/use/ws');
 const { createServer } = require('http');
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
 const { expressMiddleware } = require('@apollo/server/express4');
-// const { startStandAloneServer } = require('@apollo/server/standalone');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -17,8 +17,6 @@ const resolvers = require('./resolvers/resolvers');
 const ChatAPI = require('./datasources/chatAPI');
 const UserAPI = require('./datasources/userAPI');
 const AuthAPI = require('./datasources/authAPI');
-
-require('dotenv').config();
 
 const startServer = async () => {
     const app = express();
@@ -70,16 +68,23 @@ const startServer = async () => {
     await server.start();
 
     app.use('/graphql', cookieParser(),
-        cors({ origin: ['http://localhost:3000', 'https://studio.apollographql.com', 'http://localhost:3500/graphql'], credentials: true }),
         bodyParser.json(), expressMiddleware(server, {
             context: async ({ req, res }) => {
+                const { cache } = server;
+                // const { JWT } = req.cookies;
+
+                // if (JWT) {
+                //     const authUser = await new AuthAPI().secureRoute(JWT);
+                // }
+
                 const dataSources = {
-                    chatAPI: new ChatAPI(),
-                    userAPI: new UserAPI(),
-                    authAPI: new AuthAPI(),
+                    chatAPI: new ChatAPI({ cache }),
+                    userAPI: new UserAPI({ cache }),
+                    authAPI: new AuthAPI({ cache }),
 
                 };
                 return {
+                    //authUser,
                     req,
                     res,
                     dataSources,

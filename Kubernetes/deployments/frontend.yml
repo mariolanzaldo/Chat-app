@@ -5,6 +5,7 @@ metadata:
   labels:
     app: frontend
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -13,9 +14,16 @@ spec:
       labels:
         app: frontend
     spec:
+      volumes:
+        - name: nginx-configmap-volume
+          configMap:
+            name: nginx-configmap
       containers:
       - name: frontend
         image: mariolanzaldo/frontend
+        volumeMounts:
+          - mountPath: /etc/nginx/conf.d/
+            name: nginx-configmap-volume
         resources:
           limits:
             memory: "512Mi"

@@ -8,6 +8,7 @@ import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+    //TODO: Handle data validation!!! Don't forget to buil and push the image!
 
     const { t } = useTranslation();
 

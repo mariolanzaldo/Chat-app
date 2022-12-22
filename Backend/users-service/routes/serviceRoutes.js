@@ -1,8 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const { User } = require('../../../api-gateway/src/resolvers/resolvers');
 const userServiceModel = require('../model/userServiceModel');
-const { findOne } = require('../model/userServiceModel');
 const UserModel = require('../model/userServiceModel');
 
 const router = express.Router();

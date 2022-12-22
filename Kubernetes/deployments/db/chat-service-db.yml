@@ -14,12 +14,19 @@ spec:
       labels:
         app: chat-service-db
     spec:
+      volumes:
+        - name: chat-volume
+          persistentVolumeClaim:
+            claimName: chat-service-pvc
       containers:
       - name: mongo
         image: mongo
+        volumeMounts:
+          - mountPath: /data/db
+            name: chat-volume
         resources:
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "500m"
         ports:
         - containerPort: 27017

@@ -1,3 +1,15 @@
 # Config services (svc). Check if the ports are the same as the ones defined at the containers
 # Check errors
 #Check if the service works in insomnia (Change MONGO_URL: - name: MONGO_URL  value: mongodb://auth-db-svc:27017/)
+
+# Research about PVC, storage-class
+# Make persistant data using PVC and storage-class
+# Create PVC (for every service with ) and storage-class (one) in deployments documents
+
+# Connect graphql and front: 
+# Create Deployment and svc for frontend
+# Change the code to accept proxy
+# Create reverse proxy in nginx (graphql-server: 1.http comms 2.websocket)
+# Create https route
+
+#Response in case of user input errors at signup form

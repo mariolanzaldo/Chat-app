@@ -5,6 +5,7 @@ metadata:
   labels: 
     app: users-service
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: users-service
@@ -18,7 +19,7 @@ spec:
         image: mariolanzaldo/users-service
         env:
           - name: MONGO_URL
-            value: mongodb://127.0.0.1:27017/users-service
+            value: mongodb://users-db-svc:27017/
           - name: PORT
             value: "5500"
         resources:

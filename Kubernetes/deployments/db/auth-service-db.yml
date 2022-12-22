@@ -14,9 +14,16 @@ spec:
       labels:
         app: auth-service-db
     spec:
+      volumes:
+        - name: auth-volume
+          persistentVolumeClaim:
+            claimName: auth-service-pvc
       containers:
       - name: mongo
         image: mongo
+        volumeMounts:
+          - mountPath: /data/db
+            name: auth-volume 
         resources:
           limits:
             memory: "512Mi"

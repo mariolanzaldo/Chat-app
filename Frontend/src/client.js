@@ -4,17 +4,20 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 
+const SERVER_URI = "/graphql";
+const WS_URL = window.location.protocol === "https" ? `wss://${window.location.host}/graphql` : `ws://${window.location.host}/graphql`;
+
 //Apollo Client now supports subscriptions
 const httpLink = new HttpLink({
-    uri: 'http://localhost:3500/graphql',
-    credentials: 'include', //TODO change to  same-origin when deactivate cors!
+    uri: SERVER_URI,
+    credentials: 'same-origin',
 });
 
 const wsLink = new GraphQLWsLink(createClient({
-    url: 'ws://localhost:3500/graphql',
+    url: WS_URL,
     connectionParams: {
-        credentials: 'include',
-    },
+        credentials: "same-origin",
+    }
 }));
 
 const splitLink = split(

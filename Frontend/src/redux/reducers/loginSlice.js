@@ -17,7 +17,8 @@ const loginSlice = createSlice({
             state.isFetching = true;
         },
         setLoginError: (state = null, action) => {
-            state.error = action.payload.error;
+            state.isFetching = false;
+            state.error = action.payload.err;
         },
         loginErrorFetching: (state, action) => {
             state.isFetching = false;

@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Chip, Grid, Stack, Typography } from "@mui/material";
 import ComposeArea from "./ComposeArea";
 import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Avatar } from "@mui/joy";
 
 const MESSAGES_SUBSCRIPTION = gql`
 subscription newMessage($roomId: ID) {
@@ -47,7 +48,6 @@ const ChatWindow = () => {
             type: "queryMessages",
             payload: { _id: roomId },
         });
-        //dispatch subcription
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentConversation]);
 
@@ -66,7 +66,7 @@ const ChatWindow = () => {
                 sx={{
                     padding: 1,
                     width: '100%',
-                    height: '10vh',
+                    height: '11vh',
                     color: 'whitesmoke',
                     borderRadius: '5px',
                     backgroundColor: "rgba(29, 77, 213, 0.8)",
@@ -75,14 +75,30 @@ const ChatWindow = () => {
                 <Typography
                     variant="h5"
                 >{name}</Typography>
-                <Typography
-                    variant="body1"
+                <Stack
+                    direction="row"
+                    spacing={1}
                 >
-                    {`${t("members")}:`}
+                    <Typography
+                        variant="body1"
+                    >
+                        {`${t("members")}:`}
+                    </Typography>
                     {members.map((user) => {
-                        return ` ${user.username},`;
+
+                        return <Chip
+                            key={user.username}
+                            avatar={<Avatar src={user.avatar} />}
+                            label={user.username}
+                            sx={{
+                                backgroundColor: "rgba(177, 173, 206, 0.8)",
+                                fontWeight: 'bold',
+                                boxShadow: "5px 2px 2px rgba(74, 76, 74, 0.8)",
+                                color: "whitesmoke"
+                            }}
+                        />
                     })}
-                </Typography>
+                </Stack>
             </Grid>
             <Grid
                 item

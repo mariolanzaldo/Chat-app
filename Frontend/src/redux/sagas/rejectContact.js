@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
-import { rejectFriend, userErrorFetching } from "../reducers/userSlice";
+import { setDefaultNotification } from "../reducers/notificationSlice";
+import { rejectFriend } from "../reducers/userSlice";
 
 function* rejectContact(action) {
   const options = {
@@ -71,7 +72,7 @@ function* rejectContact(action) {
     yield put(rejectFriend(user));
 
   } catch (error) {
-    yield put(userErrorFetching(error));
+    yield put(setDefaultNotification());
 
   }
 };

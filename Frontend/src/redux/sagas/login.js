@@ -2,9 +2,8 @@ import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
 import { changeLanguage } from "i18next";
-
 import { setUser } from "../reducers/userSlice";
-import { setLoginFetching, setLoginError } from "../reducers/loginSlice";
+import { setNotification } from "../reducers/notificationSlice";
 
 function* login(action) {
   const options = {
@@ -47,6 +46,7 @@ function* login(action) {
                 } 
                 members {
                   username
+                  avatar
                   joinedAt
                 }
               }
@@ -63,18 +63,6 @@ function* login(action) {
   };
 
   try {
-    // yield put(setLoginFetching());
-
-    /* 
-    
-    user: {
-      username
-      settings: {
-        language: en
-      }
-    }
-
-    */
     const res = yield call(client.mutate, options);
     const user = res.data.login;
 
@@ -82,8 +70,13 @@ function* login(action) {
 
     yield put(setUser({ user }));
 
-  } catch (err) {
-    yield put(setLoginError({ err }));
+  } catch (error) {
+    const notification = {
+      error: error.message,
+      severity: "error",
+    }
+
+    yield put(setNotification(notification));
   }
 };
 

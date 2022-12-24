@@ -1,8 +1,8 @@
 import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
-
-import { setUserFetching, userErrorFetching, deleteContact } from "../reducers/userSlice";
+import { deleteContact } from "../reducers/userSlice";
+import { setDefaultNotification } from "../reducers/notificationSlice";
 
 function* deleteFrien(action) {
   console.log('enters');
@@ -56,16 +56,12 @@ function* deleteFrien(action) {
     variables: action.payload,
   };
   try {
-    // yield put(setUserFetching());
-    console.log(action.payload);
-
     const res = yield call(client.mutate, options);
     const value = res.data.deleteFriend.value;
 
     yield put(deleteContact(value));
   } catch (error) {
-    console.log('error saga');
-    yield put(userErrorFetching(error));
+    yield put(setDefaultNotification());
   }
 };
 

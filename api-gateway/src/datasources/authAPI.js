@@ -29,14 +29,14 @@ class AuthAPI extends RESTDataSource {
                 }
             }
         );
-    }
+    };
 
     async login(userInput) {
         return this.post(
             `/api/auth/login`,
             { body: userInput }
         );
-    }
+    };
 
 }
 

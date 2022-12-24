@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
-import { setUser, userErrorFetching } from "../reducers/userSlice";
+import { setDefaultNotification } from "../reducers/notificationSlice";
+import { setUser } from "../reducers/userSlice";
 
 function* leaveGroup(action) {
   const options = {
@@ -63,7 +64,7 @@ function* leaveGroup(action) {
 
     yield put(setUser({ user: value }));
   } catch (error) {
-    yield put(userErrorFetching(error));
+    yield put(setDefaultNotification());
   }
 };
 

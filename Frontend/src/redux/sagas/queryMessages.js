@@ -1,7 +1,9 @@
 import { gql } from "@apollo/client";
+import { t } from "i18next";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
-import { conversationErrorFetching, getRoomMessages } from "../reducers/conversationSlice";
+import { getRoomMessages } from "../reducers/conversationSlice";
+import { setNotification } from "../reducers/notificationSlice";
 
 function* queryMessages(action) {
     const options = {
@@ -27,16 +29,8 @@ function* queryMessages(action) {
         yield put(getRoomMessages(messages));
 
     } catch (err) {
-        yield put(conversationErrorFetching({ err }));
+        yield put(setNotification({ error: t("errorQueryMessages"), severity: "warning" }));
     }
-
-
-
-
-    // const message = action.payload;
-    // yield put(addMessage(action.payload));
-
-    yield null;
 };
 
 export default queryMessages;

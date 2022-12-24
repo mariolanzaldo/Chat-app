@@ -13,16 +13,9 @@ const signupSlice = createSlice({
         setSignupFetching: (state = null) => {
             state.isFetching = true;
         },
-        signupErrorFetching: (state = null, action) => {
-            state.isFetching = false;
-            state.error = action.payload.message
-        },
-        signupForm: (state = null, action) => {
-            state.value = action.payload;
-        },
     },
 });
 
-export const { setSignupFetching, signupErrorFetching, blurForm } = signupSlice.actions;
+export const { setSignupFetching } = signupSlice.actions;
 
 export default signupSlice.reducer;

@@ -18,7 +18,6 @@ const ComposeArea = () => {
 
     const [message, setMessage] = useState("");
     const [open, setOpen] = useState(false);
-    const [scribble, setScribble] = useState("");
 
     const { roomId } = useParams();
 
@@ -28,23 +27,14 @@ const ComposeArea = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        let messageInput;
+
         if (message.length > 0) {
-            if (scribble) {
-                messageInput = {
-                    roomId,
-                    content: message,
-                    sendBy: username,
-                    isScribble: true,
-                };
-            } else {
-                messageInput = {
-                    roomId,
-                    content: message,
-                    sendBy: username,
-                    isScribble: false,
-                };
-            }
+            const messageInput = {
+                roomId,
+                content: message,
+                sendBy: username,
+                isScribble: false,
+            };
 
             dispatch({
                 type: "createMessage",
@@ -52,7 +42,6 @@ const ComposeArea = () => {
             });
 
             setMessage("");
-            setScribble("");
         }
     };
 
@@ -73,8 +62,18 @@ const ComposeArea = () => {
 
         const image = canva.toDataURL("image/png").toString();
 
-        setMessage(image);
-        setScribble(image);
+        const messageInput = {
+            roomId,
+            content: image,
+            sendBy: username,
+            isScribble: true,
+        };
+
+        dispatch({
+            type: "createScribble",
+            payload: messageInput,
+        });
+
         setOpen(false);
     };
 

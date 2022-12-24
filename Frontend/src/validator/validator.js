@@ -1,11 +1,11 @@
 import validate from 'validator';
 import { t } from 'i18next';
 
-export const validator = (values, fieldName) => {
+export const validator = (values, fieldName, existence) => {
     let errors = {};
     switch (fieldName) {
         case "username":
-            validateUsername(values.username, errors);
+            validateUsername(values.username, errors, existence);
             break;
         case "firstName":
             validateFirstName(values.firstName, errors);
@@ -14,10 +14,13 @@ export const validator = (values, fieldName) => {
             validateLastName(values.lastName, errors);
             break;
         case "email":
-            validateEmail(values.email, errors);
+            validateEmail(values.email, errors, existence);
             break;
         case "password":
             validatePassword(values.password, errors);
+            break;
+        case "passwordLog":
+            validatePasswordLog(values.passwordLog, errors);
             break;
         case "confirmPassword":
             validateConfirmPassword(values.password, values.confirmPassword, errors);
@@ -50,10 +53,15 @@ function validateLastName(lastName, errors) {
     return result;
 }
 
-function validateUsername(username, errors) {
+function validateUsername(username, errors, existence) {
     let result = true;
     if (!username) {
         errors.username = t("usernameError");
+        result = false;
+    }
+
+    if (existence.username) {
+        errors.username = t("usernameExistsError");
         result = false;
     }
 
@@ -86,6 +94,16 @@ function validatePassword(password, errors) {
     return result;
 }
 
+function validatePasswordLog(password, errors) {
+    let result = true;
+    if (!password) {
+        errors.password = t("passwordErrorReq");
+        result = false;
+    }
+
+    return result;
+}
+
 function validateConfirmPassword(password, confirmPassword, errors) {
     let result = true;
     if (!confirmPassword) {
@@ -99,10 +117,13 @@ function validateConfirmPassword(password, confirmPassword, errors) {
     return result;
 }
 
-function validateEmail(email, errors) {
+function validateEmail(email, errors, existence) {
     let result = true;
     if (!email) {
         errors.email = t("emailErrorReq");
+        result = false;
+    } else if (existence.email) {
+        errors.email = t("emailExistsError");
         result = false;
     } else {
         result = validate.isEmail(String(email).toLocaleLowerCase());

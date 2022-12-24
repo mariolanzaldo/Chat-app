@@ -2,36 +2,56 @@ import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
 import { Alert, Box } from '@mui/material';
-import { useState } from "react";
+// import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { validator } from '../validator/validator';
+import useForm from '../hooks/useForm';
 
-const Login = () => {
+
+
+const Login2 = () => {
     //TODO: Handle data validation!!! Don't forget to buil and push the image!
 
     const { t } = useTranslation();
 
-    const { user } = useSelector((state) => {
+    const initState = {
+        username: "",
+        password: "",
+    };
+
+    const { user, login } = useSelector((state) => {
         return state
     });
 
     const dispatch = useDispatch();
 
-    const [inputFields, setInputFields] = useState({
-        username: "",
-        password: "",
-    });
+    // const [inputFields, setInputFields] = useState({
+    //     username: "",
+    //     password: "",
+    // });
 
-    const handleChange = (event) => {
-        setInputFields((prevState) => ({
-            ...prevState,
-            [event.target.name]: event.target.value,
-        }));
-    };
+    // const handleChange = (event) => {
+    //     setInputFields((prevState) => ({
+    //         ...prevState,
+    //         [event.target.name]: event.target.value,
+    //     }));
+    // };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    //     dispatch({
+    //         type: "login",
+    //         payload: {
+    //             user: inputFields,
+    //         }
+    //     });
+    // };
+
+    const submit = ({ username, passwordLog: password }) => {
+        const inputFields = { username, password };
+
         dispatch({
             type: "login",
             payload: {
@@ -39,6 +59,18 @@ const Login = () => {
             }
         });
     };
+
+    const {
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        state,
+        errors,
+    } = useForm({
+        initState,
+        callback: submit,
+        validator
+    })
 
     if (user.value) return <Navigate to="/" />;
     return (
@@ -70,15 +102,22 @@ const Login = () => {
                             name="username"
                             type="text"
                             placeholder="username123"
+                            defaultValue={state.username}
                             label={t("username")}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={errors.username ? true : false}
+                            helperText={errors.username}
                         />
                         <TextField
-                            name="password"
+                            name="passwordLog"
                             type="password"
                             placeholder={t("password")}
                             label={t("password")}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={errors.passwordLog ? true : false}
+                            helperText={errors.passwordLog}
                         />
                         <Button
                             fullWidth
@@ -97,10 +136,11 @@ const Login = () => {
                     >
                         {t('Donthaveanaccount')}
                     </Typography>
+                    {login.error ? <Alert severity='error'>Alert!</Alert> : null}
                 </Sheet>
             </main>
         </CssVarsProvider>
     );
 }
 
-export default Login;
+export default Login2;

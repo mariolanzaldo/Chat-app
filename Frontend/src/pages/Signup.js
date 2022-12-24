@@ -176,13 +176,6 @@ export default function App() {
                         </Grid>
                     </Grid>
                 </Box>
-                {/* {signUpError || !signUpSucess ? (
-                    <Typography>
-                        {signUpError}
-                    </Typography>
-                ) : (
-                    <Navigate to="/login" />
-                )} */}
             </Container>
         </Paper>
     );

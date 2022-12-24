@@ -21,6 +21,10 @@ import setLanguage from "./sagas/setLanguage";
 import rejectContact from "./sagas/rejectContact";
 import acceptContact from "./sagas/acceptContact";
 import addNewRequest from "./sagas/addNewRequest";
+import newScribble from "./sagas/newScribble";
+import eraseNotification from "./sagas/eraseNotification";
+import checkUsername from "./sagas/checkUsername";
+import checkEmail from "./sagas/checkEmail";
 
 export function* watchLogin() {
 
@@ -46,6 +50,10 @@ export function* watchDeleteContact() {
 export function* watchCreateMessage() {
     yield takeEvery("createMessage", newMessage);
 };
+
+export function* watchCreateScribble() {
+    yield takeEvery("createScribble", newScribble);
+}
 
 export function* watchAddMessage() {
     yield takeLatest("addNewMessage", addNewMessage);
@@ -106,6 +114,18 @@ export function* watchAddNewRequest() {
     yield takeEvery("addNewRequest", addNewRequest);
 };
 
+export function* watchCleanNotification() {
+    yield takeLatest("cleanNotification", eraseNotification);
+};
+
+export function* watchUsernameExistence() {
+    yield takeLatest("usernameExistence", checkUsername);
+};
+
+export function* watchEmailExistence() {
+    yield takeLatest("emailExistence", checkEmail);
+}
+
 export default function* rootSaga() {
     yield all([
         watchLogin(),
@@ -114,6 +134,7 @@ export default function* rootSaga() {
         watchAddContact(),
         watchDeleteContact(),
         watchCreateMessage(),
+        watchCreateScribble(),
         watchAddMessage(),
         watchCurrentConv(),
         watchQueryMessages(),
@@ -129,5 +150,8 @@ export default function* rootSaga() {
         watchAddNewRequest(),
         watchAcceptFriend(),
         watchRejectFriend(),
+        watchCleanNotification(),
+        watchUsernameExistence(),
+        watchEmailExistence(),
     ]);
 }

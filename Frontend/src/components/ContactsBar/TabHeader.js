@@ -36,7 +36,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
     const dispatch = useDispatch();
 
-    const { username, requests } = useSelector((state) => {
+    const { username } = useSelector((state) => {
         return state.user.value
     });
 

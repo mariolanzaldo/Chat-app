@@ -7,6 +7,7 @@ import userReducer from './reducers/userSlice';
 import signupReducer from './reducers/signupSlice';
 import messageReducer from './reducers/conversationSlice';
 import settingsReducer from './reducers/settingSlice';
+import notificationReducer from './reducers/notificationSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -20,6 +21,7 @@ const store = configureStore({
         // users: usersReducer,
         messages: messageReducer,
         settings: settingsReducer,
+        notification: notificationReducer,
     },
     middleware: (getDefaultMiddleware) => {
         const middleware = [

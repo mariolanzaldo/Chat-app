@@ -3,8 +3,9 @@ import { t } from "i18next";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
 import { setNotification } from "../reducers/notificationSlice";
+// import { conversationErrorFetching } from '../reducers/conversationSlice';
 
-function* newMessage(action) {
+function* newScribble(action) {
     const options = {
         mutation: gql`
         mutation createMessage($messageInput: MessageInput) {
@@ -25,8 +26,9 @@ function* newMessage(action) {
         yield call(client.mutate, options);
     } catch (err) {
         yield put(setNotification({ error: t("errorSendMessage"), severity: "warning" }));
+
     }
 
 };
 
-export default newMessage;
+export default newScribble;

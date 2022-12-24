@@ -72,6 +72,11 @@ class UserAPI extends RESTDataSource {
             { body: friendInput },
         );
     };
+
+    async fieldExistence(params) {
+        return this.get(
+            `/api/users/fieldExistence`, { params });
+    }
 }
 
 module.exports = UserAPI;

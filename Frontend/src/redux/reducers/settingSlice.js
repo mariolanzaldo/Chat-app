@@ -13,9 +13,9 @@ const settingsSlice = createSlice({
         changeLanguage: (state, action) => {
             state.value = action.payload;
         },
-        errorChangeLanguage: (state, action) => {
-            state.value = action.payload;
-        }
+        // errorChangeLanguage: (state, action) => {
+        //     state.value = action.payload;
+        // }
     },
 });
 

@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
-import { userErrorFetching, removeMember } from "../reducers/userSlice";
+import { setDefaultNotification } from "../reducers/notificationSlice";
+import { removeMember } from "../reducers/userSlice";
 
 function* deleteMember(action) {
   const options = {
@@ -28,7 +29,7 @@ function* deleteMember(action) {
 
     yield put(removeMember(res.data));
   } catch (error) {
-    yield put(userErrorFetching(error));
+    yield put(setDefaultNotification());
   }
 };
 

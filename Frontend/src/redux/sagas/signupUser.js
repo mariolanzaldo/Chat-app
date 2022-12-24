@@ -1,9 +1,8 @@
 import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
-
-import { setUser } from "../reducers/userSlice";
-import { setSignupFetching, signupErrorFetching } from "../reducers/signupSlice";
+import { setSignupFetching } from "../reducers/signupSlice";
+import { setNotification } from "../reducers/notificationSlice";
 
 function* signupUser(action) {
     const options = {
@@ -22,16 +21,15 @@ function* signupUser(action) {
 
     try {
         yield put(setSignupFetching());
-        const res = yield call(client.mutate, options);
-        const user = res.data.createUser;
+        yield call(client.mutate, options);
 
-        // if (!user.success) {
-        //     yield put(errorDB({ user }));
-        // }
+        yield put(setNotification({
+            error: "User created succesfully. Login to start chating",
+            severity: "success"
+        }));
+    } catch (error) {
 
-        yield put(setUser({ user }));
-    } catch (err) {
-        yield put(signupErrorFetching(err));
+        yield put(setNotification({ error: error.message, severity: "error" }));
     }
 
 };

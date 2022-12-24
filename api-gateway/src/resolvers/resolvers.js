@@ -49,6 +49,19 @@ const resolvers = {
             return user;
 
         },
+        existence: async (parent, input, { dataSources }) => {
+            const { username, email } = input;
+
+            if (username) {
+                const res = await dataSources.userAPI.fieldExistence({ username });
+
+                return { username: res.exists };
+            } else if (email) {
+                const res = await dataSources.userAPI.fieldExistence({ email });
+
+                return { email: res.exists };
+            }
+        },
     },
     User: {
         rooms: async (parent, input, { dataSources }) => {
@@ -74,12 +87,18 @@ const resolvers = {
 
     },
     Room: {
-        members: (parent) => {
-            const output = parent.members.map((member) => {
-                return member
+        members: async (parent, _, { dataSources }) => {
+            const output = parent.members.map(async ({ username, joinedAt }) => {
+                const { user } = await dataSources.userAPI.getUser({ username });
+
+
+                const member = { ...user, joinedAt };
+                return member;
             });
 
-            return output
+            const member = await Promise.all(output);
+
+            return member
         },
         admin: (parent) => {
             const output = parent.admin.map((admin) => admin);
@@ -129,19 +148,19 @@ const resolvers = {
                 email,
             } = userInput;
 
-            const signup = dataSources.authAPI.signup(username, password);
-            const userInfo = dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
 
             try {
-                const [userRes, authRes] = await Promise.all([userInfo, signup]);
-
-                if (userRes.error || authRes.error) {
-                    return { success: false, errorMessage: userRes.error ? userRes.error : authRes.error }
-                }
+                const userInfo = await dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
+                const signup = await dataSources.authAPI.signup(username, password);
 
                 return { success: true, errorMessage: null };
+
             } catch (err) {
-                return { success: false, errorMessage: err.message };
+                if (err.extensions.response.body.error.keyValue.email) {
+                    throw new GraphQLError("The email has been used");
+                } else if (err.extensions.response.body.error.keyValue._id) {
+                    throw new GraphQLError("The username has been taked");
+                }
             }
         },
         login: async (parent, { userInput }, { dataSources, req, res }) => {
@@ -284,7 +303,7 @@ const resolvers = {
                 return response;
             } catch (err) {
                 const message = err.extensions.response.body.error;
-                return { success: false, errorMessage: message };
+                throw new GraphQLError(message);
             }
 
         },

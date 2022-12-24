@@ -46,6 +46,7 @@ function* queryUser(action) {
                   } 
                   members {
                     username
+                    avatar
                     joinedAt
                   }
                 }

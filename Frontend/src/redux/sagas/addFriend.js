@@ -1,8 +1,9 @@
 import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
-
-import { setUserFetching, userErrorFetching, addContact, setUser } from "../reducers/userSlice";
+import { t } from 'i18next';
+import { setUserFetching, userErrorFetching } from "../reducers/userSlice";
+import { setNotification } from "../reducers/notificationSlice";
 // import { GraphQLError } from "graphql";
 
 function* addFriend(action) {
@@ -30,9 +31,11 @@ function* addFriend(action) {
         variables: action.payload,
     };
     try {
-        const res = yield call(client.mutate, options);
+        yield call(client.mutate, options);
+
+        yield put(setNotification({ error: t("requestSent"), severity: "success" }));
     } catch (error) {
-        yield put(userErrorFetching(error));
+        yield put(setNotification({ error: error.message, severity: "error" }));
     }
 };
 

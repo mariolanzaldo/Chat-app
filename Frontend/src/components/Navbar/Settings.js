@@ -112,13 +112,13 @@ const Settings = () => {
                                 variant="fullWidth"
                                 aria-label="full width tabs example"
                             >
-                                <Tab label={t("addMember")} {...a11yProps(0)} />
+                                <Tab label={t("accountSettings")} {...a11yProps(0)} />
                                 <Tab label={t("languageSettings")} {...a11yProps(1)} />
                             </Tabs>
                         </AppBar>
 
                         <TabPanel value={value} index={0} dir={theme.direction}>
-                            Account
+                            {t("accountSettings")}
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <LanguageSettings setOpen={setOpen} />

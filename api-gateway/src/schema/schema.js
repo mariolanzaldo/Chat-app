@@ -110,6 +110,11 @@ const typeDefs = gql`
         value: User
     }
 
+    type Exists {
+        username: Boolean
+        email: Boolean
+    }
+
     type Mutation {
         #User info and login
         login(userInput: UserInput): User!
@@ -139,6 +144,7 @@ const typeDefs = gql`
         messages(_id: String): [Message]
         currentUser: User
         user(_id: String): User
+        existence(username: String, email: String): Exists
         #currentRoom(_id: String): Room
     }
 

@@ -227,6 +227,20 @@ router.patch('/deleteFriend', async (req, res, next) => {
     }
 });
 
+router.get("/fieldExistence", async (req, res) => {
+    try {
+        const field = await userServiceModel.findOne(req.query);
+
+        if (!field) {
+            return res.status(200).send({ exists: false });
+        }
+
+        return res.status(200).send({ exists: true });
+    } catch (error) {
+        return res.status(500).send({ error: error.message });
+    }
+})
+
 async function findUser(user) {
     const found = await userServiceModel.findOne({ $or: [{ email: user[0].email }, { username: user[0].username }] });
 

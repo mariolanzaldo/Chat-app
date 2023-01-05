@@ -5,7 +5,7 @@ metadata:
   labels:
     app: users-service-db
 spec:
-  #storageClassName: gp2
+  storageClassName: db-storage-class
   resources:
     requests:
       storage: 512Mi

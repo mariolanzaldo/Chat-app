@@ -148,7 +148,6 @@ const resolvers = {
                 email,
             } = userInput;
 
-
             try {
                 const userInfo = await dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
                 const signup = await dataSources.authAPI.signup(username, password);

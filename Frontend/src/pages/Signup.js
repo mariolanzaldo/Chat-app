@@ -9,8 +9,7 @@ import * as style from '@dicebear/adventurer-neutral';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-
-export default function App() {
+export default function Signup() {
 
     const { t } = useTranslation();
 
@@ -34,14 +33,19 @@ export default function App() {
             dataUri: true,
             size: 1280,
         });
-        dispatch({
-            type: "signup",
-            payload: {
-                signup: userInput,
-            }
-        });
+        if (!errors.username && !errors.email && !errors.password &&
+            !errors.confirmPassword && !errors.firstName && !errors.lastName) {
+            dispatch({
+                type: "signup",
+                payload: {
+                    signup: userInput,
+                }
+            });
 
-        navigate('/login');
+            navigate('/login');
+        }
+
+
     };
 
     const {

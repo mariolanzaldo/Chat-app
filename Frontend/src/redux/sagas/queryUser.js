@@ -3,7 +3,7 @@ import { call, put } from 'redux-saga/effects';
 import { setUser, userErrorFetching } from '../reducers/userSlice';
 
 import client from "../../client";
-
+//TODO: Check the inputs on the query
 function* queryUser(action) {
   const options = {
     query: gql`

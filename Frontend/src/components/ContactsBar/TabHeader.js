@@ -36,7 +36,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
     const dispatch = useDispatch();
 
-    const { username } = useSelector((state) => {
+    const { username, requests } = useSelector((state) => {
         return state.user.value
     });
 
@@ -87,12 +87,24 @@ const TabHeader = ({ open, setOpen, filterData }) => {
             }
         };
 
-        dispatch({
-            type: 'addFriend',
-            payload: friendReq,
+        const alreadyOnRequest = requests.filter((element) => {
+            if (element.from.username === userB); return element;
         });
 
-        setOpen(false);
+        if (alreadyOnRequest) {
+            setFormError(t("addFriendError3"));
+        }
+
+        if (!formError && !alreadyOnRequest) {
+            dispatch({
+                type: 'addFriend',
+                payload: friendReq,
+            });
+
+            setOpen(false);
+        }
+
+
     };
 
     return (

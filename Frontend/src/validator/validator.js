@@ -118,6 +118,8 @@ function validateConfirmPassword(password, confirmPassword, errors) {
 }
 
 function validateEmail(email, errors, existence) {
+    console.log(existence);
+    console.log(email)
     let result = true;
     if (!email) {
         errors.email = t("emailErrorReq");

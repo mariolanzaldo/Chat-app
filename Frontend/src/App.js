@@ -6,7 +6,6 @@ import Dashboard from "./pages/Dashboard";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import Login2 from "./pages/Login2";
 import { Box } from "@mui/material";
 import NotificationBar from "./components/NotificationBar/NotificationBar";
 
@@ -22,7 +21,6 @@ export default function App() {
             </Route>
 
             <Route path="/signup" element={<Signup />} />
-            {/* <Route path="/login" element={<Login2 />} /> */}
             <Route path="/login" element={<Login />} />
           </Routes>
         </BrowserRouter>

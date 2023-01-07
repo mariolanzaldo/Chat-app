@@ -15,7 +15,7 @@ const useForm = ({ initState, callback, validator }) => {
             Object.values(errors).filter(error => typeof error !== "undefined")
                 .length > 0;
         if (isSubmited && !isValidErrors()) callback(state);
-    });
+    }, [isSubmited]);
 
     useEffect(() => {
         dispatch({
@@ -28,7 +28,7 @@ const useForm = ({ initState, callback, validator }) => {
         dispatch({
             type: "emailExistence",
             payload: { email: state.email },
-        })
+        });
     }, [state.email, dispatch]);
 
     const handleChange = event => {

@@ -5,7 +5,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 
 const SERVER_URI = "/graphql";
-const WS_URL = window.location.protocol === "https" ? `wss://${window.location.host}/graphql` : `ws://${window.location.host}/graphql`;
+const WS_URL = window.location.protocol === "https:" ? `wss://${window.location.host}/graphql` : `ws://${window.location.host}/graphql`;
 
 //Apollo Client now supports subscriptions
 const httpLink = new HttpLink({

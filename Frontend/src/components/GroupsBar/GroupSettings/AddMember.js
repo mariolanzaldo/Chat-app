@@ -10,7 +10,7 @@ const AddMember = ({ currentChat, setOpen }) => {
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
-    const { contactList } = useSelector((state) => state.user.value);
+    const { contactList, rooms } = useSelector((state) => state.user.value);
 
     const { _id } = currentChat;
     const [chips, setChips] = useState([]);
@@ -27,7 +27,7 @@ const AddMember = ({ currentChat, setOpen }) => {
             _id,
             members,
         }
-        //TODO: saga created, check if the chat service looks good to receive the data!
+
         dispatch({
             type: 'addMember',
             payload: { roomInput },
@@ -42,12 +42,24 @@ const AddMember = ({ currentChat, setOpen }) => {
     };
 
     const handleValidation = (chip) => {
-        const isValid = contactList.find((user) => user === chip);
+        const alreadyFriend = contactList.find(({ username }) => username === chip);
+
+        const alreadyMember = rooms.reduce((acc, { _id, members }) => {
+
+            if (_id === currentChat._id) {
+                const inGroup = members.find(({ username }) => username === chip);
+                if (inGroup) {
+                    acc = inGroup
+                    return acc;
+                }
+            }
+
+        });
 
         return {
-            isError: !isValid,
-            textError: `Add ${chip} to your contact list first`,
-        }
+            isError: !alreadyFriend ? !alreadyFriend : alreadyMember,
+            textError: !alreadyFriend ? t("addMemberError1") : t("addMemberError2"),
+        };
     };
 
     return (

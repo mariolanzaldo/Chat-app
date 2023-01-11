@@ -1,11 +1,20 @@
 const express = require('express');
 const userRoutes = require('./routes/serviceRoutes');
+const expressWinston = require('express-winston');
+const logger = require('./logger');
 require("dotenv").config();
 require('./db/db');
 
 const app = express();
 
 const port = process.env.PORT || 3000;
+
+app.use(
+    expressWinston.logger({
+        winstonInstance: logger,
+        statusLevels: true,
+    })
+);
 
 app.use(express.json());
 

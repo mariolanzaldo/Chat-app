@@ -3,6 +3,8 @@ const passport = require('passport');
 const authRoutes = require("./routes/authRoutes");
 const secureRoute = require('./routes/secure-routes');
 const rateLimit = require('express-rate-limit');
+const expressWinston = require("express-winston");
+const logger = require("./logger");
 require('./auth/auth');
 require('./db/db');
 require("dotenv").config();
@@ -18,6 +20,12 @@ const app = express();
 // });
 
 // app.use(loginLimiter);
+app.use(
+    expressWinston.logger({
+        winstonInstance: logger,
+        statusLevels: true,
+    })
+);
 
 app.use(express.json());
 

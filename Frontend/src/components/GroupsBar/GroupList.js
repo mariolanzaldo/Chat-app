@@ -18,7 +18,7 @@ const GroupList = ({ rooms }) => {
                 if (groupalRoom) {
                     return (
                         <ListItem
-                            // button
+                            button
                             key={name}
                             sx={{
                                 display: 'flex',
@@ -27,13 +27,15 @@ const GroupList = ({ rooms }) => {
                                 width: '98%',
                             }}
                             onClick={(event) => {
-                                dispatch({
-                                    type: 'setConversation',
-                                    payload: {
-                                        _id
-                                    },
-                                });
-                                if (event.target.className === 'MuiTypography-root MuiTypography-body1 MuiListItemText-primary css-10hburv-MuiTypography-root') {
+
+                                if (event.target.className.includes('MuiTypography-root MuiTypography-body1 MuiListItemText-primary')) {
+                                    dispatch({
+                                        type: 'setConversation',
+                                        payload: {
+                                            _id
+                                        },
+                                    });
+
                                     navigate(`conversation/${_id}`);
                                 }
                             }}

@@ -85,7 +85,6 @@ const ChatWindow = () => {
                         {`${t("members")}:`}
                     </Typography>
                     {members.map((user) => {
-
                         return <Chip
                             key={user.username}
                             avatar={<Avatar src={user.avatar} />}

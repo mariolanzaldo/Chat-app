@@ -91,11 +91,11 @@ const TabHeader = ({ open, setOpen, filterData }) => {
             if (element.from.username === userB); return element;
         });
 
-        if (alreadyOnRequest) {
+        if (alreadyOnRequest.length > 0) {
             setFormError(t("addFriendError3"));
         }
 
-        if (!formError && !alreadyOnRequest) {
+        if (!formError && alreadyOnRequest.length < 1) {
             dispatch({
                 type: 'addFriend',
                 payload: friendReq,

@@ -4,11 +4,14 @@ import { Box, Button, MenuItem, Modal, Typography } from '@mui/material';
 import CommonButton from '../../common/CommonButton/CommonButton';
 import { contactStyles } from '../../ContactsBar/styles';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const ManageDeleteGroup = ({ currentChat }) => {
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const { _id } = currentChat;
 
     const { username } = useSelector((state) => state.user.value);
@@ -29,6 +32,8 @@ const ManageDeleteGroup = ({ currentChat }) => {
             type: 'deleteGroup',
             payload: { roomInput },
         });
+
+        navigate(`/`);
 
         return setOpen(false);
     };

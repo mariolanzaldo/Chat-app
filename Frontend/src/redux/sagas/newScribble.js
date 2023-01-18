@@ -25,6 +25,8 @@ function* newScribble(action) {
     try {
         yield call(client.mutate, options);
     } catch (err) {
+        console.log(action.payload.content.length);
+        console.log(err);
         yield put(setNotification({ error: t("errorSendMessage"), severity: "warning" }));
 
     }

@@ -23,7 +23,6 @@ const Messages = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     height: 'calc(100vh - 64px - 70px)',
-                    // overflowY: "scroll",
                 }}
             >
                 {filteredMessages.map((message, index) => {

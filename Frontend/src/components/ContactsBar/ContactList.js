@@ -59,6 +59,7 @@ const ContactList = ({ contacts }) => {
                         gap: '10px',
                         padding: '0 0 0 10px',
                         width: '100%',
+                        // border: '1px solid red'
                     }}
                 >
                     <ListItemIcon>

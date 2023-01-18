@@ -17,8 +17,9 @@ const MessageItem = ({ message }) => {
             <ListItem sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                padding: 0,
-                // backgroundColor: color,
+                padding: 1,
+                alignItems: "stretch",
+                overflowWrap: "break-word",
                 borderRadius: '10px',
             }}>
                 {!message.isScribble ? (<>
@@ -29,6 +30,8 @@ const MessageItem = ({ message }) => {
                             backgroundColor: color,
                             borderRadius: '10px',
                             padding: 1,
+                            margin: 0,
+                            height: 'auto',
                             '& .MuiListItemText-primary': {
 
                                 fontWeight: 'bold',

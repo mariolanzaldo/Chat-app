@@ -152,6 +152,7 @@ const typeDefs = gql`
         newMessage(roomId: ID): Message
         newRoom: Room
         addFriend: Request
+        friendRequestAccepted: User
     }
 `;
 

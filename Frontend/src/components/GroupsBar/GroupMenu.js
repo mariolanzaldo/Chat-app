@@ -12,7 +12,9 @@ const GroupMenu = ({ id }) => {
 
     let currentChat, isAdmin;
 
-    currentChat = rooms.find((room) => room._id === id);
+    currentChat = rooms.find((room) => {
+        return room._id === id
+    });
 
     isAdmin = currentChat.admin.find((user) => user.username === username);
 

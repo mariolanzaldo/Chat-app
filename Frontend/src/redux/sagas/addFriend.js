@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
 import { t } from 'i18next';
-import { setUserFetching, userErrorFetching } from "../reducers/userSlice";
+// import { setUserFetching, userErrorFetching } from "../reducers/userSlice";
 import { setNotification } from "../reducers/notificationSlice";
 // import { GraphQLError } from "graphql";
 
@@ -35,7 +35,11 @@ function* addFriend(action) {
 
         yield put(setNotification({ error: t("requestSent"), severity: "success" }));
     } catch (error) {
-        yield put(setNotification({ error: error.message, severity: "error" }));
+        if (error.message === "Request already sent") {
+            yield put(setNotification({ error: t("addFriendError4"), severity: "error" }));
+        } else {
+            yield put(setNotification({ error: error.message, severity: "error" }));
+        }
     }
 };
 

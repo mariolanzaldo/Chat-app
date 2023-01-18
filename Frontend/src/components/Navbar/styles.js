@@ -1,7 +1,10 @@
 export const navbarStyles = {
     drawer: {
-        width: 320,
+        width: '20.8vw',
+        // height: '100%',
+        // width: 'calc(100vh - 420px)',
         // width: '100vh',
+        // border: '1px solid red',
         flexShrink: 0,
         overflow: 'hidden',
         '& .MuiDrawer-paper': {
@@ -63,7 +66,7 @@ export const navbarStyles = {
         alignItems: 'center',
         padding: 0,
         mr: 2,
-        width: '98.5%',
+        width: 'calc(20.8vw - 1px)',
         height: '100px',
         backgroundColor: '#f5f5f5',
         borderBottom: '1px solid rgba(0, 0, 0, 0.12)',

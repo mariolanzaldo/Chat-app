@@ -26,7 +26,6 @@ const FriendRequests = () => {
                     color="secondary"
                 >
                     {t("friendRequest")}
-
                 </Badge>
             </MenuItem>
 
@@ -79,7 +78,26 @@ const FriendRequests = () => {
                             sx={{
                                 width: "100%",
                                 height: "400px",
-                                // overflowY: "scroll"
+                                overflowY: "scroll",
+                                "& .css-tazwbd-MuiList-root::-webkit-scrollbar-track": {
+                                    border: 'none',
+                                },
+                                '&::-webkit-scrollbar': {
+                                    width: '0.4em',
+
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+                                    webkitBoxShadow: 'inset 0 0 6px rgba(,0,0,0.00)',
+
+
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: 'rgba(145, 136, 153, 0.91)',
+                                    borderRadius: '20px',
+
+                                    outline: '1px solid slategrey'
+                                }
                             }}
                         >
                             {requests.map((item) => <RequestItem item={item} key={item.from} />)}

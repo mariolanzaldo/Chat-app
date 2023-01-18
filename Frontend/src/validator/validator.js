@@ -33,7 +33,8 @@ export const validator = (values, fieldName, existence) => {
 
 function validateFirstName(firstName, errors) {
     let result = true;
-
+    console.log(!firstName);
+    console.log(errors);
     if (!firstName) {
         errors.firstName = t("firstNameError");
         result = false;
@@ -60,7 +61,7 @@ function validateUsername(username, errors, existence) {
         result = false;
     }
 
-    if (existence.username) {
+    if (existence?.username) {
         errors.username = t("usernameExistsError");
         result = false;
     }
@@ -118,8 +119,6 @@ function validateConfirmPassword(password, confirmPassword, errors) {
 }
 
 function validateEmail(email, errors, existence) {
-    console.log(existence);
-    console.log(email)
     let result = true;
     if (!email) {
         errors.email = t("emailErrorReq");

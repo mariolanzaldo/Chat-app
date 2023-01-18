@@ -14,8 +14,10 @@ const useForm = ({ initState, callback, validator }) => {
         const isValidErrors = () =>
             Object.values(errors).filter(error => typeof error !== "undefined")
                 .length > 0;
-        if (isSubmited && !isValidErrors()) callback(state);
-    }, [isSubmited]);
+        if (isSubmited && !isValidErrors()) {
+            callback(state);
+        }
+    }, [isSubmited, state, callback, errors]);
 
     useEffect(() => {
         dispatch({
@@ -55,13 +57,28 @@ const useForm = ({ initState, callback, validator }) => {
 
     const handleSubmit = event => {
         event.preventDefault();
+        let errs = {};
 
-        const { name: fieldName } = event.target;
-        const faildFields = validator(state, fieldName, notification.existence);
-        setErrors(() => ({
+        // const { name: fieldName } = event.target;
+        for (const key in state) {
+            if (state[key].trim() === "") {
+                const emptyFields = validator(state, key, notification.existence);
+                errs = {
+                    ...errs,
+                    [key]: Object.values(emptyFields)[0],
+                };
+            }
+        }
+        // const faildFields = validator(state, fieldName, notification.existence);
+        // setErrors(() => ({
+        //     ...errors,
+        //     [fieldName]: Object.values(faildFields)[0]
+        // }));
+        setErrors({
             ...errors,
-            [fieldName]: Object.values(faildFields)[0]
-        }));
+            ...errs
+        });
+
         setIsSubmited(true);
     };
 

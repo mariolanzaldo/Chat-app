@@ -59,6 +59,12 @@ const ChatWindow = () => {
                 flexDirection: 'column',
                 flexWrap: "nowrap",
                 height: "100vh",
+                //TODO: This width controls the chatview
+                width: "79.2vw",
+                // overscrollBehavior: 'contain',
+                scrollBehavior: 'smooth',
+                // width: '79.5%',
+                border: '1px solid red',
             }}
         >
             <Grid
@@ -121,7 +127,6 @@ const ChatWindow = () => {
                     '&::-webkit-scrollbar-thumb': {
                         backgroundColor: 'rgba(145, 136, 153, 0.91)',
                         borderRadius: '20px',
-
                         outline: '1px solid slategrey'
                     }
                 }}

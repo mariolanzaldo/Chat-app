@@ -28,7 +28,6 @@ function* signupUser(action) {
             severity: "success"
         }));
     } catch (error) {
-        console.log(error);
         yield put(setNotification({ error: error.message, severity: "error" }));
     }
 

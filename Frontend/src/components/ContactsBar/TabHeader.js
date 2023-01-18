@@ -72,6 +72,8 @@ const TabHeader = ({ open, setOpen, filterData }) => {
             setFormError(i("addFriendError1"));
         } else if (value.trim() === "") {
             setFormError(i("addFriendError2"));
+        } else {
+            setFormError(null);
         }
     }
 
@@ -87,24 +89,24 @@ const TabHeader = ({ open, setOpen, filterData }) => {
             }
         };
 
-        const alreadyOnRequest = requests.filter((element) => {
+        const onRequest = requests.filter((element) => {
             if (element.from.username === userB); return element;
         });
 
-        if (alreadyOnRequest.length > 0) {
+        if (onRequest.length > 0) {
             setFormError(t("addFriendError3"));
         }
 
-        if (!formError && alreadyOnRequest.length < 1) {
+        if (!formError && onRequest.length < 1 && userB !== username) {
             dispatch({
                 type: 'addFriend',
                 payload: friendReq,
             });
 
             setOpen(false);
+        } else if (userB === username) {
+            setFormError(t("addFriendError1"));
         }
-
-
     };
 
     return (
@@ -153,7 +155,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                             onBlur={handleBlur}
                             error={formError ? true : false}
                             helperText={formError}
-                            required
+                        // required
                         />
                     </Box>
                     <Box sx={contactStyles.buttons}>
@@ -167,6 +169,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
+                                setFormError(null);
                                 return setOpen(false)
                             }}
                         >

@@ -18,6 +18,7 @@ const ComposeArea = () => {
 
     const [message, setMessage] = useState("");
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState(false);
 
     const { roomId } = useParams();
 
@@ -46,12 +47,14 @@ const ComposeArea = () => {
     };
 
     const handleChange = (event) => {
+        event.preventDefault();
         const text = event.target.value;
 
         setMessage(text);
     };
 
     const handleClick = (event) => {
+        event.preventDefault();
 
         setOpen(true);
     };
@@ -69,14 +72,22 @@ const ComposeArea = () => {
             isScribble: true,
         };
 
-        dispatch({
-            type: "createScribble",
-            payload: messageInput,
-        });
+        if (image.length < 10000) {
+            dispatch({
+                type: "createScribble",
+                payload: messageInput,
+            });
+            setError(false);
+            setOpen(false);
 
-        setOpen(false);
+        } else {
+            const ctx = canva.getContext("2d");
+            ctx.clearRect(0, 0, 600, 400);
+            setError(true);
+        }
+
+
     };
-
 
     return (
         <>
@@ -92,13 +103,16 @@ const ComposeArea = () => {
                     alignItems: "center",
                 }}
             >
-
                 <TextField
                     direction="column"
                     placeholder={t("typeMessage")}
-                    //multiline={true}
+                    // multiline={true}
                     value={message}
+                    // variant="outlined"
                     onChange={handleChange}
+                    inputProps={{
+                        maxLength: 5000,
+                    }}
                     required
                     sx={{
                         backgroundColor: "rgb(240, 240, 240)",
@@ -110,6 +124,7 @@ const ComposeArea = () => {
                         margin: 0,
                         whiteSpace: "normal",
                         overflowY: 'scroll',
+                        overflowWrap: "break-word",
                         "& fieldset": {
                             border: 'none',
                         },
@@ -175,10 +190,13 @@ const ComposeArea = () => {
                         }}
                     >
                         <Canvas
-                            width={600}
+                            width={430}
+                            // width={600}
                             height={300}
                             id='canvas'
-                        />
+                        />{
+                            error ? <Typography color='red' sx={{ m: 1, textAlign: 'center' }}>{t("scribbleError")}</Typography> : null
+                        }
                     </Box>
 
                     <Box sx={contactStyles.buttons}>
@@ -192,6 +210,7 @@ const ComposeArea = () => {
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
+                                setError(false);
                                 return setOpen(false)
                             }}
                         >

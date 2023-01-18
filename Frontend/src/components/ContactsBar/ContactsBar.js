@@ -37,7 +37,7 @@ const ContactsBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '100%',
+                    width: '20.5vw',
                     margin: 0,
                     padding: 0,
                 }}

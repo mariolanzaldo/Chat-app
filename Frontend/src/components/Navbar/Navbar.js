@@ -21,7 +21,8 @@ const Navbar = () => {
 
     const open = Boolean(anchorEl);
 
-    const newNotifications = `You have ${requests.length} friend requests!`;
+    const newNotifications = t("pendingRequests");
+    // `You have ${requests.length} friend requests!`;
 
     const handleClick = (event) => {
         event.preventDefault();

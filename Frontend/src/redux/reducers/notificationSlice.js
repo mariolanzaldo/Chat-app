@@ -4,6 +4,7 @@ const initialState = {
     error: null,
     severity: null,
     existence: null,
+    requestAccepted: null,
 };
 
 const notificationSlice = createSlice({

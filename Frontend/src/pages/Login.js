@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
-import { Alert, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
@@ -21,6 +21,11 @@ const Login = () => {
         password: "",
     });
 
+    const [formErrors, setFormErrors] = useState({
+        username: null,
+        password: null,
+    });
+
     const handleChange = (event) => {
         setInputFields((prevState) => ({
             ...prevState,
@@ -28,14 +33,51 @@ const Login = () => {
         }));
     };
 
+    const validateForm = () => {
+        const { username, password } = inputFields;
+
+        if (username.trim() === "" && password.trim() === "") {
+            setFormErrors({
+                username: "Username field is empty",
+                password: "Password field is empty",
+            });
+        } else if (username.trim() === "" && password.trim() !== "") {
+            setFormErrors({
+                username: "Username field is empty",
+                password: null,
+            });
+        } else if (username.trim() !== "" && password.trim() === "") {
+            setFormErrors({
+                username: null,
+                password: "Password field is empty",
+            });
+        } else {
+            setFormErrors({
+                username: null,
+                password: null,
+            });
+        }
+    };
+
+    const handleBlur = (event) => {
+        event.preventDefault();
+
+        validateForm();
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        dispatch({
-            type: "login",
-            payload: {
-                user: inputFields,
-            }
-        });
+        validateForm();
+
+        if (!formErrors.username && !formErrors.password) {
+            dispatch({
+                type: "login",
+                payload: {
+                    user: inputFields,
+                }
+            });
+        }
+
     };
 
     if (user.value) return <Navigate to="/" />;
@@ -70,6 +112,9 @@ const Login = () => {
                             placeholder="username123"
                             label={t("username")}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={formErrors.username ? true : false}
+                            helperText={formErrors.username}
                         />
                         <TextField
                             name="password"
@@ -77,6 +122,9 @@ const Login = () => {
                             placeholder={t("password")}
                             label={t("password")}
                             onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={formErrors.password ? true : false}
+                            helperText={formErrors.password}
                         />
                         <Button
                             fullWidth

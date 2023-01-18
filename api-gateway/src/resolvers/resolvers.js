@@ -1,8 +1,6 @@
-const express = require('express');
 const { GraphQLError, GraphQLScalarType, Kind, PossibleFragmentSpreadsRule } = require('graphql');
 const { PubSub, withFilter } = require('graphql-subscriptions');
 
-const router = express.Router();
 const pubSub = new PubSub();
 
 const resolvers = {
@@ -284,6 +282,20 @@ const resolvers = {
             const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
 
             try {
+
+                const { user: { requests: userBRequests } } = await dataSources.userAPI.getUser(friendInput.userB[0].username);
+
+                const alreadyOnRequest = userBRequests.filter((element) => {
+                    return element.from === friendInput.userA[0].username;
+                });
+
+                if (alreadyOnRequest.length > 0) {
+                    throw new GraphQLError("Request already sent", {
+                        extensions: {
+                            code: "FORBIDDEN",
+                        }
+                    });
+                }
                 const response = await dataSources.userAPI.friendRequest(request);
 
                 const req = {
@@ -301,7 +313,7 @@ const resolvers = {
 
                 return response;
             } catch (err) {
-                const message = err.extensions.response.body.error;
+                const message = err.extensions.response?.body.error ? err.extensions.response.body.error : err;
                 throw new GraphQLError(message);
             }
 
@@ -329,6 +341,23 @@ const resolvers = {
                 });
 
                 const values = await Promise.all(updatedUsers);
+
+                const roomsArray = values[1].rooms.map(async (room) => {
+                    const newRoom = await dataSources.chatAPI.getRoom(room._id);
+
+                    if (newRoom) {
+                        room = newRoom;
+                    }
+                    return room;
+                });
+
+                const completeRooms = await Promise.all(roomsArray);
+
+                values[1].rooms = completeRooms;
+
+                pubSub.publish(`FRIEND_REQUEST_ACCEPTED`, {
+                    friendRequestAccepted: values[1],
+                });
 
                 return { success: true, messageError: null, value: values[0] };
 
@@ -487,6 +516,9 @@ const resolvers = {
             //     }
             // )
         },
+        friendRequestAccepted: {
+            subscribe: (_, __, { user }) => pubSub.asyncIterator(`FRIEND_REQUEST_ACCEPTED`),
+        }
 
     }
 };

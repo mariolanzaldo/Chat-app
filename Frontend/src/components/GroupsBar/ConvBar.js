@@ -35,7 +35,7 @@ const ConvBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '100%',
+                    width: '21vw',
                     margin: 0,
                     padding: 0,
                 }}

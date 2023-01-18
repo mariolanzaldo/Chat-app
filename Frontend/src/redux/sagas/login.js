@@ -74,7 +74,7 @@ function* login(action) {
     const notification = {
       error: error.message,
       severity: "error",
-    }
+    };
 
     yield put(setNotification(notification));
   }

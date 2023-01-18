@@ -33,19 +33,26 @@ export default function Signup() {
             dataUri: true,
             size: 1280,
         });
-        if (!errors.username && !errors.email && !errors.password &&
-            !errors.confirmPassword && !errors.firstName && !errors.lastName) {
-            dispatch({
-                type: "signup",
-                payload: {
-                    signup: userInput,
-                }
-            });
 
-            navigate('/login');
-        }
+        // console.log(errors);
 
+        // if (state.username.trim() !== "" && state.firstName.trim() !== "" && state.lastName.trim() !== "" &&
+        //     state.email.trim() !== "" && state.password.trim() !== "" && state.confirmPassword.trim() !== "") {
+        //     console.log('enters');
+        dispatch({
+            type: "signup",
+            payload: {
+                signup: userInput,
+            }
+        });
 
+        navigate('/login');
+        // } 
+        // else {
+        //     console.log('one it is empty')
+        // }
+
+        return;
     };
 
     const {

@@ -43,6 +43,7 @@ export const i18nOptions = () => ({
                 fillForm: "Fill out the form and submit",
                 submit: "Submit",
                 cancel: "Cancel",
+                userCreated: "User created succesfully. Login to start chating",
                 addFriendError1: "Invalid user",
                 addFriendError2: "Field must be fullfilled",
                 addFriendError3: "There is a pending request from this user",
@@ -88,10 +89,11 @@ export const i18nOptions = () => ({
                 apply: "Apply",
                 friendRequest: "Friend requests",
                 requestSent: "Friend request sent",
+                friendRequestAccepted: "Friend request accepted",
                 languageChanged: "Language change applied",
                 errorSendMessage: "Message cannot be sent. Try again",
                 errorQueryMessages: "Couldn't fetch messages list",
-
+                defaultError: "Something wrong ocurred. Try again",
             }
         },
         es: {
@@ -130,6 +132,7 @@ export const i18nOptions = () => ({
                 fillForm: "Completa los campos y envía",
                 submit: "Enviar",
                 cancel: "Cancelar",
+                userCreated: "Usuario creado exitosamente. Ingresa tu usuario para comenzar a chatear",
                 addFriendError1: "Usuario inválido",
                 addFriendError2: "El campo debe ser llenado",
                 addFriendError3: "Hay una solicitud de amistad pendiente de este usuario",
@@ -175,10 +178,11 @@ export const i18nOptions = () => ({
                 apply: "Aplicar",
                 friendRequest: "Solicitudes de amistad",
                 requestSent: "Solicitud de amistad enviada",
+                friendRequestAccepted: "Solicitud de amistad aceptada",
                 languageChanged: "Ajusted de lenguaje aplicado",
                 errorSendMessage: "El mensaje no puede ser enviado. Intenta de nuevo",
                 errorQueryMessages: "No s epudo recuperar la lista de mensajes",
-
+                defaultError: "Algo ocurrió mal. Intenta de nuevo",
             }
         },
         fr: {
@@ -217,6 +221,7 @@ export const i18nOptions = () => ({
                 fillForm: "Remplir l'information et envoyer",
                 submit: "Soumettre",
                 cancel: "Annuler",
+                userCreated: "L'utilisateur a été créé avec succès. Connectez-vous pour commencer à discuter",
                 addFriendError1: "Utilisateur invalide",
                 addFriendError2: "L'information doit être rempli",
                 addFriendError3: "Il y a une demande d'ami en attente de cet utilisateur",
@@ -262,10 +267,11 @@ export const i18nOptions = () => ({
                 apply: "Appliquer",
                 friendRequest: "Demandes d'amis",
                 requestSent: "Demande d'ami envoyée",
+                friendRequestAccepted: "Demande d'ami acceptée",
                 languageChanged: "Changement de langue appliqué",
                 errorSendMessage: "Le message ne peut pas être envoyé",
                 errorQueryMessages: "Impossible de récupérer la liste des messages",
-
+                defaultError: "Une erreur s'est produite. Réessayez",
             }
         }
     }

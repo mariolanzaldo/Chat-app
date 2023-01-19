@@ -68,32 +68,106 @@ subscription FriendRequestAccepted {
     }
   }`;
 
+const CONTACT_DELETED = gql`
+  
+  subscription deleteContact {
+    deleteContact {
+      _id
+    username
+      firstName
+      lastName
+      email
+      
+      avatar
+      contactList {
+        _id
+        username
+        firstName
+        lastName
+        email
+        avatar
+      }
+      requests {
+        from {
+          _id
+          username
+          firstName
+          lastName
+          email
+          avatar
+        }
+        to {
+          _id
+          username
+          firstName
+          lastName
+          email
+          avatar
+        }
+      }
+      rooms {
+        _id
+        name
+        groupalRoom
+        admin {
+          _id
+          username
+        }
+        members {
+          _id
+          username
+          firstName
+          lastName
+          email
+          joinedAt
+          avatar
+        }
+      }  
+      token
+      settings {
+        language
+      }
+    }
+  }
+  `;
+
 const TabContent = ({ users }) => {
 
-    const { username, contactList } = useSelector((state) => state.user.value);
+  const { username, contactList } = useSelector((state) => state.user.value);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const { data, loading } = useSubscription(FRIEND_REQUEST_ACCEPTED, {
-        onData: ({ data }) => {
-            if (data?.data.friendRequestAccepted.username === username) {
-                dispatch({
-                    type: "requestAccepted",
-                    payload: data?.data.friendRequestAccepted
-                });
-            }
-        },
-    });
+  useSubscription(FRIEND_REQUEST_ACCEPTED, {
+    onData: ({ data }) => {
+      if (data?.data.friendRequestAccepted.username === username) {
+        dispatch({
+          type: "requestAccepted",
+          payload: data?.data.friendRequestAccepted
+        });
+      }
+    },
+  });
 
-    if (users.length === 0) {
-        return (
-            <ContactList contacts={contactList} />
-        );
-    } else {
-        return (
-            <ContactList contacts={users} />
-        );
+  useSubscription(CONTACT_DELETED, {
+    onData: ({ data }) => {
+      if (data?.data.deleteContact.username === username) {
+        dispatch({
+          type: 'deletedFromContact',
+          payload: data?.data.deleteContact
+        });
+      }
     }
+  });
+
+  if (users.length === 0) {
+    return (
+      <ContactList contacts={contactList} />
+    );
+  } else {
+    return (
+      <ContactList contacts={users} />
+    );
+  }
 };
 
 export default TabContent;

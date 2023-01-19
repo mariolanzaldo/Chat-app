@@ -1,4 +1,4 @@
-import { takeEvery, all, takeLatest, take } from "redux-saga/effects";
+import { takeEvery, all, takeLatest } from "redux-saga/effects";
 
 import login from './sagas/login';
 import addFrien from './sagas/addFriend';
@@ -26,6 +26,8 @@ import eraseNotification from "./sagas/eraseNotification";
 import checkUsername from "./sagas/checkUsername";
 import checkEmail from "./sagas/checkEmail";
 import friendRequestAccepted from "./sagas/friendRequestAccepted";
+import deletedFrom from "./sagas/deletedFrom";
+import groupChanges from "./sagas/groupChanges";
 
 export function* watchLogin() {
 
@@ -129,7 +131,15 @@ export function* watchEmailExistence() {
 
 export function* watchRequestFriendAccepted() {
     yield takeEvery("requestAccepted", friendRequestAccepted);
-}
+};
+
+export function* watchDeletedFromContact() {
+    yield takeEvery("deletedFromContact", deletedFrom);
+};
+
+export function* watchGroupChanges() {
+    yield takeEvery("groupChanges", groupChanges);
+};
 
 export default function* rootSaga() {
     yield all([
@@ -159,5 +169,7 @@ export default function* rootSaga() {
         watchCleanNotification(),
         watchUsernameExistence(),
         watchEmailExistence(),
+        watchDeletedFromContact(),
+        watchGroupChanges(),
     ]);
 }

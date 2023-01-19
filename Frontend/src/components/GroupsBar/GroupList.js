@@ -27,7 +27,6 @@ const GroupList = ({ rooms }) => {
                                 width: '98%',
                             }}
                             onClick={(event) => {
-
                                 if (event.target.className.includes('MuiTypography-root MuiTypography-body1 MuiListItemText-primary')) {
                                     dispatch({
                                         type: 'setConversation',

@@ -239,7 +239,11 @@ const resolvers = {
 
                 const updatedUsers = members.map(async ({ username }) => await dataSources.userAPI.updateInfo(username, { rooms: { _id } }));
 
-                await Promise.all(updatedUsers);
+                const groupMembers = await Promise.all(updatedUsers);
+
+                pubSub.publish(`GROUP_CHANGED`, {
+                    groupChanged: groupMembers,
+                });
 
                 return createdRoom;
             } catch (err) {
@@ -249,7 +253,6 @@ const resolvers = {
         },
 
         addMember: async (parent, { roomInput }, { dataSources }) => {
-
             const { _id, members } = roomInput;
             let updatedContact;
 
@@ -257,9 +260,15 @@ const resolvers = {
 
             const { name, members: updatedMembers } = updatedRoom;
 
-            const updatedUsers = members.map(async ({ username }) => {
+            const usersPromises = members.map(async ({ username }) => {
                 updatedContact = await dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
                 return updatedContact;
+            });
+
+            const newMembers = await Promise.all(usersPromises);
+
+            pubSub.publish(`GROUP_CHANGED`, {
+                groupChanged: newMembers,
             });
 
             return updatedRoom;
@@ -274,7 +283,11 @@ const resolvers = {
                 return updatedMember;
             });
 
-            await Promise.all(updatedMembers);
+            const deletedMembers = await Promise.all(updatedMembers);
+
+            pubSub.publish(`GROUP_CHANGED`, {
+                groupChanged: deletedMembers,
+            });
 
             return updatedRoom;
         },
@@ -402,6 +415,10 @@ const resolvers = {
                 //Erase messages
                 const deletedMessages = await dataSources.chatAPI.deleteAllRoomMessages(roomId);
 
+                pubSub.publish(`CONTACT_DELETED`, {
+                    deleteContact: secondaryUser,
+                });
+
                 return { success: true, errorMessage: null, value: updatedUser };
             } catch (err) {
                 const message = err.extensions.response.body.error;
@@ -474,6 +491,12 @@ const resolvers = {
 
                 const updatedMembers = await Promise.all(promiseMembers);
 
+                const otherUsers = updatedMembers.filter((user) => user.username !== currentUser[0].username);
+
+                pubSub.publish(`GROUP_CHANGED`, {
+                    groupChanged: otherUsers,
+                });
+
                 const updatedUser = updatedMembers.find((user) => user.username === currentUser[0].username);
 
                 return { success: true, errorMessage: null, value: updatedUser };
@@ -518,6 +541,12 @@ const resolvers = {
         },
         friendRequestAccepted: {
             subscribe: (_, __, { user }) => pubSub.asyncIterator(`FRIEND_REQUEST_ACCEPTED`),
+        },
+        deleteContact: {
+            subscribe: () => pubSub.asyncIterator(`CONTACT_DELETED`),
+        },
+        groupChanged: {
+            subscribe: () => pubSub.asyncIterator(`GROUP_CHANGED`),
         }
 
     }

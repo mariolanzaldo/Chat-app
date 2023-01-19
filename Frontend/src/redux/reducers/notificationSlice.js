@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { t } from "i18next";
 
 const initialState = {
     error: null,
@@ -23,7 +24,7 @@ const notificationSlice = createSlice({
             state.existence = action.payload;
         },
         setDefaultNotification: (state = null, action) => {
-            state.error = "Something wrong ocurred. Try again.";
+            state.error = t("defaultError");
             state.severity = "error";
         }
     },

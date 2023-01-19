@@ -10,7 +10,7 @@ const RequestItem = ({ item }) => {
 
     const dispatch = useDispatch();
 
-    const { username, requests } = useSelector((state) => state.user.value);
+    const { username } = useSelector((state) => state.user.value);
 
     const addContact = (event) => {
         event.preventDefault();

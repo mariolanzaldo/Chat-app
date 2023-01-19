@@ -25,7 +25,6 @@ const typeDefs = gql`
         rooms: [Room]
         settings: Settings
         requests: [Request]
-        #rooms: [ID]
         token: String
     }
 
@@ -153,6 +152,8 @@ const typeDefs = gql`
         newRoom: Room
         addFriend: Request
         friendRequestAccepted: User
+        deleteContact: User
+        groupChanged: [User]
     }
 `;
 

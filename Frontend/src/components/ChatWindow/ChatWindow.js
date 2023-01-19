@@ -33,7 +33,7 @@ const ChatWindow = () => {
 
     const { name, members } = rooms.find((room) => room._id === roomId);
 
-    const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION, {
+    useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
         onData: ({ data }) => {
             dispatch({
@@ -64,7 +64,6 @@ const ChatWindow = () => {
                 // overscrollBehavior: 'contain',
                 scrollBehavior: 'smooth',
                 // width: '79.5%',
-                border: '1px solid red',
             }}
         >
             <Grid

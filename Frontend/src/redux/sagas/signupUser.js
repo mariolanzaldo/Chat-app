@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import client from "../../client";
 import { setSignupFetching } from "../reducers/signupSlice";
 import { setNotification } from "../reducers/notificationSlice";
+import { t } from "i18next";
 
 function* signupUser(action) {
     const options = {
@@ -24,7 +25,7 @@ function* signupUser(action) {
         yield call(client.mutate, options);
 
         yield put(setNotification({
-            error: "User created succesfully. Login to start chating",
+            error: t("userCreated"),
             severity: "success"
         }));
     } catch (error) {

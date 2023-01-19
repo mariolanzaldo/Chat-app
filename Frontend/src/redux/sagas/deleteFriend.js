@@ -5,7 +5,6 @@ import { deleteContact } from "../reducers/userSlice";
 import { setDefaultNotification } from "../reducers/notificationSlice";
 
 function* deleteFrien(action) {
-  console.log('enters');
   const options = {
     mutation: gql`
     mutation DeleteFriend($friendInput: FriendInput) {
@@ -30,25 +29,48 @@ function* deleteFrien(action) {
             _id
             name
             groupalRoom
-          }
-          requests {
-            from {
+            admin {
               _id
               username
               firstName
               lastName
+              email
               avatar
+              joinedAt
             }
-            to{
+            members {
               _id
               username
               firstName
               lastName
+              email
+              joinedAt
               avatar
             }
           }
           _id
           token
+          requests {
+            to {
+              _id
+              username
+              firstName
+              lastName
+              email
+              avatar
+            }
+            from {
+              _id
+              username
+              firstName
+              lastName
+              email
+              avatar
+            }
+          }
+          settings {
+            language
+          }
         }
       }
     }

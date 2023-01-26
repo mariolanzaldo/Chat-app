@@ -17,7 +17,9 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
         return state.user.value
     });
 
+    const [groupName, setGroupName] = useState(null);
     const [members, setMembers] = useState([]);
+    const [errors, setErrors] = useState(null);
 
     const handleSearch = (value) => {
         filterData(value);
@@ -28,35 +30,72 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
         setOpen(true);
     };
 
+    const handleChange = (event) => {
+        event.preventDefault();
+        setGroupName(event.target.value);
+    };
+
+    const handleBlur = (event) => {
+        event.preventDefault();
+
+        if (event.target.value.trim() === "" || !event.target.value) {
+            setErrors(t("addFriendError2"));
+        } else {
+            setErrors(null);
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const form = new FormData(event.target);
-        const groupName = form.get('groupName');
+        // const form = new FormData(event.target);
+        // groupName = form.get('groupName');
 
-        const membersArray = members.map((member) => {
-            return { username: member };
-        });
+        if (groupName && groupName.trim() !== "") {
+            const membersArray = members.map((member) => {
+                return { username: member };
+            });
 
-        const createRoomReq = {
+            const createRoomReq = {
 
-            roomInput: {
-                name: groupName,
-                admin: [{ username }],
-                groupalRoom: true,
-                members: [...membersArray, { username }],
-            }
-        };
+                roomInput: {
+                    name: groupName,
+                    admin: [{ username }],
+                    groupalRoom: true,
+                    members: [...membersArray, { username }],
+                }
+            };
 
-        dispatch({
-            type: 'createGroup',
-            payload: createRoomReq,
-        });
+            dispatch({
+                type: 'createGroup',
+                payload: createRoomReq,
+            });
 
-        setOpen(false);
+
+            setMembers([]);
+            setGroupName(null);
+            setErrors(null);
+
+            setOpen(false);
+        } else if (!groupName || groupName.trim() === "") {
+            setErrors(t("addFriendError2"));
+        }
     };
 
     return (
-        <Box component='span' sx={navbarStyles.wrapper}>
+        <Box component='span'
+            // sx={navbarStyles.wrapper}
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: 0,
+                mr: 2,
+                // width: 'calc(20.8vw - 1px)',
+                width: '100%',
+                height: '100px',
+                backgroundColor: '#f5f5f5',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+            }}
+        >
 
             <Box>
                 <SearchBar
@@ -97,7 +136,12 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                             placeholder={t("groupName")}
                             name="groupName"
                             label={t("groupName")}
-                            required
+                            // required
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={errors ? true : false}
+                            helperText={errors ? errors : groupName ? `${groupName?.length}/25` : `0/25`}
+                            inputProps={{ maxLength: 25 }}
                         />
                         <TagInput name="members" members={members} setMembers={setMembers} />
                     </Box>
@@ -112,6 +156,10 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
+                                setMembers([]);
+                                setGroupName(null);
+                                setErrors(null);
+
                                 return setOpen(false)
                             }}
                         >

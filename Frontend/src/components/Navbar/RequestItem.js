@@ -2,7 +2,6 @@ import { Avatar, Box, Divider, IconButton, ListItem, ListItemAvatar, ListItemTex
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import { useDispatch, useSelector } from "react-redux";
-// import { useEffect } from "react";
 
 
 const RequestItem = ({ item }) => {
@@ -59,15 +58,15 @@ const RequestItem = ({ item }) => {
                 <IconButton color="success" size="large" onClick={addContact}>
                     <CheckCircleIcon />
                 </IconButton>
+
                 <IconButton color="error" size="large" onClick={rejectContact}>
                     <DoDisturbOnIcon />
                 </IconButton>
+
             </ListItem>
             <Divider />
         </Box>
-
-
-    )
+    );
 };
 
 export default RequestItem;

@@ -72,7 +72,9 @@ const ComposeArea = () => {
             isScribble: true,
         };
 
-        if (image.length < 10000) {
+        console.log(image.length);
+
+        if (image.length < 92000) {
             dispatch({
                 type: "createScribble",
                 payload: messageInput,

@@ -52,6 +52,9 @@ function* acceptContact(action) {
             groupalRoom
             members {
               username
+              firstName
+              lastName
+              avatar
               joinedAt
             }
           }

@@ -1,7 +1,7 @@
 import { put, call } from "redux-saga/effects";
 import { gql } from '@apollo/client';
 import client from "../../client";
-import { changeLanguage } from "i18next";
+import { changeLanguage, t } from "i18next";
 import { setUser } from "../reducers/userSlice";
 import { setNotification } from "../reducers/notificationSlice";
 
@@ -13,6 +13,7 @@ function* login(action) {
               username
               firstName
               lastName
+              email
               avatar
               contactList {
                 username
@@ -75,6 +76,14 @@ function* login(action) {
       error: error.message,
       severity: "error",
     };
+
+    if (notification.error === "User not Found") {
+      notification.error = t("userNotFound");
+    } else if (notification.error === "The user or password is incorrect") {
+      notification.error = t("userPasswordIncorrect")
+    } else if (notification.error === "Missing credentials") {
+      notification.error = t("missingCredentials");
+    }
 
     yield put(setNotification(notification));
   }

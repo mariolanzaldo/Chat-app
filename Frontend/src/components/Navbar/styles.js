@@ -18,15 +18,21 @@ export const navbarStyles = {
     },
 
     avatar: {
+        display: 'flex',
         justifyContent: 'center',
+        width: '100%',
         '& .MuiGrid-item': {
             display: 'flex',
             justifyContent: 'center',
+            alignItems: 'center',
             width: '100%'
+        },
+        '& .MuiGrid-grid-xs-7': {
+            textAlign: "center",
+            wordWrap: "break-word",
         },
         '& .MuiAvatar-root': {
             width: '50px',
-            justifyContent: 'left',
             height: '50px'
         }
     },
@@ -34,7 +40,8 @@ export const navbarStyles = {
     tabs: {
         display: 'flex',
         flexDirection: 'column',
-        width: '316px',
+        // width: '316px',
+        width: "100%",
         height: '100%',
     },
 

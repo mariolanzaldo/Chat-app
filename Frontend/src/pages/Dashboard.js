@@ -13,7 +13,8 @@ function Dashboard() {
         dispatch({
             type: 'authUser'
         });
-    }, []);
+        //TODO: dispatch was added, not sure if works...
+    }, [dispatch]);
 
     if (user) {
         return (

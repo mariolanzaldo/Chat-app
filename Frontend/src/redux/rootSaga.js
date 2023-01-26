@@ -39,7 +39,7 @@ export function* watchQueryUser() {
 };
 
 export function* watchSignup() {
-    yield takeEvery('signup', signupUser);
+    yield takeLatest('signup', signupUser);
 };
 
 export function* watchAddContact() {

@@ -57,11 +57,15 @@ const Navbar = () => {
                 >
 
                     <Grid container sx={navbarStyles.avatar}>
-                        <Grid item xs={3} >
+                        <Grid item xs={3}>
                             <Image />
                         </Grid>
                         <Grid item xs={7}>
-                            <Typography variant='h4' component='div'>{username}</Typography>
+                            <Typography variant='h5' component='div'
+                                sx={{
+                                    width: "100%"
+                                }}
+                            >{username}</Typography>
                         </Grid>
                         <Grid item xs={2}>
                             <Tooltip title={requests.length ? newNotifications : null}>

@@ -153,6 +153,7 @@ const resolvers = {
                 return { success: true, errorMessage: null };
 
             } catch (err) {
+                console.log(err.extensions.response.body)
                 if (err.extensions.response.body.error.keyValue.email) {
                     throw new GraphQLError("The email has been used");
                 } else if (err.extensions.response.body.error.keyValue._id) {
@@ -192,7 +193,7 @@ const resolvers = {
                 return { ...user.user, token };
             } catch (err) {
                 const message = err.extensions.response.body.error;
-                throw new GraphQLError(message.error ? message.error : message);
+                throw new GraphQLError(message.error ? message.error : message.message ? message.message : message);
             }
         },
         logout: async (parent, { cookieInput }, { dataSources, req, res }) => {

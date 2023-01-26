@@ -110,7 +110,20 @@ const TabHeader = ({ open, setOpen, filterData }) => {
     };
 
     return (
-        <Box component='span' sx={navbarStyles.wrapper}>
+        <Box component='span'
+            // sx={navbarStyles.wrapper}
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: 0,
+                mr: 2,
+                // width: 'calc(20.8vw - 1px)',
+                width: '100%',
+                height: '100px',
+                backgroundColor: '#f5f5f5',
+                borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+            }}
+        >
 
             <Box>
                 <SearchBar
@@ -154,8 +167,9 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={formError ? true : false}
-                            helperText={formError}
-                        // required
+                            helperText={formError ? formError : `${value?.length}/25`}
+                            required
+                            inputProps={{ maxLength: 25 }}
                         />
                     </Box>
                     <Box sx={contactStyles.buttons}>

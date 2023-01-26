@@ -15,7 +15,9 @@ const AddAdmin = ({ currentChat, setOpen }) => {
     const [chips, setChips] = useState([]);
 
     const handleChange = (newChips) => {
-        setChips(newChips);
+        if (newChips.length < 30) {
+            setChips(newChips);
+        }
     };
 
     const handleValidation = (chip) => {
@@ -87,6 +89,9 @@ const AddAdmin = ({ currentChat, setOpen }) => {
                         onChange={handleChange}
                         validate={handleValidation}
                         clearInputOnBlur
+                        inputProps={{
+                            maxLength: 25
+                        }}
                         sx={{
                             width: '100%',
                             '& .MuiChipsInput-Chip': {

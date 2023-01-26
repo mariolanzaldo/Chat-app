@@ -17,7 +17,7 @@ export const validator = (values, fieldName, existence) => {
             validateEmail(values.email, errors, existence);
             break;
         case "password":
-            validatePassword(values.password, errors);
+            validatePassword(values.password, values.confirmPassword, errors);
             break;
         case "passwordLog":
             validatePasswordLog(values.passwordLog, errors);
@@ -33,9 +33,8 @@ export const validator = (values, fieldName, existence) => {
 
 function validateFirstName(firstName, errors) {
     let result = true;
-    console.log(!firstName);
-    console.log(errors);
-    if (!firstName) {
+
+    if (!firstName || firstName.trim() === "") {
         errors.firstName = t("firstNameError");
         result = false;
     }
@@ -46,7 +45,7 @@ function validateFirstName(firstName, errors) {
 function validateLastName(lastName, errors) {
     let result = true;
 
-    if (!lastName) {
+    if (!lastName || lastName.trim() === "") {
         errors.lastName = t("lastNameError");
         result = false;
     }
@@ -56,7 +55,7 @@ function validateLastName(lastName, errors) {
 
 function validateUsername(username, errors, existence) {
     let result = true;
-    if (!username) {
+    if (!username || username.trim() === "") {
         errors.username = t("usernameError");
         result = false;
     }
@@ -69,7 +68,7 @@ function validateUsername(username, errors, existence) {
     return result;
 }
 
-function validatePassword(password, errors) {
+function validatePassword(password, confirmPassword, errors) {
     let result = true;
     const valid = validate.isStrongPassword(password, {
         minLength: 8,
@@ -90,6 +89,8 @@ function validatePassword(password, errors) {
         result = false;
     } else if (valid < 50) {
         errors.password = t("passwordError");
+    } else if (password && valid > 50 && confirmPassword.trim() !== "") {
+        validateConfirmPassword(password, confirmPassword, errors);
     }
 
     return result;
@@ -103,20 +104,22 @@ function validatePasswordLog(password, errors) {
     }
 
     return result;
-}
+};
 
 function validateConfirmPassword(password, confirmPassword, errors) {
     let result = true;
+    // console.log(`Password: ${password}, Confirm: ${confirmPassword}`);
     if (!confirmPassword) {
-        errors.password = t("confirmPasswordErrorReq");
+        errors.confirmPassword = t("confirmPasswordErrorReq");
         result = false;
     } else if (password !== confirmPassword) {
         errors.confirmPassword = t("confirmPasswordError");
+        errors.password = t("confirmPasswordError");
+
         result = false;
     }
-
     return result;
-}
+};
 
 function validateEmail(email, errors, existence) {
     let result = true;
@@ -131,4 +134,4 @@ function validateEmail(email, errors, existence) {
         if (!result) errors.email = t("emailError");
     }
     return result;
-}
+};

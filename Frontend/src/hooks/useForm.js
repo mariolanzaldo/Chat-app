@@ -17,7 +17,7 @@ const useForm = ({ initState, callback, validator }) => {
         if (isSubmited && !isValidErrors()) {
             callback(state);
         }
-    }, [isSubmited, state, callback, errors]);
+    }, [isSubmited, state, errors]);
 
     useEffect(() => {
         dispatch({
@@ -47,10 +47,11 @@ const useForm = ({ initState, callback, validator }) => {
         event.preventDefault();
 
         const { name: fieldName } = event.target;
-        const faildFields = validator(state, fieldName, notification.existence);
+        const faildFields = validator(state, fieldName, notification.existence, setErrors);
 
         return setErrors(() => ({
             ...errors,
+            // [Object.keys(faildFields)[0]]: Object.values(faildFields)[0],
             [fieldName]: Object.values(faildFields)[0]
         }));
     };
@@ -59,7 +60,6 @@ const useForm = ({ initState, callback, validator }) => {
         event.preventDefault();
         let errs = {};
 
-        // const { name: fieldName } = event.target;
         for (const key in state) {
             if (state[key].trim() === "") {
                 const emptyFields = validator(state, key, notification.existence);
@@ -69,6 +69,8 @@ const useForm = ({ initState, callback, validator }) => {
                 };
             }
         }
+        // const { name: fieldName } = event.target;
+
         // const faildFields = validator(state, fieldName, notification.existence);
         // setErrors(() => ({
         //     ...errors,

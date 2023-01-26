@@ -35,9 +35,11 @@ const ConvBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '21vw',
+                    // width: '21vw',
+                    width: "100%",
                     margin: 0,
                     padding: 0,
+                    // border: "1px solid red"
                 }}
             >
                 <ConvTabHeader open={open} setOpen={setOpen} filterData={filterData} />
@@ -46,7 +48,17 @@ const ConvBar = () => {
         );
     } else if (rooms && rooms.length === 0) {
         return (
-            <Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    // width: '21vw',
+                    width: "100%",
+                    margin: 0,
+                    padding: 0,
+                    // border: "1px solid red"
+                }}
+            >
                 <ConvTabHeader open={open} setOpen={setOpen} />
                 <Typography>{t("noConversations")}</Typography>
             </Box>

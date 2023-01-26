@@ -17,13 +17,17 @@ const ContactsBar = () => {
     const [search, setSearch] = useState(contactList);
     const [users, setUsers] = useState([]);
 
+
     const filterData = (value) => {
         const lowerdCaseValue = value.toLowerCase().trim();
 
         if (lowerdCaseValue === "") setUsers(search);
         else {
+
             const filteredData = search.filter((item) => {
-                return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
+                const { username } = item;
+                return username.toLowerCase().trim().includes(lowerdCaseValue)
+                // return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
             });
 
             setUsers(filteredData);
@@ -37,7 +41,7 @@ const ContactsBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    width: '20.5vw',
+                    width: '100%',
                     margin: 0,
                     padding: 0,
                 }}

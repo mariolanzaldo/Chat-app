@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
@@ -106,6 +106,12 @@ const Login = () => {
                         <Typography level="body2">{t('signinToContinue')}</Typography>
                     </div>
                     <Box component='form' onSubmit={handleSubmit}>
+                        <Grid container>
+                            <Grid item>
+
+                            </Grid>
+                        </Grid>
+
                         <TextField
                             name="username"
                             type="text"

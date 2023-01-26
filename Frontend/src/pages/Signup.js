@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
-
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
@@ -18,6 +17,8 @@ export default function Signup() {
     const navigate = useNavigate();
 
     const paperStyle = { padding: 20, height: '85vh', width: 380, margin: "20px auto" };
+
+    const MAX_LENGTH = 25;
 
     const initState = {
         username: "",
@@ -34,11 +35,7 @@ export default function Signup() {
             size: 1280,
         });
 
-        // console.log(errors);
 
-        // if (state.username.trim() !== "" && state.firstName.trim() !== "" && state.lastName.trim() !== "" &&
-        //     state.email.trim() !== "" && state.password.trim() !== "" && state.confirmPassword.trim() !== "") {
-        //     console.log('enters');
         dispatch({
             type: "signup",
             payload: {
@@ -46,11 +43,8 @@ export default function Signup() {
             }
         });
 
+
         navigate('/login');
-        // } 
-        // else {
-        //     console.log('one it is empty')
-        // }
 
         return;
     };
@@ -98,8 +92,10 @@ export default function Signup() {
                                 defaultValue={state.username}
                                 onChange={handleChange}
                                 error={errors.username ? true : false}
+                                // helperText={errors.username ? errors.username : `${state.username.length}/${MAX_LENGTH}`}
                                 helperText={errors.username}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: MAX_LENGTH }}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -113,6 +109,7 @@ export default function Signup() {
                                 error={errors.firstName ? true : false}
                                 helperText={errors.firstName}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: MAX_LENGTH }}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -126,6 +123,8 @@ export default function Signup() {
                                 error={errors.lastName ? true : false}
                                 helperText={errors.lastName}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: MAX_LENGTH }}
+
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -139,6 +138,7 @@ export default function Signup() {
                                 error={errors.email ? true : false}
                                 helperText={errors.email}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: 80 }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -153,6 +153,7 @@ export default function Signup() {
                                 error={errors.password ? true : false}
                                 helperText={errors.password}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: 80 }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -167,6 +168,7 @@ export default function Signup() {
                                 error={errors.confirmPassword ? true : false}
                                 helperText={errors.confirmPassword}
                                 onBlur={handleBlur}
+                                inputProps={{ maxLength: 80 }}
                             />
                         </Grid>
                     </Grid>

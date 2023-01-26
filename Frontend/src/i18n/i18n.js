@@ -94,6 +94,9 @@ export const i18nOptions = () => ({
                 errorSendMessage: "Message cannot be sent. Try again",
                 errorQueryMessages: "Couldn't fetch messages list",
                 defaultError: "Something wrong ocurred. Try again",
+                userNotFound: "User not found",
+                userPasswordIncorrect: "User or password is incorrect",
+                missingCredentials: "Missing credentials",
             }
         },
         es: {
@@ -183,6 +186,10 @@ export const i18nOptions = () => ({
                 errorSendMessage: "El mensaje no puede ser enviado. Intenta de nuevo",
                 errorQueryMessages: "No s epudo recuperar la lista de mensajes",
                 defaultError: "Algo ocurrió mal. Intenta de nuevo",
+                userNotFound: "Usuario no encontrado",
+                userPasswordIncorrect: "Usuario o contraseña inválidas",
+                missingCredentials: "Faltan credenciales",
+
             }
         },
         fr: {
@@ -272,6 +279,10 @@ export const i18nOptions = () => ({
                 errorSendMessage: "Le message ne peut pas être envoyé",
                 errorQueryMessages: "Impossible de récupérer la liste des messages",
                 defaultError: "Une erreur s'est produite. Réessayez",
+                userNotFound: "Utilisateur non trouvé",
+                userPasswordIncorrect: "Nom d'utilisateur ou mot de passe invalide",
+                missingCredentials: "Les informations d'identification invalides",
+
             }
         }
     }

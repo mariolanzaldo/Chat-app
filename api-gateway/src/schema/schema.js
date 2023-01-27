@@ -140,7 +140,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        messages(_id: String): [Message]
+        messages(_id: String, username: String): [Message]
         currentUser: User
         user(_id: String): User
         existence(username: String, email: String): Exists

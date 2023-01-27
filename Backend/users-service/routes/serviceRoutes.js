@@ -10,7 +10,7 @@ router.get('/getUser/:id', async (req, res, next) => {
     try {
         const user = await UserModel.findById({ _id });
         if (!user) {
-            return res.status(404).send({ error: 'User not Found' });
+            return res.status(404).send({ error: 'The user or password is incorrect' });
         }
         return res.status(200).send({ user });
     } catch (err) {

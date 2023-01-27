@@ -8,8 +8,8 @@ import { setNotification } from "../reducers/notificationSlice";
 function* queryMessages(action) {
     const options = {
         query: gql`
-        query queryMessages ($_id: String) {
-            messages (_id: $_id) {
+        query queryMessages ($_id: String, $username: String) {
+            messages (_id: $_id, username: $username) {
               _id
               content
               isScribble

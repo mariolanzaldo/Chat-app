@@ -35,7 +35,9 @@ router.post(
                             if (err) return next(err);
 
                             const body = { id: user._id, username: user.username };
-                            const token = jwt.sign({ user: body }, process.env.SECRET_TOKEN); //TODO: Check if this is set correctly, don't forget to uncomment storage class from yml files
+
+                            const token = jwt.sign({ user: body }, process.env.SECRET_TOKEN);
+
                             return res.status(200).json({ token });
                         }
                     )

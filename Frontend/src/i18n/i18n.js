@@ -184,7 +184,7 @@ export const i18nOptions = () => ({
                 friendRequestAccepted: "Solicitud de amistad aceptada",
                 languageChanged: "Ajusted de lenguaje aplicado",
                 errorSendMessage: "El mensaje no puede ser enviado. Intenta de nuevo",
-                errorQueryMessages: "No s epudo recuperar la lista de mensajes",
+                errorQueryMessages: "No se pudo recuperar la lista de mensajes",
                 defaultError: "Algo ocurrió mal. Intenta de nuevo",
                 userNotFound: "Usuario no encontrado",
                 userPasswordIncorrect: "Usuario o contraseña inválidas",

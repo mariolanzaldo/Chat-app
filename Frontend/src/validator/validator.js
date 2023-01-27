@@ -108,7 +108,7 @@ function validatePasswordLog(password, errors) {
 
 function validateConfirmPassword(password, confirmPassword, errors) {
     let result = true;
-    // console.log(`Password: ${password}, Confirm: ${confirmPassword}`);
+
     if (!confirmPassword) {
         errors.confirmPassword = t("confirmPasswordErrorReq");
         result = false;

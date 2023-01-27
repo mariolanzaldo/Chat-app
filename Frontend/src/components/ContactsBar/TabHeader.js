@@ -43,7 +43,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
     const [value, setValue] = useState(null);
     const [formError, setFormError] = useState(null);
 
-    const { data, loading } = useSubscription(FRIEND_REQUEST, {
+    useSubscription(FRIEND_REQUEST, {
         onData: ({ data }) => {
             dispatch({
                 type: "addNewRequest",

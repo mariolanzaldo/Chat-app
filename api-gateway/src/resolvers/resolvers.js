@@ -5,10 +5,21 @@ const pubSub = new PubSub();
 
 const resolvers = {
     Query: {
-        messages: async (_, { _id }, { dataSources }) => {
-            const roomMessages = await dataSources.chatAPI.getMessagesOfRoom(_id);
+        messages: async (_, { _id, username }, { dataSources }) => {
+            const { members } = await dataSources.chatAPI.getRoom(_id);
 
-            return roomMessages;
+            const isMember = members.find((user) => user.username === username);
+
+
+            if (!isMember) {
+                throw new GraphQLError("Request failed");
+            }
+
+            if (isMember) {
+                const roomMessages = await dataSources.chatAPI.getMessagesOfRoom(_id);
+
+                return roomMessages;
+            }
         },
         user: async (_, { _id }, { req, dataSources }) => {
             const userToFind = { username: _id };
@@ -153,7 +164,6 @@ const resolvers = {
                 return { success: true, errorMessage: null };
 
             } catch (err) {
-                console.log(err.extensions.response.body)
                 if (err.extensions.response.body.error.keyValue.email) {
                     throw new GraphQLError("The email has been used");
                 } else if (err.extensions.response.body.error.keyValue._id) {
@@ -193,6 +203,7 @@ const resolvers = {
                 return { ...user.user, token };
             } catch (err) {
                 const message = err.extensions.response.body.error;
+
                 throw new GraphQLError(message.error ? message.error : message.message ? message.message : message);
             }
         },

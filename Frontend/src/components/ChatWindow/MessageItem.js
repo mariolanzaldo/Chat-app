@@ -7,7 +7,9 @@ const MessageItem = ({ message }) => {
     const color = message.sendBy === username ? "rgba(175, 173, 222, 0.8)" : "rgba(202, 201, 210, 0.8)";
     const alignMessage = message.sendBy === username ? "flex-end" : "flex-start";
 
-    const date = new Date(Date.now());
+    const time = new Date(message.createdAt);
+
+    // const date = new Date(Date.now());
 
     return (
         <Box sx={{
@@ -43,7 +45,7 @@ const MessageItem = ({ message }) => {
                         }}
                     />
                     <ListItemText
-                        secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        secondary={`${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
                             padding: 0,
                             margin: 0,
@@ -87,7 +89,7 @@ const MessageItem = ({ message }) => {
                     </Box>
 
                     <ListItemText
-                        secondary={`${date.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        secondary={`${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
                             padding: 0,
                             margin: 0,

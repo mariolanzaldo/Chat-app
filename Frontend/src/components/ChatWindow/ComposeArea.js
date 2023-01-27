@@ -72,8 +72,6 @@ const ComposeArea = () => {
             isScribble: true,
         };
 
-        console.log(image.length);
-
         if (image.length < 92000) {
             dispatch({
                 type: "createScribble",
@@ -87,8 +85,6 @@ const ComposeArea = () => {
             ctx.clearRect(0, 0, 600, 400);
             setError(true);
         }
-
-
     };
 
     return (

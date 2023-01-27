@@ -3,7 +3,7 @@ import ComposeArea from "./ComposeArea";
 import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "@mui/joy";
@@ -24,14 +24,21 @@ const ChatWindow = () => {
 
     const { t } = useTranslation();
 
+    const navigate = useNavigate();
+
     const { roomId } = useParams();
 
     const dispatch = useDispatch();
 
     const { currentConversation } = useSelector((state) => state.messages);
-    const { rooms } = useSelector((state) => state.user.value);
+    const { username, rooms } = useSelector((state) => state.user.value);
 
-    const { name, members } = rooms.find((room) => room._id === roomId);
+    const current = rooms.find((room) => room._id === roomId);
+
+    if (!current) {
+        navigate('/');
+    }
+    const { name, members } = current;
 
     useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
@@ -44,9 +51,10 @@ const ChatWindow = () => {
     });
 
     useEffect(() => {
+
         dispatch({
             type: "queryMessages",
-            payload: { _id: roomId },
+            payload: { _id: roomId, username },
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentConversation]);

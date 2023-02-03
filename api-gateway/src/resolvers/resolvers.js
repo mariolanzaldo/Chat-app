@@ -563,21 +563,16 @@ const resolvers = {
                 }
 
                 const updatedRoom = await dataSources.chatAPI.addAdmin(_id, admin);
-                //TODO: add subscription. Check it out the addMember resolver!!
                 const response = admin.map(async ({ username }) => {
                     const { user } = await dataSources.userAPI.getUser(username);
-
-                    await dataSources.getRoom();
-
                     return user;
                 });
 
                 const newAdmins = await Promise.all(response);
-                // console.log(newAdmins[0].rooms)
 
-                // pubSub.publish(`GROUP_CHANGED`, {
-                //     groupChanged: newAdmins,
-                // });
+                pubSub.publish(`GROUP_CHANGED`, {
+                    groupChanged: newAdmins,
+                });
 
                 return updatedRoom;
             } catch (err) {
@@ -614,6 +609,17 @@ const resolvers = {
                 }
 
                 const updatedRoom = await dataSources.chatAPI.deleteAdmin(_id, admin);
+
+                const response = admin.map(async ({ username }) => {
+                    const { user } = await dataSources.userAPI.getUser(username);
+                    return user;
+                });
+
+                const newAdmins = await Promise.all(response);
+
+                pubSub.publish(`GROUP_CHANGED`, {
+                    groupChanged: newAdmins,
+                });
 
                 return updatedRoom;
             } catch (err) {

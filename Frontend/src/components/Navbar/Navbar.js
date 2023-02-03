@@ -14,8 +14,28 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useParams } from 'react-router-dom';
+import { gql, useSubscription } from '@apollo/client';
 
-const drawerWidth = 260;
+const drawerWidth = 275;
+
+const FRIEND_REQUEST = gql`
+subscription FriendSub {
+    addFriend {
+        from {
+            username
+            firstName
+            lastName
+            avatar
+          }
+          to {
+            username
+            firstName
+            lastName
+            avatar
+          }
+  }
+}
+`;
 
 function ResponsiveDrawer(props) {
     const { window } = props;
@@ -36,8 +56,6 @@ function ResponsiveDrawer(props) {
     const { username, requests, rooms } = useSelector((state) => state.user.value);
 
     const current = rooms.find((room) => room._id === roomId);
-
-    //TODO: DELETE ALL components with 2 in the title!
 
     const open = Boolean(anchorEl);
 
@@ -65,6 +83,16 @@ function ResponsiveDrawer(props) {
             payload: { cookieInput }
         });
     };
+
+    useSubscription(FRIEND_REQUEST, {
+        onData: ({ data }) => {
+            console.log('here');
+            dispatch({
+                type: "addNewRequest",
+                payload: data?.data.addFriend
+            });
+        },
+    });
 
 
     const drawer = (

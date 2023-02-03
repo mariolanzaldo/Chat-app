@@ -72,7 +72,6 @@ const ConvTabContent = ({ rooms }) => {
   useSubscription(GROUP_CHANGED, {
     onData: ({ data }) => {
       const { groupChanged } = data?.data;
-      console.log(groupChanged)
 
       const user = groupChanged.find((user) => user.username === username);
 

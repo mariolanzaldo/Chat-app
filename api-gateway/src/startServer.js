@@ -7,7 +7,7 @@ const { useServer } = require('graphql-ws/lib/use/ws');
 const { createServer } = require('http');
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
 const { expressMiddleware } = require('@apollo/server/express4');
-const cors = require('cors');
+// const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
@@ -17,6 +17,7 @@ const resolvers = require('./resolvers/resolvers');
 const ChatAPI = require('./datasources/chatAPI');
 const UserAPI = require('./datasources/userAPI');
 const AuthAPI = require('./datasources/authAPI');
+const { GraphQLError } = require('graphql');
 
 const startServer = async () => {
     const app = express();
@@ -71,11 +72,28 @@ const startServer = async () => {
         bodyParser.json(), expressMiddleware(server, {
             context: async ({ req, res }) => {
                 const { cache } = server;
-                // const { JWT } = req.cookies;
+                const { JWT } = req.cookies;
 
-                // if (JWT) {
-                //     const authUser = await new AuthAPI().secureRoute(JWT);
-                // }
+                let authUser;
+
+                if (JWT) {
+
+                    authUser = await new AuthAPI().secureRoute(JWT);
+                    const { user } = authUser;
+
+                    if (!user) {
+                        throw new GraphQLError("Internal Error", {
+                            extensions: {
+                                code: 'UNAUTHENTICATED',
+                                http: { status: 401 },
+                            }
+                        });
+                    }
+
+                    const fromUserService = await new UserAPI().getUser(user);
+
+                    authUser = { ...authUser.user, ...fromUserService.user };
+                }
 
                 const dataSources = {
                     chatAPI: new ChatAPI({ cache }),
@@ -84,7 +102,7 @@ const startServer = async () => {
 
                 };
                 return {
-                    //authUser,
+                    authUser,
                     req,
                     res,
                     dataSources,

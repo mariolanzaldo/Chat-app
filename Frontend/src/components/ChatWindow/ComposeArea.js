@@ -95,7 +95,8 @@ const ComposeArea = () => {
                 sx={{
                     display: 'flex',
                     width: "100%",
-                    height: "90px",
+                    // height: "90px",
+                    height: "97%",
                     padding: "0px",
                     gap: '15px',
                     alignItems: "center",

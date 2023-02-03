@@ -62,7 +62,6 @@ function* login(action) {
       userInput: action.payload.user,
     }
   };
-
   try {
     const res = yield call(client.mutate, options);
     const user = res.data.login;

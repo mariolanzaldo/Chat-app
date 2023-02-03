@@ -22,6 +22,7 @@ function* addMember(action) {
           }
         `,
     variables: action.payload,
+    fetchPolicy: "no-cache",
   };
 
   try {

@@ -17,7 +17,12 @@ function* deleteAdmin(action) {
                 username
               }
               members {
+                _id
                 username
+                firstName
+                lastName
+                avatar
+                joinedAt
               }
             }
           }
@@ -30,6 +35,7 @@ function* deleteAdmin(action) {
 
     yield put(removeAdmin(res.data));
   } catch (error) {
+    console.log(error);
     yield put(setDefaultNotification());
   }
 };

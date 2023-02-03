@@ -20,7 +20,8 @@ function* newScribble(action) {
         `,
         variables: {
             messageInput: action.payload,
-        }
+        },
+        fetchPolicy: "no-cache",
     };
     try {
         yield call(client.mutate, options);

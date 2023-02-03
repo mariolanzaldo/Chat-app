@@ -83,8 +83,8 @@ const userSlice = createSlice({
             const oldRooms = state.value.rooms;
 
             const updatedRooms = oldRooms.map((room) => {
-                if (room._id === action.payload.addAdmin._id) {
-                    room.admin = action.payload.addAdmin.admin;
+                if (room._id === action.payload.deleteAdmin._id) {
+                    room.admin = action.payload.deleteAdmin.admin;
                 }
 
                 return room;

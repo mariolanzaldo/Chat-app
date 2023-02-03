@@ -12,25 +12,29 @@ function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
     return (
-        <div
+        <Box
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
             {...other}
+            sx={{
+                height: "100%",
+            }}
         >
             {value === index && (
                 <Box
                     sx={{
                         p: 0,
                         width: '100%',
-                        // border: "1px solid red"
+                        height: "100%",
                     }}
                 >
                     {children}
                 </Box>
             )}
-        </div>
+        </Box>
+
     );
 }
 
@@ -52,15 +56,24 @@ export default function BasicTabs() {
     const { t } = useTranslation();
     const [value, setValue] = React.useState(0);
 
+    // React.useEffect(() => {
+    //     setTimeout(() => {
+    //         setValue(0);
+    //     }, 0)
+    // }, []);
+
     const handleChange = (event, newValue) => {
         event.preventDefault();
         setValue(newValue);
     };
-
     return (
         <Box sx={navbarStyles.tabs}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} variant="fullWidth" onChange={handleChange} aria-label="basic tabs example">
+                <Tabs value={value} variant="fullWidth" onChange={handleChange} aria-label="basic tabs example"
+                // sx={{
+                //     wordBreak: 'break-word'
+                // }}
+                >
                     <Tab label={t("contacts")} {...a11yProps(0)} />
                     <Tab label={t("conversations")} {...a11yProps(1)} />
                 </Tabs>

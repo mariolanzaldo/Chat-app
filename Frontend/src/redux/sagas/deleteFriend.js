@@ -30,13 +30,7 @@ function* deleteFrien(action) {
             name
             groupalRoom
             admin {
-              _id
               username
-              firstName
-              lastName
-              email
-              avatar
-              joinedAt
             }
             members {
               _id
@@ -76,6 +70,7 @@ function* deleteFrien(action) {
     }
         `,
     variables: action.payload,
+    fetchPolicy: "no-cache",
   };
   try {
     const res = yield call(client.mutate, options);

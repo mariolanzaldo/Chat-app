@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { contactStyles } from '../ContactsBar/styles';
 
 const TagInput = ({ members, setMembers }) => {
     const { t } = useTranslation();
@@ -24,7 +25,10 @@ const TagInput = ({ members, setMembers }) => {
 
     return (
         <div>
-            <FormControl sx={{ mt: 2, width: 300 }}>
+            <FormControl
+                sx={contactStyles.inputFields}
+            // sx={{ mt: 2, width: { xs: 150, sm: 300 } }}
+            >
                 <InputLabel>{t("members")}</InputLabel>
                 <Select
                     multiple

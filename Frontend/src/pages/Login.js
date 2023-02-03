@@ -69,7 +69,7 @@ const Login = () => {
         event.preventDefault();
         validateForm();
 
-        if (!formErrors.username && !formErrors.password) {
+        if (!formErrors.username && !formErrors.password && inputFields.username !== "" && inputFields.password !== "") {
             dispatch({
                 type: "login",
                 payload: {

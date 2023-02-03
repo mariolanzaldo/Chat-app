@@ -62,7 +62,8 @@ function* acceptContact(action) {
       }
     }
         `,
-    variables: action.payload
+    variables: action.payload,
+    fetchPolicy: "no-cache",
   }
   try {
     const res = yield call(client.mutate, options);

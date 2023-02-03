@@ -1,12 +1,10 @@
-import { Chip, Grid, Stack, Typography } from "@mui/material";
+import { Grid, } from "@mui/material";
 import ComposeArea from "./ComposeArea";
 import Messages from "./Messages";
 import { gql, useSubscription } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Avatar } from "@mui/joy";
 
 const MESSAGES_SUBSCRIPTION = gql`
 subscription newMessage($roomId: ID) {
@@ -22,23 +20,12 @@ subscription newMessage($roomId: ID) {
 
 const ChatWindow = () => {
 
-    const { t } = useTranslation();
-
-    const navigate = useNavigate();
-
     const { roomId } = useParams();
 
     const dispatch = useDispatch();
 
     const { currentConversation } = useSelector((state) => state.messages);
-    const { username, rooms } = useSelector((state) => state.user.value);
-
-    const current = rooms.find((room) => room._id === roomId);
-
-    if (!current) {
-        navigate('/');
-    }
-    const { name, members } = current;
+    const { username } = useSelector((state) => state.user.value);
 
     useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
@@ -62,62 +49,28 @@ const ChatWindow = () => {
     return (
         <Grid
             container
+            m={0}
+
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
+                padding: 0,
                 flexWrap: "nowrap",
-                height: "100vh",
+                height: "100%",
                 //TODO: This width controls the chatview
-                width: "79.2vw",
-                // overscrollBehavior: 'contain',
+                width: "100%",
                 scrollBehavior: 'smooth',
-                // width: '79.5%',
+                // border: "1px solid blue"
             }}
         >
             <Grid
                 item
-                sx={{
-                    padding: 1,
-                    width: '100%',
-                    height: '11vh',
-                    color: 'whitesmoke',
-                    borderRadius: '5px',
-                    backgroundColor: "rgba(29, 77, 213, 0.8)",
-                }}
-            >
-                <Typography
-                    variant="h5"
-                >{name}</Typography>
-                <Stack
-                    direction="row"
-                    spacing={1}
-                >
-                    <Typography
-                        variant="body1"
-                    >
-                        {`${t("members")}:`}
-                    </Typography>
-                    {members.map((user) => {
-                        return <Chip
-                            key={user.username}
-                            avatar={<Avatar src={user.avatar} />}
-                            label={user.username}
-                            sx={{
-                                backgroundColor: "rgba(177, 173, 206, 0.8)",
-                                fontWeight: 'bold',
-                                boxShadow: "5px 2px 2px rgba(74, 76, 74, 0.8)",
-                                color: "whitesmoke"
-                            }}
-                        />
-                    })}
-                </Stack>
-            </Grid>
-            <Grid
-                item
+                s={10}
                 sx={{
                     backgroundColor: 'rgb(240, 240, 240)',
                     overflowY: 'scroll',
                     height: "100%",
+                    width: "100%",
                     "& .css-tazwbd-MuiList-root::-webkit-scrollbar-track": {
                         border: 'none',
                     },
@@ -143,11 +96,12 @@ const ChatWindow = () => {
 
             <Grid
                 item
-
+                s={2}
                 sx={{
                     padding: "2px",
                     width: '100%',
-                    height: "calc(100vh - 85vh)",
+                    height: "100px",
+                    // height: "calc(100vh - 85vh)",
                 }}
             >
                 <ComposeArea />

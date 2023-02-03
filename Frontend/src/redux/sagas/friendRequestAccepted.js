@@ -5,6 +5,7 @@ import { t } from "i18next";
 
 function* watchRequestFriendAccepted(action) {
     const user = action.payload;
+
     yield put(setUser({ user }));
     yield put(setNotification({ error: t('friendRequestAccepted'), severity: "success" }));
 };

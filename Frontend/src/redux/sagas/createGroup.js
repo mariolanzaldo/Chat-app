@@ -9,6 +9,7 @@ function* createGroup(action) {
         mutation createRoom($roomInput: RoomInput) {
             createRoom(roomInput: $roomInput) {
                 _id
+                name
                 groupalRoom
               admin {
                     username
@@ -17,7 +18,6 @@ function* createGroup(action) {
                     username
                     joinedAt
                 }
-                name
             }
         }
         `,

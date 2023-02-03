@@ -18,16 +18,17 @@ const GroupList = ({ rooms }) => {
                 return (
                     <ListItem
                         button
-                        key={name}
+                        key={_id}
                         sx={{
                             padding: '0 0 0 5px',
                             justifyContent: "center",
                             justifyItems: "center",
                             width: '98%',
+                            wordBreak: 'break-word'
                         }}
                         onClick={(event) => {
 
-                            if (event.target.className.includes('MuiTypography-root MuiTypography-body1 MuiListItemText-primary')) {
+                            if (typeof event.target.className === 'string' && event.target.className.includes('MuiTypography-root MuiTypography-body1 MuiListItemText-primary')) {
                                 dispatch({
                                     type: 'setConversation',
                                     payload: {

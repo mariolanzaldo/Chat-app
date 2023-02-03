@@ -9,8 +9,6 @@ const MessageItem = ({ message }) => {
 
     const time = new Date(message.createdAt);
 
-    // const date = new Date(Date.now());
-
     return (
         <Box sx={{
             maxWidth: '60%',
@@ -45,7 +43,7 @@ const MessageItem = ({ message }) => {
                         }}
                     />
                     <ListItemText
-                        secondary={`${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        secondary={message?.createdAt ? `${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}` : `${new Date(Date.now()).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
                             padding: 0,
                             margin: 0,
@@ -58,7 +56,6 @@ const MessageItem = ({ message }) => {
                         sx={{
                             backgroundColor: color,
                             width: "97%",
-                            // height: "20%",
                             borderRadius: '10px',
                             margin: 1,
                             padding: 1,

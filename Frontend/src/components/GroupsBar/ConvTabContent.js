@@ -43,7 +43,6 @@ subscription groupChanged {
             name
             groupalRoom
             admin {
-              _id
               username
             }
             members {
@@ -66,34 +65,35 @@ subscription groupChanged {
 
 const ConvTabContent = ({ rooms }) => {
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const { rooms: allUserRooms, username } = useSelector((state) => state.user.value);
+  const { rooms: allUserRooms, username } = useSelector((state) => state.user.value);
 
-    useSubscription(GROUP_CHANGED, {
-        onData: ({ data }) => {
-            const { groupChanged } = data?.data;
+  useSubscription(GROUP_CHANGED, {
+    onData: ({ data }) => {
+      const { groupChanged } = data?.data;
+      console.log(groupChanged)
 
-            const user = groupChanged.find((user) => user.username === username);
+      const user = groupChanged.find((user) => user.username === username);
 
-            if (user) {
-                dispatch({
-                    type: 'groupChanges',
-                    payload: user,
-                });
-            }
-        },
-    });
+      if (user) {
+        dispatch({
+          type: 'groupChanges',
+          payload: user,
+        });
+      }
+    },
+  });
 
-    if (rooms.length === 0) {
-        return (
-            <GroupList rooms={allUserRooms} />
-        );
-    } else {
-        return (
-            <GroupList rooms={rooms} />
-        );
-    }
+  if (rooms.length === 0) {
+    return (
+      <GroupList rooms={allUserRooms} />
+    );
+  } else {
+    return (
+      <GroupList rooms={rooms} />
+    );
+  }
 };
 
 export default ConvTabContent;

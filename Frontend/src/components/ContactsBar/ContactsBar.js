@@ -1,9 +1,70 @@
 import { Box, Typography } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TabHeader from "./TabHeader";
 import TabContent from "./TabContent";
 import { useTranslation } from "react-i18next";
+import { gql, useSubscription } from "@apollo/client";
+
+const FRIEND_REQUEST_ACCEPTED = gql`
+subscription friendRequestAccepted {
+    friendRequestAccepted {
+    _id
+    username
+      firstName
+      lastName
+      email
+      
+      avatar
+      contactList {
+        _id
+        username
+        firstName
+        lastName
+        email
+        avatar
+      }
+      requests {
+        from {
+          _id
+          username
+          firstName
+          lastName
+          email
+          avatar
+        }
+        to {
+          _id
+          username
+          firstName
+          lastName
+          email
+          avatar
+        }
+      }
+      rooms {
+        _id
+        name
+        groupalRoom
+        admin {
+          username
+        }
+        members {
+          _id
+          username
+          firstName
+          lastName
+          email
+          joinedAt
+          avatar
+        }
+      }  
+      token
+      settings {
+        language
+      }
+    }
+  }`;
 
 const ContactsBar = () => {
 
@@ -16,6 +77,19 @@ const ContactsBar = () => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(contactList);
     const [users, setUsers] = useState([]);
+
+    const dispatch = useDispatch();
+
+    useSubscription(FRIEND_REQUEST_ACCEPTED, {
+        onData: ({ data }) => {
+            if (data?.data.friendRequestAccepted.username === username) {
+                dispatch({
+                    type: "requestAccepted",
+                    payload: data?.data.friendRequestAccepted
+                });
+            }
+        },
+    });
 
 
     const filterData = (value) => {
@@ -36,7 +110,6 @@ const ContactsBar = () => {
 
     if (contactList.length > 0 && contactList && username) {
         return (
-
             <Box
                 sx={{
                     display: 'flex',
@@ -47,8 +120,8 @@ const ContactsBar = () => {
                 }}
             >
                 <TabHeader open={open} setOpen={setOpen} filterData={filterData} />
-                <TabContent users={users} />
 
+                <TabContent users={users} />
             </ Box>
         );
 

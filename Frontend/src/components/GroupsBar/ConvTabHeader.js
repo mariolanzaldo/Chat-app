@@ -106,6 +106,7 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
 
 
             <Box
+                m={1}
                 sx={{
                     width: '65px',
                 }}

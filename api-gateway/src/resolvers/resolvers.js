@@ -5,14 +5,23 @@ const pubSub = new PubSub();
 
 const resolvers = {
     Query: {
-        messages: async (_, { _id, username }, { dataSources }) => {
-            const { members } = await dataSources.chatAPI.getRoom(_id);
+        messages: async (_, { _id, username }, { dataSources, authUser }) => {
 
-            const isMember = members.find((user) => user.username === username);
+            let isMember;
 
+            if (authUser) {
+                const { members } = await dataSources.chatAPI.getRoom(_id);
 
-            if (!isMember) {
-                throw new GraphQLError("Request failed");
+                isMember = members.find((user) => user.username === username);
+            }
+
+            if (!isMember || !authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
             }
 
             if (isMember) {
@@ -28,22 +37,17 @@ const resolvers = {
 
             return user;
         },
-        currentUser: async (parent, input, { req, dataSources }) => {
-            const { JWT } = req.cookies;
-
-            if (!JWT) {
-                throw new GraphQLError('Not Authenticated');
+        currentUser: async (parent, input, { dataSources, authUser }) => {
+            if (!authUser) {
+                throw new GraphQLError('Internal Error', {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
             }
 
-            const response = await dataSources.authAPI.secureRoute(JWT);
-
-            if (!response?.user) {
-                throw new GraphQLError('Not Authorized');
-            }
-
-            const { user } = await dataSources.userAPI.getUser(response.user);
-
-            const roomsArray = user.rooms.map(async (room) => {
+            const roomsArray = authUser.rooms.map(async (room) => {
                 const newRoom = await dataSources.chatAPI.getRoom(room._id);
 
                 if (newRoom) {
@@ -53,10 +57,9 @@ const resolvers = {
             });
 
             const completeRooms = await Promise.all(roomsArray);
-            user.rooms = completeRooms;
+            authUser.rooms = completeRooms;
 
-            return user;
-
+            return authUser;
         },
         existence: async (parent, input, { dataSources }) => {
             const { username, email } = input;
@@ -172,10 +175,9 @@ const resolvers = {
             }
         },
         login: async (parent, { userInput }, { dataSources, req, res }) => {
-            const authRes = dataSources.authAPI.login(userInput);
-            const userRes = dataSources.userAPI.getUser(userInput);
             try {
-                const [auth, user] = await Promise.all([authRes, userRes]);
+                const auth = await dataSources.authAPI.login(userInput);
+                const user = await dataSources.userAPI.getUser(userInput);
 
                 const { token } = auth;
 
@@ -229,13 +231,23 @@ const resolvers = {
 
 
         },
-        createMessage: async (parent, { messageInput }, { dataSources }) => {
-            pubSub.publish("MESSAGE_CREATED", {
-                newMessage: messageInput,
-            });
+        createMessage: async (_, { messageInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
 
             try {
                 const createdMessage = await dataSources.chatAPI.createMessage(messageInput);
+
+                pubSub.publish("MESSAGE_CREATED", {
+                    newMessage: messageInput,
+                });
 
                 return createdMessage.message;
             } catch (err) {
@@ -243,11 +255,20 @@ const resolvers = {
                 throw new GraphQLError(message);
             }
         },
-        createRoom: async (parent, { roomInput }, { dataSources }) => {
+        createRoom: async (parent, { roomInput }, { dataSources, authUser }) => {
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
             try {
+
                 const createdRoom = await dataSources.chatAPI.createRoom(roomInput);
 
-                const { _id, name, members, admin } = createdRoom;
+                const { _id, members } = createdRoom;
 
                 const updatedUsers = members.map(async ({ username }) => await dataSources.userAPI.updateInfo(username, { rooms: { _id } }));
 
@@ -264,9 +285,33 @@ const resolvers = {
             }
         },
 
-        addMember: async (parent, { roomInput }, { dataSources }) => {
+        addMember: async (parent, { roomInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const { _id, members } = roomInput;
+
             let updatedContact;
+
+            const currentRoom = await dataSources.chatAPI.getRoom(_id);
+
+            const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
+
+            if (!isAdmin) {
+                throw new GraphQLError("The user hasn't the proper permissions", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
 
             const updatedRoom = await dataSources.chatAPI.addMember(_id, members);
 
@@ -287,11 +332,36 @@ const resolvers = {
 
         },
 
-        deleteMember: async (parent, { roomInput }, { dataSources }) => {
-            const updatedRoom = await dataSources.chatAPI.deleteMember(roomInput._id, roomInput.members);
+        deleteMember: async (parent, { roomInput }, { dataSources, authUser }) => {
 
-            const updatedMembers = await roomInput.members.map(async ({ username }) => {
-                const updatedMember = await dataSources.userAPI.updateInfo(username, { rooms: { _id: roomInput._id } });
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
+            const { _id, members } = roomInput;
+
+            const currentRoom = await dataSources.chatAPI.getRoom(_id);
+
+            const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
+
+            if (!isAdmin) {
+                throw new GraphQLError("The user hasn't the proper permissions", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
+            const updatedRoom = await dataSources.chatAPI.deleteMember(_id, members);
+
+            const updatedMembers = await members.map(async ({ username }) => {
+                const updatedMember = await dataSources.userAPI.updateInfo(username, { rooms: { _id } });
                 return updatedMember;
             });
 
@@ -303,7 +373,17 @@ const resolvers = {
 
             return updatedRoom;
         },
-        addFriend: async (parent, { friendInput }, { dataSources }) => {
+        addFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
 
             try {
@@ -344,7 +424,17 @@ const resolvers = {
 
         },
 
-        acceptFriend: async (parent, { friendInput }, { dataSources }) => {
+        acceptFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
 
             try {
@@ -367,19 +457,6 @@ const resolvers = {
 
                 const values = await Promise.all(updatedUsers);
 
-                const roomsArray = values[1].rooms.map(async (room) => {
-                    const newRoom = await dataSources.chatAPI.getRoom(room._id);
-
-                    if (newRoom) {
-                        room = newRoom;
-                    }
-                    return room;
-                });
-
-                const completeRooms = await Promise.all(roomsArray);
-
-                values[1].rooms = completeRooms;
-
                 pubSub.publish(`FRIEND_REQUEST_ACCEPTED`, {
                     friendRequestAccepted: values[1],
                 });
@@ -392,7 +469,16 @@ const resolvers = {
             }
         },
 
-        rejectFriend: async (parent, { friendInput }, { dataSources }) => {
+        rejectFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
 
             try {
                 const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
@@ -406,7 +492,17 @@ const resolvers = {
             }
         },
 
-        deleteFriend: async (parent, { friendInput }, { dataSources }) => {
+        deleteFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const { userA, userB, roomId } = friendInput;
 
             try {
@@ -438,11 +534,50 @@ const resolvers = {
             }
         },
 
-        addAdmin: async (parent, { roomInput }, { dataSources }) => {
+        addAdmin: async (parent, { roomInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const { _id, admin } = roomInput;
 
             try {
+
+                const currentRoom = await dataSources.chatAPI.getRoom(_id);
+
+                const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
+
+                if (!isAdmin) {
+                    throw new GraphQLError("The user hasn't the proper permissions", {
+                        extensions: {
+                            code: 'UNAUTHENTICATED',
+                            http: { status: 401 },
+                        }
+                    });
+                }
+
                 const updatedRoom = await dataSources.chatAPI.addAdmin(_id, admin);
+                //TODO: add subscription. Check it out the addMember resolver!!
+                const response = admin.map(async ({ username }) => {
+                    const { user } = await dataSources.userAPI.getUser(username);
+
+                    await dataSources.getRoom();
+
+                    return user;
+                });
+
+                const newAdmins = await Promise.all(response);
+                // console.log(newAdmins[0].rooms)
+
+                // pubSub.publish(`GROUP_CHANGED`, {
+                //     groupChanged: newAdmins,
+                // });
 
                 return updatedRoom;
             } catch (err) {
@@ -450,10 +585,34 @@ const resolvers = {
                 return message;
             }
         },
-        deleteAdmin: async (parent, { roomInput }, { dataSources }) => {
+        deleteAdmin: async (parent, { roomInput }, { dataSources, authUser }) => {
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             const { _id, admin } = roomInput;
 
             try {
+
+                const currentRoom = await dataSources.chatAPI.getRoom(_id);
+
+                const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
+
+                if (!isAdmin) {
+                    throw new GraphQLError("The user hasn't the proper permissions", {
+                        extensions: {
+                            code: 'UNAUTHENTICATED',
+                            http: { status: 401 },
+                        }
+                    });
+                }
+
                 const updatedRoom = await dataSources.chatAPI.deleteAdmin(_id, admin);
 
                 return updatedRoom;
@@ -462,9 +621,18 @@ const resolvers = {
                 return message;
             }
         },
-        leaveGroup: async (parent, { roomInput }, { dataSources }) => {
+        leaveGroup: async (parent, { roomInput }, { dataSources, authUser }) => {
             let removedFromAdmin, removedFromMembers;
             const { _id, admin, members } = roomInput;
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
 
             try {
                 if (admin) {
@@ -484,10 +652,33 @@ const resolvers = {
                 return { success: false, errorMessage: message };
             }
         },
-        deleteRoom: async (parent, { roomInput }, { dataSources }) => {
+        deleteRoom: async (parent, { roomInput }, { dataSources, authUser }) => {
             const { _id, members: currentUser } = roomInput;
 
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
+
             try {
+
+                const currentRoom = await dataSources.chatAPI.getRoom(_id);
+
+                const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
+
+                if (!isAdmin) {
+                    throw new GraphQLError("The user hasn't the proper permissions", {
+                        extensions: {
+                            code: 'UNAUTHENTICATED',
+                            http: { status: 401 },
+                        }
+                    });
+                }
+
                 //delete room
                 const deletedRoom = await dataSources.chatAPI.deleteRoom(_id);
                 //delete messages
@@ -518,8 +709,17 @@ const resolvers = {
             }
         },
 
-        changeLanguage: async (parent, { userInput }, { dataSources }) => {
+        changeLanguage: async (parent, { userInput }, { dataSources, authUser }) => {
             const { username, settings } = userInput;
+
+            if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                });
+            }
 
             try {
                 const updatedUser = await dataSources.userAPI.updateInfo(username, { settings });

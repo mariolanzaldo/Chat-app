@@ -15,6 +15,7 @@ function* checkEmail(action) {
         }
         `,
         variables: action.payload,
+        fetchPolicy: "no-cache",
     }
     try {
         const { data: { existence } } = yield call(client.query, options);

@@ -26,7 +26,7 @@ const NotificationBar = () => {
                 onClose={handleClose}
                 sx={{
                     position: "absolute",
-                    top: 0,
+                    top: '0%',
                     left: "60%",
                     width: "40%",
                     boxSizing: "border-box",

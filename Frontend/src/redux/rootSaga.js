@@ -28,6 +28,7 @@ import checkEmail from "./sagas/checkEmail";
 import friendRequestAccepted from "./sagas/friendRequestAccepted";
 import deletedFrom from "./sagas/deletedFrom";
 import groupChanges from "./sagas/groupChanges";
+//TODO: Review all mutation/query of each saga!
 
 export function* watchLogin() {
 

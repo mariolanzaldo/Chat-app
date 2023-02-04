@@ -243,6 +243,20 @@ const resolvers = {
             }
 
             try {
+
+                const { members } = await dataSources.chatAPI.getRoom(messageInput.roomId);
+
+                const inRoom = members.find((user) => user.username === authUser.username);
+
+                if (authUser.username !== messageInput.sendBy || !inRoom) {
+                    throw new GraphQLError("Internal Error", {
+                        extensions: {
+                            code: 'BAD_USER_INPUT',
+                            http: { status: 400 },
+                        }
+                    });
+                }
+
                 const createdMessage = await dataSources.chatAPI.createMessage(messageInput);
 
                 pubSub.publish("MESSAGE_CREATED", {
@@ -264,6 +278,19 @@ const resolvers = {
                     }
                 });
             }
+
+            const isMember = roomInput.members.find((user) => user.username === authUser.username);
+            const isAdmin = roomInput.admin.find((user) => user.username === authUser.username);
+
+            if (!isMember || !isAdmin) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 }
+                    }
+                });
+            }
+
             try {
 
                 const createdRoom = await dataSources.chatAPI.createRoom(roomInput);
@@ -305,7 +332,7 @@ const resolvers = {
             const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
 
             if (!isAdmin) {
-                throw new GraphQLError("The user hasn't the proper permissions", {
+                throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'UNAUTHENTICATED',
                         http: { status: 401 },
@@ -350,7 +377,7 @@ const resolvers = {
             const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
 
             if (!isAdmin) {
-                throw new GraphQLError("The user hasn't the proper permissions", {
+                throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'UNAUTHENTICATED',
                         http: { status: 401 },
@@ -385,6 +412,15 @@ const resolvers = {
             }
 
             const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+
+            if (request.userA.username === request.userB.username || request.userA.username !== authUser.username) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 }
+                    }
+                })
+            }
 
             try {
 
@@ -437,6 +473,15 @@ const resolvers = {
 
             const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
 
+            if (request.userA.username !== authUser.username) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                })
+            }
+
             try {
                 const { updatedUserA, updatedUserB } = await dataSources.userAPI.acceptFriend(request);
 
@@ -480,9 +525,18 @@ const resolvers = {
                 });
             }
 
-            try {
-                const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
 
+            if (request.userA.username !== authUser.username) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                })
+            }
+
+            try {
                 const updatedUser = await dataSources.userAPI.rejectFriend(request);
 
                 return { success: false, errorMessage: null, value: updatedUser };
@@ -493,7 +547,7 @@ const resolvers = {
         },
 
         deleteFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
-
+            //TODO: Keep working on validating credentials
             if (!authUser) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
@@ -504,6 +558,15 @@ const resolvers = {
             }
 
             const { userA, userB, roomId } = friendInput;
+
+            if (userA[0].username !== authUser.username) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 }
+                    }
+                })
+            }
 
             try {
                 const deletedRoom = await dataSources.chatAPI.deleteRoom(roomId);
@@ -554,7 +617,7 @@ const resolvers = {
                 const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
 
                 if (!isAdmin) {
-                    throw new GraphQLError("The user hasn't the proper permissions", {
+                    throw new GraphQLError("Internal Error", {
                         extensions: {
                             code: 'UNAUTHENTICATED',
                             http: { status: 401 },
@@ -600,7 +663,7 @@ const resolvers = {
                 const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
 
                 if (!isAdmin) {
-                    throw new GraphQLError("The user hasn't the proper permissions", {
+                    throw new GraphQLError("Internal Error", {
                         extensions: {
                             code: 'UNAUTHENTICATED',
                             http: { status: 401 },
@@ -677,7 +740,7 @@ const resolvers = {
                 const isAdmin = currentRoom.admin.find((element) => element.username === authUser.username);
 
                 if (!isAdmin) {
-                    throw new GraphQLError("The user hasn't the proper permissions", {
+                    throw new GraphQLError("Internal Error", {
                         extensions: {
                             code: 'UNAUTHENTICATED',
                             http: { status: 401 },

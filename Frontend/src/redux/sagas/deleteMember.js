@@ -16,8 +16,8 @@ function* deleteMember(action) {
               }
               groupalRoom
               members {
-                avatar
                 username
+                joinedAt
               }
             }
           }

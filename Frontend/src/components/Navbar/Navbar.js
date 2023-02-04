@@ -86,7 +86,7 @@ function ResponsiveDrawer(props) {
 
     useSubscription(FRIEND_REQUEST, {
         onData: ({ data }) => {
-            console.log('here');
+
             dispatch({
                 type: "addNewRequest",
                 payload: data?.data.addFriend

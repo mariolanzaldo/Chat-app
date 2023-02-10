@@ -51,6 +51,8 @@ const startServer = async () => {
 
     const server = new ApolloServer({
         schema,
+        //TODO: To disable the apollo sandbox
+        introspection: process.env.NODE_ENV !== 'production',
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
 

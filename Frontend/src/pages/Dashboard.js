@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import { useSelector, useDispatch } from "react-redux";
@@ -21,9 +21,10 @@ function Dashboard() {
             <Stack sx={{
                 display: 'flex',
                 flexDirection: 'row',
+                // height: { xs: "1300px" },
+                // border: "1px solid red"
             }}>
                 <Navbar />
-
             </Stack>
         );
     }

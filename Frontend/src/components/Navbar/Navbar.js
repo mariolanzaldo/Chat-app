@@ -150,7 +150,7 @@ function ResponsiveDrawer(props) {
                     // height: '100vh',
                     // scroll: "none",
                     overflow: "hidden",
-                    height: { xs: '100%', sm: '93%', m: '90%' },
+                    height: { xs: '100%', sm: '93%', md: '90%' },
                 }}
             >
                 <BasicTabs />
@@ -175,9 +175,9 @@ function ResponsiveDrawer(props) {
             <AppBar
                 position="fixed"
                 sx={{
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    width: { md: `calc(100% - ${drawerWidth}px)` },
                     height: { xs: '70px' },
-                    ml: { sm: `${drawerWidth}px` },
+                    ml: { md: `${drawerWidth}px` },
                 }}
             >
                 <Toolbar>
@@ -186,7 +186,7 @@ function ResponsiveDrawer(props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' } }}
+                        sx={{ mr: 2, display: { md: 'none' } }}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -227,8 +227,8 @@ function ResponsiveDrawer(props) {
             <Box
                 component="nav"
                 sx={{
-                    width: { sm: drawerWidth },
-                    flexShrink: { sm: 0 },
+                    width: { md: drawerWidth },
+                    flexShrink: { md: 0 },
                 }}
                 aria-label="mailbox folders"
             >
@@ -242,7 +242,11 @@ function ResponsiveDrawer(props) {
                         keepMounted: true, // Better open performance on mobile.
                     }}
                     sx={{
-                        display: { xs: 'block', sm: 'none' },
+                        display: {
+                            xs: 'block',
+                            sm: 'block',
+                            md: "none"
+                        },
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
                             width: drawerWidth,
@@ -254,7 +258,11 @@ function ResponsiveDrawer(props) {
                 <Drawer
                     variant="permanent"
                     sx={{
-                        display: { xs: 'none', sm: 'block' },
+                        display: {
+                            xs: 'none',
+                            sm: 'none',
+                            md: 'block',
+                        },
                         '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                     }}
                     open
@@ -274,7 +282,7 @@ function ResponsiveDrawer(props) {
 
                 <Outlet />
             </Box>
-        </Box>
+        </Box >
     );
 }
 

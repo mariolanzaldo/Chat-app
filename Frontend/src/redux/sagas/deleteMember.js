@@ -16,13 +16,18 @@ function* deleteMember(action) {
               }
               groupalRoom
               members {
+                _id
                 username
+                firstName
+                lastName
+                avatar
                 joinedAt
               }
             }
           }
         `,
     variables: action.payload,
+    // fetchPolicy: "no-cache",
   };
 
   try {

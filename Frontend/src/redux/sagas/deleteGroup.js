@@ -33,7 +33,11 @@ function* deleteGroup(action) {
                     username
                   }
                   members {
+                    _id
                     username
+                    firstName
+                    lastName
+                    avatar
                   }
                 }
                 requests {

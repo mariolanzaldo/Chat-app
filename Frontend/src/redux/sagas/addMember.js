@@ -15,7 +15,9 @@ function* addMember(action) {
                 username
               }
               members {
+                _id
                 username
+                avatar
                 joinedAt
               }
             }

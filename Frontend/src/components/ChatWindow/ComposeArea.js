@@ -191,7 +191,7 @@ const ComposeArea = () => {
                         <Canvas
                             width={430}
                             // width={600}
-                            height={300}
+                            height={280}
                             id='canvas'
                         />{
                             error ? <Typography color='red' sx={{ m: 1, textAlign: 'center' }}>{t("scribbleError")}</Typography> : null

@@ -10,7 +10,7 @@ import NotificationBar from "./components/NotificationBar/NotificationBar";
 import ChatWindow from "./components/ChatWindow/ChatWindow";
 
 export default function App() {
-  //TODO: This was modified to introduce responsiveness
+
   return (
     <Provider store={store}>
       <Box>

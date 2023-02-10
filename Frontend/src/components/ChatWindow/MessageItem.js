@@ -54,8 +54,10 @@ const MessageItem = ({ message }) => {
                 </>) : (<>
                     <Box
                         sx={{
+                            display: "flex",
+                            flexDirection: "column",
                             backgroundColor: color,
-                            width: "97%",
+                            width: "100%",
                             borderRadius: '10px',
                             margin: 1,
                             padding: 1,

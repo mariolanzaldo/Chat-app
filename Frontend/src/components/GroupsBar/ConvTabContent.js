@@ -5,60 +5,18 @@ import GroupList from './GroupList';
 const GROUP_CHANGED = gql`
 subscription groupChanged {
     groupChanged {
+      _id
+      name
+      groupalRoom
+      admin {
+        username
+      }
+      members {
         _id
         username
-          firstName
-          lastName
-          email
-          
-          avatar
-          contactList {
-            _id
-            username
-            firstName
-            lastName
-            email
-            avatar
-          }
-          requests {
-            from {
-              _id
-              username
-              firstName
-              lastName
-              email
-              avatar
-            }
-            to {
-              _id
-              username
-              firstName
-              lastName
-              email
-              avatar
-            }
-          }
-          rooms {
-            _id
-            name
-            groupalRoom
-            admin {
-              username
-            }
-            members {
-              _id
-              username
-              firstName
-              lastName
-              email
-              joinedAt
-              avatar
-            }
-          }  
-          token
-          settings {
-            language
-          }
+        avatar
+        joinedAt
+      }
     }
   }
 `;
@@ -73,12 +31,11 @@ const ConvTabContent = ({ rooms }) => {
     onData: ({ data }) => {
       const { groupChanged } = data?.data;
 
-      const user = groupChanged.find((user) => user.username === username);
+      const user = groupChanged.members.find((user) => user.username === username);
 
       if (user) {
         dispatch({
           type: 'groupChanges',
-          payload: user,
         });
       }
     },

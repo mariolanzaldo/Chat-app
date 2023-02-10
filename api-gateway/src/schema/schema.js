@@ -153,7 +153,8 @@ const typeDefs = gql`
         addFriend: Request
         friendRequestAccepted: User
         deleteContact: User
-        groupChanged: [User]
+        groupChanged: Room
+        #groupChanged: [User]
     }
 `;
 

@@ -16,7 +16,12 @@ export default function Signup() {
 
     const navigate = useNavigate();
 
-    const paperStyle = { padding: 20, height: '85vh', width: 380, margin: "20px auto" };
+    const paperStyle = {
+        padding: 20,
+        // height: { xs: "100vh", s: "85vh" },
+        width: 380,
+        margin: "20px auto",
+    };
 
     const MAX_LENGTH = 25;
 
@@ -63,7 +68,7 @@ export default function Signup() {
 
     return (
         <Paper elevation={5} style={paperStyle}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" >
                 <CssBaseline />
                 <Box
                     sx={{

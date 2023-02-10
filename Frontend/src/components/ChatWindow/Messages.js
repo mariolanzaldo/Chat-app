@@ -22,7 +22,7 @@ const Messages = () => {
 
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 'calc(100vh - 64px - 70px)',
+                    // height: 'calc(100vh - 64px - 70px)',
                 }}
             >
                 {filteredMessages.map((message, index) => {

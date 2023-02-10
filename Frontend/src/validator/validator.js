@@ -60,7 +60,6 @@ function validateUsername(username, errors, existence) {
         result = false;
     }
 
-    console.log(username[0] === " ")
     if (username[0] === " ") {
         errors.username = t("usernameError2");
         result = false;

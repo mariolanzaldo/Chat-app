@@ -35,7 +35,6 @@ function* deleteAdmin(action) {
 
     yield put(removeAdmin(res.data));
   } catch (error) {
-    console.log(error);
     yield put(setDefaultNotification());
   }
 };

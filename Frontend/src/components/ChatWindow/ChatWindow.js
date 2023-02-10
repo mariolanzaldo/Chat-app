@@ -49,26 +49,21 @@ const ChatWindow = () => {
     return (
         <Grid
             container
-            m={0}
-
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 padding: 0,
                 flexWrap: "nowrap",
                 height: "100%",
-                //TODO: This width controls the chatview
                 width: "100%",
-                scrollBehavior: 'smooth',
-                // border: "1px solid blue"
             }}
         >
             <Grid
                 item
-                s={10}
                 sx={{
                     backgroundColor: 'rgb(240, 240, 240)',
                     overflowY: 'scroll',
+                    scrollBehavior: 'smooth',
                     height: "100%",
                     width: "100%",
                     "& .css-tazwbd-MuiList-root::-webkit-scrollbar-track": {
@@ -96,7 +91,6 @@ const ChatWindow = () => {
 
             <Grid
                 item
-                s={2}
                 sx={{
                     padding: "2px",
                     width: '100%',

@@ -45,6 +45,7 @@ function* queryUser(action) {
                     username
                   } 
                   members {
+                    _id
                     username
                     avatar
                     joinedAt
@@ -54,6 +55,8 @@ function* queryUser(action) {
             }
         }
         `,
+    fetchPolicy: "no-cache",
+
   };
   try {
     // yield put(setUserFetching());

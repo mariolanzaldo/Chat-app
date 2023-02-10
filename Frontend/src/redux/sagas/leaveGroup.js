@@ -32,7 +32,9 @@ function* leaveGroup(action) {
                   username
                 }
                 members {
+                  _id
                   username
+                  avatar
                 }
               }
               requests {

@@ -26,8 +26,8 @@ const LanguageSettings = ({ setOpen }) => {
         i18n.changeLanguage(selectedLanguage);
 
         const userInput = {
-            username,
-            settings: {
+            // username,
+            settingsInput: {
                 language: selectedLanguage,
             }
         };

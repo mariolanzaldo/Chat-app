@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/mate
 import SendIcon from '@mui/icons-material/Send';
 import GestureIcon from '@mui/icons-material/Gesture';
 import { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { contactStyles } from "../ContactsBar/styles";
 import CommonButton from "../common/CommonButton/CommonButton";
@@ -22,9 +22,9 @@ const ComposeArea = () => {
 
     const { roomId } = useParams();
 
-    const { username } = useSelector((state) => {
-        return state.user.value;
-    });
+    // const { username } = useSelector((state) => {
+    //     return state.user.value;
+    // });
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -33,7 +33,6 @@ const ComposeArea = () => {
             const messageInput = {
                 roomId,
                 content: message,
-                sendBy: username,
                 isScribble: false,
             };
 
@@ -68,7 +67,6 @@ const ComposeArea = () => {
         const messageInput = {
             roomId,
             content: image,
-            sendBy: username,
             isScribble: true,
         };
 

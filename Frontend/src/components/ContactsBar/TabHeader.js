@@ -39,7 +39,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
     const handleBlur = (event) => {
         event.preventDefault();
-        if (value === username) {
+        if (value.trim() === username) {
             setFormError(i("addFriendError1"));
         } else if (value.trim() === "") {
             setFormError(i("addFriendError2"));
@@ -55,13 +55,13 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
         const friendReq = {
             friendInput: {
-                userA: [{ username }],
+                // userA: [{ username }],
                 userB: [{ username: userB }],
             }
         };
 
         const onRequest = requests.filter((element) => {
-            if (element.from.username === userB); return element;
+            if (element.from.username === userB) return element;
         });
 
         if (onRequest.length > 0) {

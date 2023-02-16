@@ -68,72 +68,76 @@ subscription friendRequestAccepted {
 
 const ContactsBar = () => {
 
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    const { username, contactList } = useSelector((state) => {
-        return state.user.value
-    });
+  const { username, contactList } = useSelector((state) => {
+    return state.user.value
+  });
 
-    const [open, setOpen] = useState(false);
-    const [search, setSearch] = useState(contactList);
-    const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState(contactList);
+  const [users, setUsers] = useState(null);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useSubscription(FRIEND_REQUEST_ACCEPTED, {
-        onData: ({ data }) => {
-            if (data?.data.friendRequestAccepted.username === username) {
-                dispatch({
-                    type: "requestAccepted",
-                    payload: data?.data.friendRequestAccepted
-                });
-            }
-        },
-    });
+  useSubscription(FRIEND_REQUEST_ACCEPTED, {
+    onData: ({ data }) => {
+      if (data?.data.friendRequestAccepted.username === username) {
+        dispatch({
+          type: "requestAccepted",
+          payload: data?.data.friendRequestAccepted
+        });
+      }
+    },
+  });
 
 
-    const filterData = (value) => {
-        const lowerdCaseValue = value.toLowerCase().trim();
+  const filterData = (value) => {
+    const lowerdCaseValue = value.toLowerCase().trim();
 
-        if (lowerdCaseValue === "") setUsers(search);
-        else {
+    if (lowerdCaseValue === "") setUsers(search);
+    else {
 
-            const filteredData = search.filter((item) => {
-                const { username } = item;
-                return username.toLowerCase().trim().includes(lowerdCaseValue)
-                // return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
-            });
+      const filteredData = search.filter((item) => {
+        const { username } = item;
 
-            setUsers(filteredData);
-        }
-    };
+        const output = username.toLowerCase().trim().includes(lowerdCaseValue);
 
-    if (contactList.length > 0 && contactList && username) {
-        return (
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    margin: 0,
-                    padding: 0,
-                }}
-            >
-                <TabHeader open={open} setOpen={setOpen} filterData={filterData} />
+        return output;
+        // return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
+      });
 
-                <TabContent users={users} />
-            </ Box>
-        );
-
-    } else if (contactList.length === 0) {
-        return (
-            <Box>
-                <TabHeader open={open} setOpen={setOpen} />
-
-                <Typography>{t("noContacts")}</Typography>
-            </Box>
-        );
+      setUsers(filteredData);
     }
+  };
+
+  if (contactList.length > 0 && contactList && username) {
+
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          margin: 0,
+          padding: 0,
+        }}
+      >
+        <TabHeader open={open} setOpen={setOpen} filterData={filterData} />
+
+        <TabContent users={users} />
+      </ Box>
+    );
+
+  } else if (contactList.length === 0) {
+    return (
+      <Box>
+        <TabHeader open={open} setOpen={setOpen} />
+
+        <Typography>{t("noContacts")}</Typography>
+      </Box>
+    );
+  }
 };
 
 export default ContactsBar;

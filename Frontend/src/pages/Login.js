@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { CssVarsProvider } from '@mui/joy/styles';
-import { Sheet, Typography, TextField, Button, Link } from '@mui/joy'
-import { Box, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, Link } from '@mui/material';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
     const { t } = useTranslation();
@@ -82,76 +81,85 @@ const Login = () => {
 
     if (user.value) return <Navigate to="/" />;
     return (
-        <CssVarsProvider>
-            <main>
-                <Sheet
+        <Paper
+            variant='outlined'
+            sx={{
+                width: 300,
+                mx: "auto",
+                my: 4,
+                p: 4,
+                px: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                borderRadius: 'sm',
+                boxShadow: 'md',
+            }}
+        >
+            <div>
+                <Typography level='h4' component='h1'>
+                    <b>{t("welcome")}</b>
+                </Typography>
+                <Typography level="body2">
+                    {t('signinToContinue')}
+                </Typography>
+            </div>
+            <Box component='form' onSubmit={handleSubmit}>
+                <Box></Box>
+                <TextField
+                    fullWidth
+                    name='username'
+                    type='text'
+                    placeholder='username123'
+                    label={t("username")}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={formErrors.username ? true : false}
+                    helperText={formErrors.username}
+                    inputProps={{ maxLength: 25 }}
                     sx={{
-                        width: 300,
-                        mx: 'auto',
-                        my: 4,
-                        py: 3,
-                        px: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2,
-                        borderRadius: 'sm',
-                        boxShadow: 'md',
+                        mb: 2
                     }}
-                    variant="outlined"
+                />
+                <TextField
+                    fullWidth
+                    name="password"
+                    type="password"
+                    placeholder={t("password")}
+                    label={t("password")}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={formErrors.password ? true : false}
+                    helperText={formErrors.password}
+                    inputProps={{ maxLength: 80 }}
+                    sx={{
+                        mb: 2
+                    }}
+                />
+                <Button
+                    fullWidth
+                    type='submit'
+                    sx={{
+                        my: 1,
+                        backgroundColor: '#3f51b5',
+                        color: 'whitesmoke'
+                    }}
                 >
-                    <div>
-                        <Typography level="h4" component="h1">
-                            <b>{t("welcome")}</b>
-                        </Typography>
-                        <Typography level="body2">{t('signinToContinue')}</Typography>
-                    </div>
-                    <Box component='form' onSubmit={handleSubmit}>
-                        <Grid container>
-                            <Grid item>
+                    {t('login')}
+                </Button>
+            </Box>
+            <Typography
+                fontSize='sm'
+                sx={{ alignSelf: 'center' }}
+            >
+                {t('Donthaveanaccount')}
 
-                            </Grid>
-                        </Grid>
+                <Link component={RouterLink} to="/signup">
+                    {t('signup')}
+                </Link>
+            </Typography>
 
-                        <TextField
-                            name="username"
-                            type="text"
-                            placeholder="username123"
-                            label={t("username")}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={formErrors.username ? true : false}
-                            helperText={formErrors.username}
-                        />
-                        <TextField
-                            name="password"
-                            type="password"
-                            placeholder={t("password")}
-                            label={t("password")}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={formErrors.password ? true : false}
-                            helperText={formErrors.password}
-                        />
-                        <Button
-                            fullWidth
-                            type='submit'
-                            sx={{
-                                mt: 1,
-                                backgroundColor: '#3f51b5'
-                            }}>
-                            {t("login")}
-                        </Button>
-                    </Box>
-                    <Typography
-                        endDecorator={<Link href="/signup">{t('signup')}</Link>}
-                        fontSize="sm"
-                        sx={{ alignSelf: 'center' }}
-                    >
-                        {t('Donthaveanaccount')}
-                    </Typography>
-                </Sheet>
-            </main>
-        </CssVarsProvider>
+        </Paper>
     );
 }
 

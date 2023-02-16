@@ -6,10 +6,11 @@ import { setUser } from "../reducers/userSlice";
 import { t } from 'i18next';
 
 function* setLanguage(action) {
+  // console.log(action.payload);
   const options = {
     mutation: gql`
-        mutation ChangeLanguage($userInput: UserInput) {
-            changeLanguage(userInput: $userInput) {
+        mutation ChangeLanguage($settingsInput: SettingsInput) {
+            changeLanguage(settingsInput: $settingsInput) {
               value {
                 _id
                 username
@@ -64,9 +65,7 @@ function* setLanguage(action) {
             }
           }
         `,
-    variables: {
-      userInput: action.payload
-    }
+    variables: action.payload
   }
 
   try {

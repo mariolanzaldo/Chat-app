@@ -33,11 +33,11 @@ const MessageItem = ({ message }) => {
                             margin: 0,
                             height: 'auto',
                             '& .MuiListItemText-primary': {
-
+                                fontSize: { xs: "30px", sm: "25px", md: "15px" },
                                 fontWeight: 'bold',
                             },
                             '& .MuiListItemText-secondary': {
-
+                                fontSize: { xs: "30px", sm: "25px", md: "15px" },
                                 color: 'rgba(14, 14, 14, 1)',
                             }
                         }}
@@ -88,7 +88,7 @@ const MessageItem = ({ message }) => {
                     </Box>
 
                     <ListItemText
-                        secondary={`${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
+                        secondary={message?.createdAt ? `${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}` : `${new Date(Date.now()).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
                             padding: 0,
                             margin: 0,

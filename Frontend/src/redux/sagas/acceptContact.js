@@ -63,7 +63,8 @@ function* acceptContact(action) {
     }
         `,
     variables: action.payload,
-    fetchPolicy: "no-cache",
+    // fetchPolicy: "no-cache",
+    fetchPolicy: "network-only"
   }
   try {
     const res = yield call(client.mutate, options);

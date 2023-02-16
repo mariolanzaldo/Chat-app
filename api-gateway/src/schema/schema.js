@@ -35,7 +35,7 @@ const typeDefs = gql`
         email: String
         password: String
         confirmPassword: String
-        settings: SettingsInput
+        #settings: SettingsInput
         avatar: String
         joinedAt: Date
     }
@@ -54,7 +54,6 @@ const typeDefs = gql`
     }
 
     input FriendInput {
-        userA: [UserInput]
         userB: [UserInput]
         roomId: ID
     }
@@ -72,15 +71,10 @@ const typeDefs = gql`
     input MessageInput {
         content: String
         isScribble: Boolean
-        sendBy: String
+        #sendBy: String
         roomId: ID
         #room: [Room] ????
     }
-
-    #type Member {
-    #    username: String
-    #    joinedAt: Date
-    #}
 
     type Room {
         _id: String
@@ -88,6 +82,7 @@ const typeDefs = gql`
         admin: [UnauthUser]
         groupalRoom: Boolean
         members: [UnauthUser]
+        isDeleted: Boolean
     }
 
     input RoomInput {
@@ -123,7 +118,7 @@ const typeDefs = gql`
         deleteFriend(friendInput: FriendInput): Res!
         acceptFriend(friendInput: FriendInput): Res!
         rejectFriend(friendInput: FriendInput): Res! 
-        changeLanguage(userInput: UserInput): Res!
+        changeLanguage(settingsInput: SettingsInput): Res!
 
         #Messages 
         createMessage(messageInput: MessageInput): Message!
@@ -140,7 +135,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        messages(_id: String, username: String): [Message]
+        messages(_id: String): [Message]
         currentUser: User
         user(_id: String): User
         existence(username: String, email: String): Exists

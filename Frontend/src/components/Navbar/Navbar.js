@@ -13,7 +13,7 @@ import Image from './consts/avatar';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useParams } from 'react-router-dom';
+import { useNavigate, Outlet, useParams } from 'react-router-dom';
 import { gql, useSubscription } from '@apollo/client';
 
 const drawerWidth = 275;
@@ -37,6 +37,26 @@ subscription FriendSub {
 }
 `;
 
+const GROUP_CHANGED = gql`
+subscription groupChanged {
+    groupChanged {
+      _id
+      name
+      groupalRoom
+      admin {
+        username
+      }
+      isDeleted
+      members {
+        _id
+        username
+        avatar
+        joinedAt
+      }
+    }
+  }
+`;
+
 function ResponsiveDrawer(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -48,6 +68,8 @@ function ResponsiveDrawer(props) {
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
 
     const { roomId } = useParams();
 
@@ -91,6 +113,26 @@ function ResponsiveDrawer(props) {
                 type: "addNewRequest",
                 payload: data?.data.addFriend
             });
+        },
+    });
+
+    useSubscription(GROUP_CHANGED, {
+        onData: ({ data }) => {
+            const { groupChanged } = data?.data;
+
+            const user = groupChanged.members.find((user) => user.username === username);
+
+            if (user) {
+                dispatch({
+                    type: 'groupChanges',
+                });
+
+                if (groupChanged.isDeleted && groupChanged.groupalRoom && roomId === groupChanged._id) {
+                    navigate('/');
+                }
+            }
+
+
         },
     });
 
@@ -167,7 +209,12 @@ function ResponsiveDrawer(props) {
             sx={{
                 display: 'flex',
                 width: "100%",
-                height: { sm: "91vh", m: "100%" },
+                height: {
+                    xs: "100vh",
+                    // sm: "150vh",
+                    md: "100vh",
+                    lg: "100vh",
+                },
                 zIndex: 0,
             }}
         >
@@ -275,7 +322,17 @@ function ResponsiveDrawer(props) {
                 sx={{
                     flexGrow: 1,
                     p: 0,
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    // width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    width: { md: `calc(100% - ${drawerWidth}px)` },
+                    height: {
+                        // xs: "1200px",
+                        xs: "130vh",
+                        sm: "130vh",
+                        md: "77vh",
+                        // xl: "100vh"
+                    },
+                    // border: "1px solid red"
+
                 }}
             >
                 <Toolbar />

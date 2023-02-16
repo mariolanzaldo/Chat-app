@@ -16,7 +16,7 @@ const RequestItem = ({ item }) => {
 
         const friendReq = {
             friendInput: {
-                userA: [{ username }],
+                // userA: [{ username }],
                 userB: [{ username: item.from.username }],
             }
         };

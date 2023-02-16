@@ -98,6 +98,7 @@ export const i18nOptions = () => ({
                 userNotFound: "User not found",
                 userPasswordIncorrect: "User or password is incorrect",
                 missingCredentials: "Missing credentials",
+                noCoincidence: "No coincidences",
             }
         },
         es: {
@@ -187,10 +188,11 @@ export const i18nOptions = () => ({
                 languageChanged: "Ajustes de lenguaje aplicado",
                 errorSendMessage: "El mensaje no puede ser enviado. Intenta de nuevo",
                 errorQueryMessages: "No se pudo recuperar la lista de mensajes",
-                defaultError: "Algo ocurrió mal. Intenta de nuevo",
                 userNotFound: "Usuario no encontrado",
+                defaultError: "Algo ocurrió no salió bien. Intenta de nuevo",
                 userPasswordIncorrect: "Usuario o contraseña inválidas",
                 missingCredentials: "Faltan credenciales",
+                noCoincidence: "Sin coincidencias",
 
             }
         },
@@ -285,6 +287,7 @@ export const i18nOptions = () => ({
                 userNotFound: "Utilisateur non trouvé",
                 userPasswordIncorrect: "Nom d'utilisateur ou mot de passe invalide",
                 missingCredentials: "Les informations d'identification invalides",
+                noCoincidence: "Pas de coïncidences",
 
             }
         }

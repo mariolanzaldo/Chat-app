@@ -1,4 +1,6 @@
 import { gql, useSubscription } from '@apollo/client';
+import { Typography } from '@mui/material';
+import { t } from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ContactList from "./ContactList";
@@ -86,9 +88,13 @@ const TabContent = ({ users }) => {
     }
   });
 
-  if (users.length === 0) {
+  if (!users) {
     return (
       <ContactList contacts={contactList} />
+    );
+  } else if (users.length === 0) {
+    return (
+      <Typography>{t("noCoincidence")}</Typography>
     );
   } else {
     return (

@@ -23,7 +23,9 @@ function* createGroup(action) {
         `,
         variables: {
             roomInput: action.payload.roomInput
-        }
+        },
+        fetchPolicy: "no-cache",
+
     };
 
     const res = yield call(client.mutate, options);

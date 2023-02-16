@@ -31,7 +31,6 @@ const ContactList = ({ contacts }) => {
 
         const unfriendReq = {
             friendInput: {
-                userA: [{ username }],
                 userB: [{ username: userB }],
                 roomId: _id,
             },

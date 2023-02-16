@@ -25,7 +25,6 @@ const ChatWindow = () => {
     const dispatch = useDispatch();
 
     const { currentConversation } = useSelector((state) => state.messages);
-    const { username } = useSelector((state) => state.user.value);
 
     useSubscription(MESSAGES_SUBSCRIPTION, {
         variables: { roomId },
@@ -41,7 +40,7 @@ const ChatWindow = () => {
 
         dispatch({
             type: "queryMessages",
-            payload: { _id: roomId, username },
+            payload: { _id: roomId },
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentConversation]);
@@ -51,11 +50,12 @@ const ChatWindow = () => {
             container
             sx={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 padding: 0,
-                flexWrap: "nowrap",
+                // flexWrap: "nowrap",
                 height: "100%",
                 width: "100%",
+                // border: "3px solid purple"
             }}
         >
             <Grid
@@ -95,7 +95,8 @@ const ChatWindow = () => {
                     padding: "2px",
                     width: '100%',
                     height: "100px",
-                    // height: "calc(100vh - 85vh)",
+                    // height: "calc(100vh - 80vh)",
+                    // border: "3px solid black"
                 }}
             >
                 <ComposeArea />

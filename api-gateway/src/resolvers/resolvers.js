@@ -5,14 +5,14 @@ const pubSub = new PubSub();
 
 const resolvers = {
     Query: {
-        messages: async (_, { _id, username }, { dataSources, authUser }) => {
+        messages: async (_, { _id }, { dataSources, authUser }) => {
 
             let isMember;
 
             if (authUser) {
                 const { members } = await dataSources.chatAPI.getRoom(_id);
 
-                isMember = members.find((user) => user.username === username);
+                isMember = members.find((user) => user.username === authUser.username);
             }
 
             if (!isMember || !authUser) {
@@ -30,14 +30,14 @@ const resolvers = {
                 return roomMessages;
             }
         },
-        user: async (_, { _id }, { req, dataSources }) => {
-            const userToFind = { username: _id };
+        // user: async (_, { _id }, { req, dataSources }) => {
+        //     const userToFind = { username: _id };
 
-            const { user } = await dataSources.userAPI.getUser(userToFind);
+        //     const { user } = await dataSources.userAPI.getUser(userToFind);
 
-            return user;
-        },
-        currentUser: async (parent, input, { dataSources, authUser }) => {
+        //     return user;
+        // },
+        currentUser: async (_, __, { dataSources, authUser }) => {
             if (!authUser) {
                 throw new GraphQLError('Internal Error', {
                     extensions: {
@@ -61,7 +61,7 @@ const resolvers = {
 
             return authUser;
         },
-        existence: async (parent, input, { dataSources }) => {
+        existence: async (_, input, { dataSources }) => {
             const { username, email } = input;
 
             if (username) {
@@ -76,7 +76,7 @@ const resolvers = {
         },
     },
     User: {
-        rooms: async (parent, input, { dataSources }) => {
+        rooms: async (parent, _, { dataSources }) => {
 
             const completePromiseRooms = await parent.rooms.map(async (room) => {
                 const completeRoom = await dataSources.chatAPI.getRoom(room._id);
@@ -86,7 +86,7 @@ const resolvers = {
             const completeRooms = await Promise.all(completePromiseRooms);
             return completeRooms;
         },
-        contactList: async (parent, input, { dataSources }) => {
+        contactList: async (parent, _, { dataSources }) => {
             const response = parent.contactList.map(async (contact) => {
                 const { user } = await dataSources.userAPI.getUser({ username: contact });
                 const { _id, username, email, firstName, lastName, avatar } = user;
@@ -210,7 +210,7 @@ const resolvers = {
                 throw new GraphQLError(message.error ? message.error : message.message ? message.message : message);
             }
         },
-        logout: async (parent, { cookieInput }, { dataSources, req, res }) => {
+        logout: async (_, { cookieInput }, { dataSources, req, res }) => {
             const { name } = cookieInput;
 
             try {
@@ -243,6 +243,22 @@ const resolvers = {
                 });
             }
 
+            messageInput.sendBy = authUser.username;
+
+            const getBase64StringFromDataURL = (dataURL) => dataURL.replace('data:', '').replace(/^.+,/, '');
+
+            const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+            const isScribble = base64regex.test(getBase64StringFromDataURL(messageInput.content));
+
+            if ((isScribble !== messageInput.isScribble)) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
+
             try {
 
                 const { members } = await dataSources.chatAPI.getRoom(messageInput.roomId);
@@ -270,8 +286,17 @@ const resolvers = {
                 throw new GraphQLError(message);
             }
         },
-        createRoom: async (parent, { roomInput }, { dataSources, authUser }) => {
+        createRoom: async (_, { roomInput }, { dataSources, authUser }) => {
             if (!authUser) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
+
+            if (!roomInput.groupalRoom) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'UNAUTHENTICATED',
@@ -413,7 +438,7 @@ const resolvers = {
                 });
             }
 
-            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+            const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username.trim() } };
 
             if (request.userA.username === request.userB.username || request.userA.username !== authUser.username) {
                 throw new GraphQLError("Internal Error", {
@@ -429,7 +454,7 @@ const resolvers = {
                 const { user: { requests: userBRequests } } = await dataSources.userAPI.getUser(friendInput.userB[0].username);
 
                 const alreadyOnRequest = userBRequests.filter((element) => {
-                    return element.from === friendInput.userA[0].username;
+                    return element.from === request.userA.username;
                 });
 
                 if (alreadyOnRequest.length > 0) {
@@ -473,7 +498,7 @@ const resolvers = {
                 });
             }
 
-            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+            const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username } };
 
             if (request.userA.username !== authUser.username) {
                 throw new GraphQLError("Internal Error", {
@@ -527,7 +552,7 @@ const resolvers = {
                 });
             }
 
-            const request = { userA: { username: friendInput.userA[0].username }, userB: { username: friendInput.userB[0].username } };
+            const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username } };
 
             if (request.userA.username !== authUser.username) {
                 throw new GraphQLError("Internal Error", {
@@ -558,7 +583,8 @@ const resolvers = {
                 });
             }
 
-            const { userA, userB, roomId } = friendInput;
+            const { userB, roomId } = friendInput;
+            const userA = [{ username: authUser.username }];
 
             if (userA[0].username !== authUser.username) {
                 throw new GraphQLError("Internal Error", {
@@ -796,6 +822,7 @@ const resolvers = {
                 const updatedMembers = await Promise.all(promiseMembers);
 
                 const updatedUser = updatedMembers.find((user) => user.username === currentUser[0].username);
+                deletedRoom.isDeleted = true;
 
                 pubSub.publish(`GROUP_CHANGED`, {
                     groupChanged: deletedRoom,
@@ -808,10 +835,10 @@ const resolvers = {
             }
         },
 
-        changeLanguage: async (parent, { userInput }, { dataSources, authUser }) => {
-            const { username, settings } = userInput;
+        changeLanguage: async (_, { settingsInput }, { dataSources, authUser }) => {
+            const { settings } = settingsInput;
 
-            if (!authUser || username !== authUser.username) {
+            if (!authUser) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'UNAUTHENTICATED',
@@ -821,7 +848,7 @@ const resolvers = {
             }
 
             try {
-                const updatedUser = await dataSources.userAPI.updateInfo(username, { settings });
+                const updatedUser = await dataSources.userAPI.updateInfo(authUser.username, { settings });
 
                 return { success: true, errorMessage: null, value: updatedUser }
             } catch (err) {
@@ -850,7 +877,7 @@ const resolvers = {
             // )
         },
         friendRequestAccepted: {
-            subscribe: (_, __, { user }) => pubSub.asyncIterator(`FRIEND_REQUEST_ACCEPTED`),
+            subscribe: () => pubSub.asyncIterator(`FRIEND_REQUEST_ACCEPTED`),
         },
         deleteContact: {
             subscribe: () => pubSub.asyncIterator(`CONTACT_DELETED`),

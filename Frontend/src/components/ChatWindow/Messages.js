@@ -1,4 +1,4 @@
-import { Box, List } from "@mui/material";
+import { Box, List, Toolbar } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import MessageItem from "./MessageItem";
@@ -22,9 +22,14 @@ const Messages = () => {
 
                     display: 'flex',
                     flexDirection: 'column',
+                    // margin: 10,
                     // height: 'calc(100vh - 64px - 70px)',
+                    // height: '50vh',
+                    // border: "3px solid purple"
                 }}
             >
+                <Toolbar />
+
                 {filteredMessages.map((message, index) => {
                     return (
                         <MessageItem message={message} key={index} />

@@ -4,9 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.1",
-    "@dicebear/adventurer-neutral": "^4.10.5",
-    "@dicebear/avatars": "^4.10.5",
-    "@dicebear/avatars-identicon-sprites": "^4.10.5",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.9",

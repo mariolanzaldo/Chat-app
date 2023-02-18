@@ -323,11 +323,11 @@ function ResponsiveDrawer(props) {
                     flexGrow: 1,
                     p: 0,
                     // width: { sm: `calc(100% - ${drawerWidth}px)` },
-                    width: { md: `calc(100% - ${drawerWidth}px)` },
+                    width: { md: `calc(80% - ${drawerWidth}px)` },
                     height: {
-                        // xs: "1200px",
-                        xs: "130vh",
-                        sm: "130vh",
+                        // xs: "2000px",
+                        xs: "250vh",
+                        sm: "230vh",
                         md: "77vh",
                         // xl: "100vh"
                     },

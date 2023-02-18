@@ -99,6 +99,7 @@ export const i18nOptions = () => ({
                 userPasswordIncorrect: "User or password is incorrect",
                 missingCredentials: "Missing credentials",
                 noCoincidence: "No coincidences",
+                alreadyFriends: "Already friends"
             }
         },
         es: {
@@ -193,7 +194,7 @@ export const i18nOptions = () => ({
                 userPasswordIncorrect: "Usuario o contraseña inválidas",
                 missingCredentials: "Faltan credenciales",
                 noCoincidence: "Sin coincidencias",
-
+                alreadyFriends: "Este contacto ya es tu amigo"
             }
         },
         fr: {
@@ -288,6 +289,7 @@ export const i18nOptions = () => ({
                 userPasswordIncorrect: "Nom d'utilisateur ou mot de passe invalide",
                 missingCredentials: "Les informations d'identification invalides",
                 noCoincidence: "Pas de coïncidences",
+                alreadyFriends: "Déjà amis"
 
             }
         }

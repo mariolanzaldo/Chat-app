@@ -4,8 +4,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useDispatch } from "react-redux";
 import { validator } from '../validator/validator';
 import useForm from '../hooks/useForm';
-import { createAvatar } from "@dicebear/avatars";
-import * as style from '@dicebear/adventurer-neutral';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,12 +33,6 @@ export default function Signup() {
     };
 
     const submit = (userInput) => {
-        userInput.avatar = createAvatar(style, {
-            dataUri: true,
-            size: 1280,
-        });
-
-
         dispatch({
             type: "signup",
             payload: {

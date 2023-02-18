@@ -40,6 +40,8 @@ function* addFriend(action) {
             yield put(setNotification({ error: t("addFriendError4"), severity: "error" }));
         } else if (error.message === "User not found") {
             yield put(setNotification({ error: t("userNotFound"), severity: "error" }));
+        } else if (error.message === "Already friends") {
+            yield put(setNotification({ error: t("alreadyFriends"), severity: "warning" }));
         } else {
             yield put(setNotification({ error: error.message, severity: "error" }));
         }

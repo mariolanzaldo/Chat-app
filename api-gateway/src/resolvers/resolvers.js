@@ -1,5 +1,10 @@
 const { GraphQLError, GraphQLScalarType, Kind, PossibleFragmentSpreadsRule } = require('graphql');
 const { PubSub, withFilter } = require('graphql-subscriptions');
+const validate = require('validator');
+const { createAvatar } = require("@dicebear/avatars");
+const style = require('@dicebear/adventurer-neutral');
+
+
 
 const pubSub = new PubSub();
 
@@ -156,13 +161,31 @@ const resolvers = {
                 firstName,
                 lastName,
                 password,
-                avatar,
+                // avatar,
                 confirmPassword,
                 email,
             } = userInput;
 
+            const isValidEmail = validate.isEmail(String(email).toLocaleLowerCase());
+
+            userInput.avatar = createAvatar(style, {
+                dataUri: true,
+                size: 1280,
+            });
+
+            if (password !== confirmPassword || !isValidEmail ||
+                username.length > 25 || firstName.length > 25 || lastName.length > 25 ||
+                email.length > 80 || password.length > 80 || confirmPassword.length > 80) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
+
             try {
-                const userInfo = await dataSources.userAPI.createUser(username, firstName, lastName, email, avatar);
+                const userInfo = await dataSources.userAPI.createUser(username, firstName, lastName, email, userInput.avatar);
                 const signup = await dataSources.authAPI.signup(username, password);
 
                 return { success: true, errorMessage: null };
@@ -176,6 +199,14 @@ const resolvers = {
             }
         },
         login: async (parent, { userInput }, { dataSources, req, res }) => {
+            if (userInput.username.length > 25 || userInput.password.length > 80) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
             try {
                 const auth = await dataSources.authAPI.login(userInput);
                 const user = await dataSources.userAPI.getUser(userInput);
@@ -243,12 +274,23 @@ const resolvers = {
                 });
             }
 
+            if (!messageInput.isScribble && messageInput.content.length > 5000) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
+
             messageInput.sendBy = authUser.username;
 
             const getBase64StringFromDataURL = (dataURL) => dataURL.replace('data:', '').replace(/^.+,/, '');
 
             const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-            const isScribble = base64regex.test(getBase64StringFromDataURL(messageInput.content));
+            const contentString = getBase64StringFromDataURL(messageInput.content);
+
+            const isScribble = messageInput.content.includes("data:image/png;base64") && base64regex.test(contentString);
 
             if ((isScribble !== messageInput.isScribble)) {
                 throw new GraphQLError("Internal Error", {
@@ -290,23 +332,44 @@ const resolvers = {
             if (!authUser) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
-                        code: 'BAD_USER_INPUT',
-                        http: { status: 400 },
-                    }
-                });
-            }
-
-            if (!roomInput.groupalRoom) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
                         code: 'UNAUTHENTICATED',
                         http: { status: 401 },
                     }
                 });
             }
 
+            if (!roomInput.groupalRoom || roomInput.name.length > 25) {
+                throw new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'BAD_USER_INPUT',
+                        http: { status: 400 },
+                    }
+                });
+            }
+
             const isMember = roomInput.members.find((user) => user.username === authUser.username);
             const isAdmin = roomInput.admin.find((user) => user.username === authUser.username);
+
+            const uniqueMembers = [...new Map(roomInput.members.map(v => [v.username, v])).values()];
+
+            roomInput.members = uniqueMembers;
+            uniqueMembers.map((user) => {
+                if (user.username !== authUser.username) {
+
+                    const isContact = authUser.contactList.find((contact) => {
+                        return contact === user.username;
+                    });
+
+                    if (!isContact) {
+                        throw new GraphQLError("Internal Error", {
+                            extensions: {
+                                code: 'BAD_USER_INPUT',
+                                http: { status: 400 }
+                            }
+                        });
+                    }
+                }
+            });
 
             if (!isMember || !isAdmin) {
                 throw new GraphQLError("Internal Error", {
@@ -378,7 +441,6 @@ const resolvers = {
             const newMembers = await Promise.all(usersPromises);
 
             pubSub.publish(`GROUP_CHANGED`, {
-                // groupChanged: newMembers,
                 groupChanged: updatedRoom,
             });
 
@@ -440,7 +502,7 @@ const resolvers = {
 
             const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username.trim() } };
 
-            if (request.userA.username === request.userB.username || request.userA.username !== authUser.username) {
+            if (request.userA.username === request.userB.username || request.userA.username !== authUser.username || friendInput.userB[0].username.length > 25) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'BAD_USER_INPUT',

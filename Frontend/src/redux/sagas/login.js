@@ -71,7 +71,6 @@ function* login(action) {
     yield put(setUser({ user }));
 
   } catch (error) {
-    console.log(error);
     const notification = {
       error: error.message,
       severity: "error",

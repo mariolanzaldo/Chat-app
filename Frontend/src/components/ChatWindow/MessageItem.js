@@ -11,7 +11,7 @@ const MessageItem = ({ message }) => {
 
     return (
         <Box sx={{
-            maxWidth: '60%',
+            maxWidth: { xs: "30%", sm: "30%", md: '60%', lg: "60%" },
             alignSelf: alignMessage,
         }}>
             <ListItem sx={{
@@ -80,6 +80,8 @@ const MessageItem = ({ message }) => {
                         <ListItemIcon
                             sx={{
                                 borderRadius: "5px",
+                                // maxWidth: "97%",
+                                width: "100%",
                                 backgroundColor: 'whitesmoke'
                             }}
                         >

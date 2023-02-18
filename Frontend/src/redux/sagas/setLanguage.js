@@ -6,7 +6,6 @@ import { setUser } from "../reducers/userSlice";
 import { t } from 'i18next';
 
 function* setLanguage(action) {
-  // console.log(action.payload);
   const options = {
     mutation: gql`
         mutation ChangeLanguage($settingsInput: SettingsInput) {

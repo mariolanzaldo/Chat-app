@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import GestureIcon from '@mui/icons-material/Gesture';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { contactStyles } from "../ContactsBar/styles";
@@ -22,14 +22,14 @@ const ComposeArea = () => {
 
     const { roomId } = useParams();
 
-    // const { username } = useSelector((state) => {
-    //     return state.user.value;
-    // });
+    useEffect(() => {
+        setMessage("")
+    }, [roomId]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (message.length > 0) {
+        if (message.length > 0 && message.trim() !== "") {
             const messageInput = {
                 roomId,
                 content: message,
@@ -80,7 +80,7 @@ const ComposeArea = () => {
 
         } else {
             const ctx = canva.getContext("2d");
-            ctx.clearRect(0, 0, 600, 400);
+            ctx.clearRect(0, 0, 430, 280);
             setError(true);
         }
     };

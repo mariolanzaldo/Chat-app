@@ -15,6 +15,9 @@
     "@apollo/datasource-rest": "^4.3.2",
     "@apollo/gateway": "^2.1.4",
     "@apollo/server": "^4.1.0",
+    "@dicebear/adventurer-neutral": "^4.10.5",
+    "@dicebear/avatars": "^4.10.5",
+    "@dicebear/avatars-identicon-sprites": "^4.10.5",
     "@graphql-tools/schema": "^9.0.8",
     "apollo-server": "^3.10.3",
     "body-parser": "^1.20.1",
@@ -25,6 +28,7 @@
     "graphql": "^16.6.0",
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.11.2",
+    "validator": "^13.9.0",
     "ws": "^8.10.0"
   },
   "devDependencies": {

@@ -22,6 +22,7 @@ const Messages = () => {
 
                     display: 'flex',
                     flexDirection: 'column',
+                    // width: "100%",
                     // margin: 10,
                     // height: 'calc(100vh - 64px - 70px)',
                     // height: '50vh',

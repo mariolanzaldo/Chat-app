@@ -55,7 +55,6 @@ const ChatWindow = () => {
                 // flexWrap: "nowrap",
                 height: "100%",
                 width: "100%",
-                // border: "3px solid purple"
             }}
         >
             <Grid

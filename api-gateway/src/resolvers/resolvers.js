@@ -35,13 +35,6 @@ const resolvers = {
                 return roomMessages;
             }
         },
-        // user: async (_, { _id }, { req, dataSources }) => {
-        //     const userToFind = { username: _id };
-
-        //     const { user } = await dataSources.userAPI.getUser(userToFind);
-
-        //     return user;
-        // },
         currentUser: async (_, __, { dataSources, authUser }) => {
             if (!authUser) {
                 throw new GraphQLError('Internal Error', {
@@ -920,9 +913,16 @@ const resolvers = {
             }
         },
     },
+    //TODO: use withFilter in other subscriptions
     Subscription: {
         newMessage: {
-            subscribe: () => pubSub.asyncIterator("MESSAGE_CREATED"),
+            subscribe: withFilter(() => pubSub.asyncIterator(["MESSAGE_CREATED"]), async ({ newMessage }, _, { dataSources, authUser }) => {
+                const room = await dataSources.chatAPI.getRoom(newMessage.roomId);
+
+                const exists = room.members.some((member) => member.username === authUser.username);
+
+                return exists;
+            }),
         },
         newRoom: {
             subscribe: () => pubSub.asyncIterator("ROOM_CREATED"),

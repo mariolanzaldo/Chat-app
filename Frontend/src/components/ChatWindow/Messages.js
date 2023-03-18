@@ -13,6 +13,7 @@ const Messages = () => {
     }, [messages]);
 
     if (messages && currentConversation?._id) {
+        // console.log(messages);
         const filteredMessages = messages.filter((item) => item.roomId === currentConversation._id);
         return (
             <List

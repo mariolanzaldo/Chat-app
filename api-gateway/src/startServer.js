@@ -7,8 +7,8 @@ const { useServer } = require('graphql-ws/lib/use/ws');
 const { createServer } = require('http');
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
 const { expressMiddleware } = require('@apollo/server/express4');
-// const cors = require('cors');
 const bodyParser = require('body-parser');
+const { parse } = require('cookie-parse');
 const cookieParser = require('cookie-parser');
 
 const typeDefs = require('./schema/schema');
@@ -36,15 +36,42 @@ const startServer = async () => {
 
     const serverCleanup = useServer({
         schema,
-        context: async () => {
+        context: async (ctx) => {
+            const { cache } = server;
+
+            const { JWT } = parse(ctx.extra.request.headers.cookie);
+
+            let authUser;
+
+            if (JWT) {
+
+                authUser = await new AuthAPI().secureRoute(JWT);
+                const { user } = authUser;
+
+                if (!user) {
+                    throw new GraphQLError("Internal Error", {
+                        extensions: {
+                            code: 'UNAUTHENTICATED',
+                            http: { status: 401 },
+                        }
+                    });
+                }
+
+                const fromUserService = await new UserAPI().getUser(user);
+
+                authUser = { ...authUser.user, ...fromUserService.user };
+            }
+
             const dataSources = {
-                chatAPI: new ChatAPI(),
-                userAPI: new UserAPI(),
-                authAPI: new AuthAPI(),
+                chatAPI: new ChatAPI({ cache }),
+                userAPI: new UserAPI({ cache }),
+                authAPI: new AuthAPI({ cache }),
 
             };
+
             return {
                 dataSources,
+                authUser,
             }
         },
     }, wsServer);

@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    _id: {
-        type: String,
-        unique: true,
-        required: true,
-        trim: true,
-    },
     username: {
         type: String,
         unique: true,
@@ -57,7 +51,10 @@ const userSchema = new mongoose.Schema({
             }
         })
     }],
-}, { timestamps: true, _id: false });
+},
+    {
+        timestamps: true,
+    });
 
 const userServiceModel = mongoose.model("Users", userSchema);
 

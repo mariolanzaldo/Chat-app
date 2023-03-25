@@ -1,9 +1,9 @@
 const express = require('express');
-const userRoutes = require('./routes/serviceRoutes');
+const userRoutes = require('./src/routes/serviceRoutes');
 const expressWinston = require('express-winston');
 const logger = require('./logger');
 require("dotenv").config();
-require('./db/db');
+require('./src/db/db');
 
 const app = express();
 

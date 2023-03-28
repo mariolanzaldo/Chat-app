@@ -3,7 +3,6 @@ import { t } from "i18next";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
 import { setNotification } from "../reducers/notificationSlice";
-// import { conversationErrorFetching } from '../reducers/conversationSlice';
 
 function* newScribble(action) {
     const options = {

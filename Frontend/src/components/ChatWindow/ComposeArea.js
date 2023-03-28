@@ -18,7 +18,7 @@ const ComposeArea = () => {
 
     const [message, setMessage] = useState("");
     const [open, setOpen] = useState(false);
-    const [error, setError] = useState(false);
+    const [isError, setIsError] = useState(false);
 
     const { roomId } = useParams();
 
@@ -75,13 +75,13 @@ const ComposeArea = () => {
                 type: "createScribble",
                 payload: messageInput,
             });
-            setError(false);
+            setIsError(false);
             setOpen(false);
 
         } else {
             const ctx = canva.getContext("2d");
             ctx.clearRect(0, 0, 430, 280);
-            setError(true);
+            setIsError(true);
         }
     };
 
@@ -93,7 +93,6 @@ const ComposeArea = () => {
                 sx={{
                     display: 'flex',
                     width: "100%",
-                    // height: "90px",
                     height: "97%",
                     padding: "0px",
                     gap: '15px',
@@ -103,9 +102,7 @@ const ComposeArea = () => {
                 <TextField
                     direction="column"
                     placeholder={t("typeMessage")}
-                    // multiline={true}
                     value={message}
-                    // variant="outlined"
                     onChange={handleChange}
                     inputProps={{
                         maxLength: 5000,
@@ -188,11 +185,10 @@ const ComposeArea = () => {
                     >
                         <Canvas
                             width={430}
-                            // width={600}
                             height={280}
                             id='canvas'
                         />{
-                            error ? <Typography color='red' sx={{ m: 1, textAlign: 'center' }}>{t("scribbleError")}</Typography> : null
+                            isError ? <Typography color='red' sx={{ m: 1, textAlign: 'center' }}>{t("scribbleError")}</Typography> : null
                         }
                     </Box>
 
@@ -207,7 +203,7 @@ const ComposeArea = () => {
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
-                                setError(false);
+                                setIsError(false);
                                 return setOpen(false)
                             }}
                         >

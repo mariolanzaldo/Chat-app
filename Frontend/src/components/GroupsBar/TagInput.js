@@ -27,7 +27,6 @@ const TagInput = ({ members, setMembers }) => {
         <div>
             <FormControl
                 sx={contactStyles.inputFields}
-            // sx={{ mt: 2, width: { xs: 150, sm: 300 } }}
             >
                 <InputLabel>{t("members")}</InputLabel>
                 <Select

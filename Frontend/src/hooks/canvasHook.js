@@ -29,7 +29,8 @@ export function useOnDraw(onDraw) {
                 return null;
             }
 
-        }
+        };
+
         function initMouseMoveListener() {
             const mouseMoveListener = (e) => {
                 if (isDrawingRef.current && canvasRef.current) {
@@ -41,7 +42,7 @@ export function useOnDraw(onDraw) {
             }
             mouseMoveListenerRef.current = mouseMoveListener;
             window.addEventListener("mousemove", mouseMoveListener);
-        }
+        };
 
         function initMouseUpListener() {
             const listener = () => {
@@ -50,7 +51,7 @@ export function useOnDraw(onDraw) {
             }
             mouseUpListenerRef.current = listener;
             window.addEventListener("mouseup", listener);
-        }
+        };
 
         function cleanup() {
             if (mouseMoveListenerRef.current) {
@@ -59,17 +60,15 @@ export function useOnDraw(onDraw) {
             if (mouseUpListenerRef.current) {
                 window.removeEventListener("mouseup", mouseUpListenerRef.current);
             }
-        }
+        };
 
         initMouseMoveListener();
         initMouseUpListener();
         return () => cleanup();
-
     }, [onDraw]);
 
     return {
         setCanvasRef,
         onCanvasMouseDown
     }
-
 };

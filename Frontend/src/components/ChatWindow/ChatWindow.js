@@ -52,7 +52,6 @@ const ChatWindow = () => {
                 display: 'flex',
                 flexDirection: 'row',
                 padding: 0,
-                // flexWrap: "nowrap",
                 height: "100%",
                 width: "100%",
             }}
@@ -94,8 +93,6 @@ const ChatWindow = () => {
                     padding: "2px",
                     width: '100%',
                     height: "100px",
-                    // height: "calc(100vh - 80vh)",
-                    // border: "3px solid black"
                 }}
             >
                 <ComposeArea />

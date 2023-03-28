@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import GroupMenu from "./GroupMenu";
 
-
 const GroupList = ({ rooms }) => {
 
     const dispatch = useDispatch();
@@ -13,7 +12,7 @@ const GroupList = ({ rooms }) => {
     return (
         <List spacing={2}>
             {rooms.map((item) => {
-                const { _id, name, groupalRoom } = item;
+                const { _id, name, isGroupalRoom } = item;
 
                 return (
                     <ListItem
@@ -45,7 +44,7 @@ const GroupList = ({ rooms }) => {
                                 <ListItemText>{name}</ListItemText>
                             </Grid>
                             <Grid item xs={2}>
-                                {groupalRoom ? (<GroupMenu id={_id} />) : null}
+                                {isGroupalRoom ? (<GroupMenu id={_id} />) : null}
                             </Grid>
                         </Grid>
 

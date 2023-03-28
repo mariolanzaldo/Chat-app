@@ -92,7 +92,7 @@ const userSlice = createSlice({
 
             state.value.rooms = updatedRooms;
         },
-        userSetLogout: (state = null, action) => {
+        userSetLogout: (state = null) => {
             state.isFetching = false;
             state.value = null;
         },

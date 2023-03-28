@@ -6,13 +6,12 @@ class UserAPI extends RESTDataSource {
 
     constructor(options = {}) {
         super(options);
-        // this.token = options.token;
-        this.memoizeGetRequests;
+        this.standardURL = 'api/users';
     }
 
     async createUser(username, firstName, lastName, email, avatar) {
         return this.post(
-            `/api/users/`,
+            `/${this.standardURL}/user`,
             {
                 body: {
                     username,
@@ -28,54 +27,47 @@ class UserAPI extends RESTDataSource {
 
     async getUser(userInput) {
         const user = userInput.username ? userInput.username : userInput;
-        return this.get(`/api/users/getUser/${user}`);
+        return this.get(`/${this.standardURL}/user/${user}`);
     };
 
     async updateInfo(username, infoToupdate) {
         return this.patch(
-            `/api/users/update/${username}`,
+            `/${this.standardURL}/user/${username}`,
             { body: infoToupdate },
         );
     };
 
     async friendRequest(friendInput) {
         return this.post(
-            `api/users/friendRequest`,
+            `/${this.standardURL}/user/friend?act=request`,
             { body: friendInput },
         )
     };
 
     async acceptFriend(friendInput) {
-        return this.patch(
-            `api/users/acceptFriend`,
+        return this.post(
+            `/${this.standardURL}/user/friend?act=accept`,
             { body: friendInput },
         )
     };
 
     async rejectFriend(friendInput) {
-        return this.post(
-            `api/users/rejectFriend`,
+        return this.delete(
+            `/${this.standardURL}/user/friend?act=reject`,
             { body: friendInput },
         )
-    }
-
-    async addFriend(friendInput) {
-        return this.patch(
-            `/api/users/addFriend`,
-            { body: friendInput },
-        );
     };
 
     async deleteFriend(friendInput) {
-        return this.patch(
-            `/api/users/deleteFriend`,
+        return this.delete(
+            `/${this.standardURL}/user/friend?act=delete`,
             { body: friendInput },
         );
     };
 
     async fieldExistence(params) {
         return this.get(
-            `/api/users/fieldExistence`, { params });
+            `/${this.standardURL}/fieldExistence`, { params });
     }
 }
 

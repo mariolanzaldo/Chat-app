@@ -51,7 +51,6 @@ const useForm = ({ initState, callback, validator }) => {
 
         return setErrors(() => ({
             ...errors,
-            // [Object.keys(faildFields)[0]]: Object.values(faildFields)[0],
             [fieldName]: Object.values(faildFields)[0]
         }));
     };
@@ -69,13 +68,7 @@ const useForm = ({ initState, callback, validator }) => {
                 };
             }
         }
-        // const { name: fieldName } = event.target;
 
-        // const faildFields = validator(state, fieldName, notification.existence);
-        // setErrors(() => ({
-        //     ...errors,
-        //     [fieldName]: Object.values(faildFields)[0]
-        // }));
         setErrors({
             ...errors,
             ...errs

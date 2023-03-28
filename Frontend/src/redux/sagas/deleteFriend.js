@@ -28,7 +28,7 @@ function* deleteFrien(action) {
           rooms {
             _id
             name
-            groupalRoom
+            isGroupalRoom
             admin {
               username
             }

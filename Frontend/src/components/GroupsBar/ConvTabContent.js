@@ -1,45 +1,9 @@
-// import { gql, useSubscription } from '@apollo/client';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import GroupList from './GroupList';
-
-// const GROUP_CHANGED = gql`
-// subscription groupChanged {
-//     groupChanged {
-//       _id
-//       name
-//       groupalRoom
-//       admin {
-//         username
-//       }
-//       members {
-//         _id
-//         username
-//         avatar
-//         joinedAt
-//       }
-//     }
-//   }
-// `;
 
 const ConvTabContent = ({ rooms }) => {
 
-  // const dispatch = useDispatch();
-
-  const { rooms: allUserRooms, username } = useSelector((state) => state.user.value);
-
-  // useSubscription(GROUP_CHANGED, {
-  //   onData: ({ data }) => {
-  //     const { groupChanged } = data?.data;
-
-  //     const user = groupChanged.members.find((user) => user.username === username);
-
-  //     if (user) {
-  //       dispatch({
-  //         type: 'groupChanges',
-  //       });
-  //     }
-  //   },
-  // });
+  const { rooms: allUserRooms } = useSelector((state) => state.user.value);
 
   if (rooms.length === 0) {
     return (

@@ -20,7 +20,6 @@ function* queryMessages(action) {
           }
         `,
         variables: action.payload,
-        //TODO: Remove the cache
         fetchPolicy: "no-cache",
     };
 

@@ -32,49 +32,49 @@ export const validator = (values, fieldName, existence) => {
 }
 
 function validateFirstName(firstName, errors) {
-    let result = true;
+    let isValid = true;
 
     if (!firstName || firstName.trim() === "") {
         errors.firstName = t("firstNameError");
-        result = false;
+        isValid = false;
     }
 
-    return result;
+    return isValid;
 }
 
 function validateLastName(lastName, errors) {
-    let result = true;
+    let isValid = true;
 
     if (!lastName || lastName.trim() === "") {
         errors.lastName = t("lastNameError");
-        result = false;
+        isValid = false;
     }
 
-    return result;
+    return isValid;
 }
 
 function validateUsername(username, errors, existence) {
-    let result = true;
+    let isValid = true;
     if (!username || username.trim() === "") {
         errors.username = t("usernameError");
-        result = false;
+        isValid = false;
     }
 
     if (username[0] === " ") {
         errors.username = t("usernameError2");
-        result = false;
+        isValid = false;
     }
 
     if (existence?.username) {
         errors.username = t("usernameExistsError");
-        result = false;
+        isValid = false;
     }
 
-    return result;
+    return isValid;
 }
 
 function validatePassword(password, confirmPassword, errors) {
-    let result = true;
+    let isValid = true;
     const valid = validate.isStrongPassword(password, {
         minLength: 8,
         minLowercase: 1,
@@ -91,52 +91,52 @@ function validatePassword(password, confirmPassword, errors) {
     });
     if (!password) {
         errors.password = t("passwordErrorReq");
-        result = false;
+        isValid = false;
     } else if (valid < 50) {
         errors.password = t("passwordError");
     } else if (password && valid > 50 && confirmPassword.trim() !== "") {
         validateConfirmPassword(password, confirmPassword, errors);
     }
 
-    return result;
+    return isValid;
 }
 
 function validatePasswordLog(password, errors) {
-    let result = true;
+    let isValid = true;
     if (!password) {
         errors.password = t("passwordErrorReq");
-        result = false;
+        isValid = false;
     }
 
-    return result;
+    return isValid;
 };
 
 function validateConfirmPassword(password, confirmPassword, errors) {
-    let result = true;
+    let isValid = true;
 
     if (!confirmPassword) {
         errors.confirmPassword = t("confirmPasswordErrorReq");
-        result = false;
+        isValid = false;
     } else if (password !== confirmPassword) {
         errors.confirmPassword = t("confirmPasswordError");
         errors.password = t("confirmPasswordError");
 
-        result = false;
+        isValid = false;
     }
-    return result;
+    return isValid;
 };
 
 function validateEmail(email, errors, existence) {
-    let result = true;
+    let isValid = true;
     if (!email) {
         errors.email = t("emailErrorReq");
-        result = false;
+        isValid = false;
     } else if (existence.email) {
         errors.email = t("emailExistsError");
-        result = false;
+        isValid = false;
     } else {
-        result = validate.isEmail(String(email).toLocaleLowerCase());
-        if (!result) errors.email = t("emailError");
+        isValid = validate.isEmail(String(email).toLocaleLowerCase());
+        if (!isValid) errors.email = t("emailError");
     }
-    return result;
+    return isValid;
 };

@@ -28,7 +28,7 @@ function* deleteGroup(action) {
                 rooms {
                   _id
                   name
-                  groupalRoom
+                  isGroupalRoom
                   admin {
                     username
                   }

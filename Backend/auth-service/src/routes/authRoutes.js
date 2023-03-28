@@ -1,4 +1,3 @@
-const AuthUser = require("../model/authUserModel");
 const passport = require('passport');
 const express = require("express");
 const jwt = require('jsonwebtoken');
@@ -48,12 +47,5 @@ router.post(
         )(req, res, next);
     }
 );
-
-// router.post(
-//     '/dashboard', async (req, res) => {
-//         const { token } = req.body;
-//         jwt.validate();
-//     }
-// );
 
 module.exports = router;

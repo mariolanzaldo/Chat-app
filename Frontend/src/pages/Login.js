@@ -148,6 +148,7 @@ const Login = () => {
                     {t('login')}
                 </Button>
             </Box>
+
             <Typography
                 fontSize='sm'
                 sx={{ alignSelf: 'center' }}
@@ -158,7 +159,6 @@ const Login = () => {
                     {t('signup')}
                 </Link>
             </Typography>
-
         </Paper>
     );
 }

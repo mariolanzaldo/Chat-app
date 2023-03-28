@@ -14,8 +14,6 @@ const DeleteMember = ({ currentChat, setOpen }) => {
 
     const { username } = useSelector((state) => state.user.value);
 
-
-    // const [error, setError] = useState();
     const [chips, setChips] = useState([]);
 
 

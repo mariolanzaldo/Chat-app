@@ -2,7 +2,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } fr
 import { t } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { contactStyles } from "../ContactsBar/styles";
 
 
@@ -11,8 +11,6 @@ const LanguageSettings = ({ setOpen }) => {
     const { i18n } = useTranslation();
 
     const dispatch = useDispatch();
-
-    const { username } = useSelector((state) => state.user.value);
 
     const [selectedLanguage, setSelectedLanguage] = useState("en");
 
@@ -26,15 +24,16 @@ const LanguageSettings = ({ setOpen }) => {
         i18n.changeLanguage(selectedLanguage);
 
         const userInput = {
-            // username,
             settingsInput: {
                 language: selectedLanguage,
             }
         };
+
         dispatch({
             type: "setLanguage",
             payload: userInput,
         });
+
         setOpen(false);
     };
 

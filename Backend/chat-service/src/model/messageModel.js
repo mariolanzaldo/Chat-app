@@ -9,12 +9,7 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // receiver: {
-    //     type: String,
-    //     required: true,
-    // },
     roomId: {
-        // type: mongoose.Schema.Types.ObjectId,
         type: String,
         required: true,
         ref: "Room",
@@ -22,12 +17,7 @@ const messageSchema = new mongoose.Schema({
     isScribble: {
         type: Boolean,
         required: true
-    }
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now(),
-    // }
-
+    },
 }, { timestamps: true });
 
 const messageModel = mongoose.model("Message", messageSchema);

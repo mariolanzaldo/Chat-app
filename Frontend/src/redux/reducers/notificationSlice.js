@@ -23,7 +23,7 @@ const notificationSlice = createSlice({
         setExistence: (state = null, action) => {
             state.existence = action.payload;
         },
-        setDefaultNotification: (state = null, action) => {
+        setDefaultNotification: (state = null) => {
             state.error = t("defaultError");
             state.severity = "error";
         }

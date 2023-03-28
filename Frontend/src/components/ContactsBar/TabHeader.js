@@ -55,7 +55,6 @@ const TabHeader = ({ open, setOpen, filterData }) => {
 
         const friendReq = {
             friendInput: {
-                // userA: [{ username }],
                 userB: [{ username: userB }],
             }
         };

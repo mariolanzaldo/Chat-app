@@ -10,7 +10,7 @@ function* addMember(action) {
             addMember(roomInput: $roomInput) {
               _id
               name
-              groupalRoom
+              isGroupalRoom
               admin {
                 username
               }

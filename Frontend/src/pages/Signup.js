@@ -16,7 +16,6 @@ export default function Signup() {
 
     const paperStyle = {
         padding: 20,
-        // height: { xs: "100vh", s: "85vh" },
         width: 380,
         margin: "20px auto",
     };
@@ -39,7 +38,6 @@ export default function Signup() {
                 signup: userInput,
             }
         });
-
 
         navigate('/login');
 
@@ -67,8 +65,7 @@ export default function Signup() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                    }
-                    }
+                    }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
@@ -89,7 +86,6 @@ export default function Signup() {
                                 defaultValue={state.username}
                                 onChange={handleChange}
                                 error={errors.username ? true : false}
-                                // helperText={errors.username ? errors.username : `${state.username.length}/${MAX_LENGTH}`}
                                 helperText={errors.username}
                                 onBlur={handleBlur}
                                 inputProps={{ maxLength: MAX_LENGTH }}

@@ -11,7 +11,7 @@ function* addAdmin(action) {
              addAdmin(roomInput: $roomInput) {
                 _id
                 name
-                groupalRoom
+                isGroupalRoom
                 admin {
                     username
                 }

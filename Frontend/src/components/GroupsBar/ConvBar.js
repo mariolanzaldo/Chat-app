@@ -35,11 +35,9 @@ const ConvBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    // width: '21vw',
                     width: "100%",
                     margin: 0,
                     padding: 0,
-                    // border: "1px solid red"
                 }}
             >
                 <ConvTabHeader open={open} setOpen={setOpen} filterData={filterData} />
@@ -52,11 +50,9 @@ const ConvBar = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    // width: '21vw',
                     width: "100%",
                     margin: 0,
                     padding: 0,
-                    // border: "1px solid red"
                 }}
             >
                 <ConvTabHeader open={open} setOpen={setOpen} />
@@ -64,8 +60,6 @@ const ConvBar = () => {
             </Box>
         )
     }
-
-
-}
+};
 
 export default ConvBar;

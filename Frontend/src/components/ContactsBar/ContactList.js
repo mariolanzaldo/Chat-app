@@ -16,7 +16,7 @@ const ContactList = ({ contacts }) => {
 
     const navigate = useNavigate();
 
-    const { username, rooms } = useSelector((state) => state.user.value);
+    const { rooms } = useSelector((state) => state.user.value);
 
     const [showDelete, setShowDelete] = useState(false);
     const [deleteReq, setDeleteReq] = useState(null);
@@ -25,9 +25,9 @@ const ContactList = ({ contacts }) => {
         setShowDelete((prev) => !prev);
         const userB = event.currentTarget.dataset.username;
 
-        const room = rooms.find((item) => item.name.includes(userB) ? item : null);
+        const isRoom = rooms.find((item) => item.name.includes(userB) ? item : null);
 
-        const { _id } = room;
+        const { _id } = isRoom;
 
         const unfriendReq = {
             friendInput: {
@@ -63,7 +63,6 @@ const ContactList = ({ contacts }) => {
                         gap: '10px',
                         padding: '0 0 0 10px',
                         width: '100%',
-                        // border: '1px solid red'
                     }}
                 >
                     <Grid container mb={2} sx={{

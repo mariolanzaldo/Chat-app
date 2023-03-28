@@ -46,7 +46,7 @@ const ManageAdmins = ({ currentChat }) => {
     const [value, setValue] = useState(0);
     const [open, setOpen] = useState(false);
 
-    const handleChange = (event, newValue) => {
+    const handleChange = (value, newValue) => {
         setValue(newValue);
     };
 
@@ -78,7 +78,6 @@ const ManageAdmins = ({ currentChat }) => {
                             justifyContent: 'right',
                             height: 'auto',
                             backgroundColor: 'rgba(120, 120, 120, 1.0)',
-                            // justifyItems: 'right',
                         }}
                     >
                         <IconButton

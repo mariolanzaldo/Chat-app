@@ -69,7 +69,6 @@ const DeleteAdmin = ({ currentChat, setOpen }) => {
                     p: 1,
                 }}
             >
-
                 <Typography sx={{ textAlign: 'center' }}>{t("removeAdmin")}</Typography>
                 <Typography sx={{ textAlign: 'center' }}>{t("fillForm")}</Typography>
 

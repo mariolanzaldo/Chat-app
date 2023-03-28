@@ -110,15 +110,6 @@ const startServer = async () => {
                     authUser = await new AuthAPI().secureRoute(JWT);
                     const { user } = authUser;
 
-                    if (!user) {
-                        throw new GraphQLError("Internal Error", {
-                            extensions: {
-                                code: 'UNAUTHENTICATED',
-                                http: { status: 401 },
-                            }
-                        });
-                    }
-
                     const fromUserService = await new UserAPI().getUser(user);
 
                     authUser = { ...authUser.user, ...fromUserService.user };
@@ -135,6 +126,12 @@ const startServer = async () => {
                     req,
                     res,
                     dataSources,
+                    hasAuth: JWT ? null : new GraphQLError("Internal Error", {
+                        extensions: {
+                            code: 'UNAUTHENTICATED',
+                            http: { status: 401 },
+                        }
+                    }),
                 }
             },
         }));

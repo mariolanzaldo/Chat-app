@@ -1,7 +1,7 @@
 import { Avatar, Box, Divider, IconButton, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 
 const RequestItem = ({ item }) => {
@@ -9,14 +9,11 @@ const RequestItem = ({ item }) => {
 
     const dispatch = useDispatch();
 
-    const { username } = useSelector((state) => state.user.value);
-
     const addContact = (event) => {
         event.preventDefault();
 
         const friendReq = {
             friendInput: {
-                // userA: [{ username }],
                 userB: [{ username: item.from.username }],
             }
         };
@@ -33,7 +30,6 @@ const RequestItem = ({ item }) => {
 
         const friendReq = {
             friendInput: {
-                userA: [{ username }],
                 userB: [{ username: item.from.username }],
             }
         };

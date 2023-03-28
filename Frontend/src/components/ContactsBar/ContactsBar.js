@@ -101,10 +101,9 @@ const ContactsBar = () => {
       const filteredData = search.filter((item) => {
         const { username } = item;
 
-        const output = username.toLowerCase().trim().includes(lowerdCaseValue);
+        const isFiltered = username.toLowerCase().trim().includes(lowerdCaseValue);
 
-        return output;
-        // return Object.keys(item).some((key) => item[key].toString().toLowerCase().includes(lowerdCaseValue));
+        return isFiltered;
       });
 
       setUsers(filteredData);

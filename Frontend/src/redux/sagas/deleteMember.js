@@ -14,7 +14,7 @@ function* deleteMember(action) {
               admin {
                 username
               }
-              groupalRoom
+              isGroupalRoom
               members {
                 _id
                 username
@@ -27,7 +27,6 @@ function* deleteMember(action) {
           }
         `,
     variables: action.payload,
-    // fetchPolicy: "no-cache",
   };
 
   try {

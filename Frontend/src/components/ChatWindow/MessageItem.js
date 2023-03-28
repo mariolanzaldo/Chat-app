@@ -31,7 +31,6 @@ const MessageItem = ({ message }) => {
                             borderRadius: '10px',
                             padding: 1,
                             margin: 0,
-                            // width: '300px',
                             height: 'auto',
                             '& .MuiListItemText-primary': {
                                 fontSize: { xs: "30px", sm: "25px", md: "15px" },
@@ -58,10 +57,8 @@ const MessageItem = ({ message }) => {
                             display: "flex",
                             flexDirection: "column",
                             backgroundColor: color,
-                            // width: "100%",
                             width: "450px",
                             borderRadius: '10px',
-                            // margin: 1,
                             marginRight: { xs: "1100px", sm: "1100px", md: "0px" },
                             padding: 1,
                         }}
@@ -83,8 +80,6 @@ const MessageItem = ({ message }) => {
                         <ListItemIcon
                             sx={{
                                 borderRadius: "5px",
-                                // maxWidth: "97%",
-                                // width: "100%",
                                 width: "430px",
                                 height: "280px",
                                 backgroundColor: 'whitesmoke',

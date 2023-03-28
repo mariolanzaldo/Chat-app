@@ -52,11 +52,9 @@ const Settings = () => {
         setValue(newValue);
     };
 
-
     const handleSettings = (event) => {
         event.preventDefault();
         setOpen(true);
-
     };
 
     return (
@@ -69,8 +67,6 @@ const Settings = () => {
             <Modal open={open} >
                 <Grid container sx={{
                     position: 'relative',
-                    // display: 'flex',
-                    // flexDirection: 'column',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
@@ -89,7 +85,6 @@ const Settings = () => {
                             justifyContent: 'right',
                             height: 'auto',
                             backgroundColor: 'rgba(120, 120, 120, 1.0)',
-                            // justifyItems: 'right',
                         }}
                     >
                         <IconButton
@@ -120,6 +115,7 @@ const Settings = () => {
                         <TabPanel value={value} index={0} dir={theme.direction}>
                             {t("accountSettings")}
                         </TabPanel>
+
                         <TabPanel value={value} index={1} dir={theme.direction}>
                             <LanguageSettings setOpen={setOpen} />
                         </TabPanel>
@@ -127,7 +123,6 @@ const Settings = () => {
                 </Grid>
             </Modal>
         </>
-
     );
 };
 

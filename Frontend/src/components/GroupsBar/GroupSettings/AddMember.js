@@ -55,7 +55,6 @@ const AddMember = ({ currentChat, setOpen }) => {
                     return acc;
                 }
             }
-
         });
 
         return {

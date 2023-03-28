@@ -51,7 +51,7 @@ function* rejectContact(action) {
                   admin {
                     username
                   }
-                  groupalRoom
+                  isGroupalRoom
                   members {
                     username
                     joinedAt
@@ -73,7 +73,6 @@ function* rejectContact(action) {
 
   } catch (error) {
     yield put(setDefaultNotification());
-
   }
 };
 

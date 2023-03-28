@@ -10,19 +10,9 @@ const Canvas = ({
         onCanvasMouseDown
     } = useOnDraw(onDraw);
 
-    // const {
-    //     setCanvasRef,
-    //     onCanvasMouseDown
-    // } = useOnDraw(onErase)
-
     function onDraw(ctx, point, prevPoint) {
         drawLine(prevPoint, point, ctx, '#000000', 5);
-    }
-
-    // function onErase(ctx, point, prevPoint) {
-    //     drawLine(prevPoint, point, ctx, 'white', 5);
-
-    // };
+    };
 
     function drawLine(
         start,
@@ -44,7 +34,7 @@ const Canvas = ({
         ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI);
         ctx.fill();
 
-    }
+    };
 
     return (
         <canvas

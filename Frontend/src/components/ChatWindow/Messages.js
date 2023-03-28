@@ -13,21 +13,14 @@ const Messages = () => {
     }, [messages]);
 
     if (messages && currentConversation?._id) {
-        // console.log(messages);
         const filteredMessages = messages.filter((item) => item.roomId === currentConversation._id);
         return (
             <List
                 disablePadding
-                // ref={messagesEnd}
                 sx={{
 
                     display: 'flex',
                     flexDirection: 'column',
-                    // width: "100%",
-                    // margin: 10,
-                    // height: 'calc(100vh - 64px - 70px)',
-                    // height: '50vh',
-                    // border: "3px solid purple"
                 }}
             >
                 <Toolbar />

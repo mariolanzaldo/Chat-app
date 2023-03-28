@@ -10,7 +10,7 @@ function* createGroup(action) {
             createRoom(roomInput: $roomInput) {
                 _id
                 name
-                groupalRoom
+                isGroupalRoom
               admin {
                     username
                 }

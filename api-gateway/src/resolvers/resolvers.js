@@ -10,7 +10,9 @@ const pubSub = new PubSub();
 
 const resolvers = {
     Query: {
-        messages: async (_, { _id }, { dataSources, authUser }) => {
+        messages: async (_, { _id }, { dataSources, authUser, hasAuth }) => {
+
+            if (hasAuth) throw hasAuth;
 
             let isMember;
 
@@ -20,7 +22,7 @@ const resolvers = {
                 isMember = members.find((user) => user.username === authUser.username);
             }
 
-            if (!isMember || !authUser) {
+            if (!isMember) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'UNAUTHENTICATED',
@@ -35,15 +37,8 @@ const resolvers = {
                 return roomMessages;
             }
         },
-        currentUser: async (_, __, { dataSources, authUser }) => {
-            if (!authUser) {
-                throw new GraphQLError('Internal Error', {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+        currentUser: async (_, __, { dataSources, authUser, hasAuth }) => {
+            if (hasAuth) throw hasAuth;
 
             const roomsArray = authUser.rooms.map(async (room) => {
                 const newRoom = await dataSources.chatAPI.getRoom(room._id);
@@ -63,19 +58,18 @@ const resolvers = {
             const { username, email } = input;
 
             if (username) {
-                const res = await dataSources.userAPI.fieldExistence({ username });
+                const isExistent = await dataSources.userAPI.fieldExistence({ username });
 
-                return { username: res.exists };
+                return { username: isExistent.exists };
             } else if (email) {
-                const res = await dataSources.userAPI.fieldExistence({ email });
+                const isExistent = await dataSources.userAPI.fieldExistence({ email });
 
-                return { email: res.exists };
+                return { email: isExistent.exists };
             }
         },
     },
     User: {
         rooms: async (parent, _, { dataSources }) => {
-
             const completePromiseRooms = await parent.rooms.map(async (room) => {
                 const completeRoom = await dataSources.chatAPI.getRoom(room._id);
 
@@ -148,7 +142,7 @@ const resolvers = {
         }
     }),
     Mutation: {
-        createUser: async (parent, { userInput }, { dataSources }) => {
+        createUser: async (_, { userInput }, { dataSources }) => {
             const {
                 username,
                 firstName,
@@ -178,8 +172,8 @@ const resolvers = {
             }
 
             try {
-                const userInfo = await dataSources.userAPI.createUser(username, firstName, lastName, email, userInput.avatar);
-                const signup = await dataSources.authAPI.signup(username, password);
+                await dataSources.userAPI.createUser(username, firstName, lastName, email, userInput.avatar);
+                await dataSources.authAPI.signup(username, password);
 
                 return { success: true, errorMessage: null };
 
@@ -191,7 +185,7 @@ const resolvers = {
                 }
             }
         },
-        login: async (parent, { userInput }, { dataSources, req, res }) => {
+        login: async (_, { userInput }, { dataSources, res }) => {
             if (userInput.username.length > 25 || userInput.password.length > 80) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
@@ -215,18 +209,6 @@ const resolvers = {
 
                 res.cookie("JWT", token, options);
 
-                const roomsArray = user.user.rooms.map(async (room) => {
-                    const newRoom = await dataSources.chatAPI.getRoom(room._id);
-
-                    if (newRoom) {
-                        room = newRoom;
-                    }
-                    return room;
-                });
-
-                const completeRooms = await Promise.all(roomsArray);
-                user.user.rooms = completeRooms;
-
                 return { ...user.user, token };
             } catch (err) {
                 const message = err.extensions.response.body.error;
@@ -234,7 +216,7 @@ const resolvers = {
                 throw new GraphQLError(message.error ? message.error : message.message ? message.message : message);
             }
         },
-        logout: async (_, { cookieInput }, { dataSources, req, res }) => {
+        logout: async (_, { cookieInput }, { res }) => {
             const { name } = cookieInput;
 
             try {
@@ -256,16 +238,9 @@ const resolvers = {
 
 
         },
-        createMessage: async (_, { messageInput }, { dataSources, authUser }) => {
+        createMessage: async (_, { messageInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             if (!messageInput.isScribble && messageInput.content.length > 5000) {
                 throw new GraphQLError("Internal Error", {
@@ -298,9 +273,9 @@ const resolvers = {
 
                 const { members } = await dataSources.chatAPI.getRoom(messageInput.roomId);
 
-                const inRoom = members.find((user) => user.username === authUser.username);
+                const isInRoom = members.find((user) => user.username === authUser.username);
 
-                if (authUser.username !== messageInput.sendBy || !inRoom) {
+                if (authUser.username !== messageInput.sendBy || !isInRoom) {
                     throw new GraphQLError("Internal Error", {
                         extensions: {
                             code: 'BAD_USER_INPUT',
@@ -317,21 +292,15 @@ const resolvers = {
 
                 return createdMessage.message;
             } catch (err) {
+                console.log(err);
                 const message = err.extensions.response.body.error;
                 throw new GraphQLError(message);
             }
         },
-        createRoom: async (_, { roomInput }, { dataSources, authUser }) => {
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+        createRoom: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
+            if (hasAuth) throw hasAuth;
 
-            if (!roomInput.groupalRoom || roomInput.name.length > 25) {
+            if (!roomInput.isGroupalRoom || roomInput.name.length > 25) {
                 throw new GraphQLError("Internal Error", {
                     extensions: {
                         code: 'BAD_USER_INPUT',
@@ -394,16 +363,9 @@ const resolvers = {
             }
         },
 
-        addMember: async (parent, { roomInput }, { dataSources, authUser }) => {
+        addMember: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const { _id, members } = roomInput;
 
@@ -424,14 +386,14 @@ const resolvers = {
 
             const updatedRoom = await dataSources.chatAPI.addMember(_id, members);
 
-            const { name, members: updatedMembers } = updatedRoom;
+            const { name } = updatedRoom;
 
             const usersPromises = members.map(async ({ username }) => {
                 updatedContact = await dataSources.userAPI.updateInfo(username, { rooms: { _id, name } });
                 return updatedContact;
             });
 
-            const newMembers = await Promise.all(usersPromises);
+            await Promise.all(usersPromises);
 
             pubSub.publish(`GROUP_CHANGED`, {
                 groupChanged: updatedRoom,
@@ -441,16 +403,9 @@ const resolvers = {
 
         },
 
-        deleteMember: async (_, { roomInput }, { dataSources, authUser }) => {
+        deleteMember: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const { _id, members } = roomInput;
 
@@ -475,23 +430,14 @@ const resolvers = {
             });
 
             pubSub.publish(`GROUP_CHANGED`, {
-                // groupChanged: remainMembers,
                 groupChanged: updatedRoom,
-
             });
 
             return updatedRoom;
         },
-        addFriend: async (_, { friendInput }, { dataSources, authUser }) => {
+        addFriend: async (_, { friendInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username.trim() } };
 
@@ -508,11 +454,11 @@ const resolvers = {
 
                 const { user: { requests: userBRequests } } = await dataSources.userAPI.getUser(friendInput.userB[0].username);
 
-                const alreadyOnRequest = userBRequests.filter((element) => {
+                const isOnRequest = userBRequests.filter((element) => {
                     return element.from === request.userA.username;
                 });
 
-                if (alreadyOnRequest.length > 0) {
+                if (isOnRequest.length > 0) {
                     throw new GraphQLError("Request already sent", {
                         extensions: {
                             code: "FORBIDDEN",
@@ -542,16 +488,9 @@ const resolvers = {
 
         },
 
-        acceptFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+        acceptFriend: async (_, { friendInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username } };
 
@@ -571,7 +510,7 @@ const resolvers = {
 
                 const roomInput = {
                     admin: [{ username: updatedUserA.username }, { username: updatedUserB.username }],
-                    groupalRoom: false,
+                    isGroupalRoom: false,
                     name: `${updatedUserA.username} and ${updatedUserB.username} conversation`,
                     members: members,
                 };
@@ -596,16 +535,9 @@ const resolvers = {
             }
         },
 
-        rejectFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
+        rejectFriend: async (_, { friendInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const request = { userA: { username: authUser.username }, userB: { username: friendInput.userB[0].username } };
 
@@ -628,15 +560,9 @@ const resolvers = {
             }
         },
 
-        deleteFriend: async (parent, { friendInput }, { dataSources, authUser }) => {
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+        deleteFriend: async (_, { friendInput }, { dataSources, authUser, hasAuth }) => {
+
+            if (hasAuth) throw hasAuth;
 
             const { userB, roomId } = friendInput;
             const userA = [{ username: authUser.username }];
@@ -679,16 +605,9 @@ const resolvers = {
             }
         },
 
-        addAdmin: async (parent, { roomInput }, { dataSources, authUser }) => {
+        addAdmin: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const { _id, admin } = roomInput;
 
@@ -724,7 +643,7 @@ const resolvers = {
                     return user;
                 });
 
-                const newAdmins = await Promise.all(response);
+                await Promise.all(response);
 
                 pubSub.publish(`GROUP_CHANGED`, {
                     groupChanged: updatedRoom,
@@ -736,16 +655,9 @@ const resolvers = {
                 return message;
             }
         },
-        deleteAdmin: async (parent, { roomInput }, { dataSources, authUser }) => {
+        deleteAdmin: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             const { _id, admin } = roomInput;
 
@@ -771,10 +683,9 @@ const resolvers = {
                     return user;
                 });
 
-                const newAdmins = await Promise.all(response);
+                await Promise.all(response);
 
                 pubSub.publish(`GROUP_CHANGED`, {
-                    // groupChanged: newAdmins,
                     groupChanged: updatedRoom,
                 });
 
@@ -784,18 +695,11 @@ const resolvers = {
                 return message;
             }
         },
-        leaveGroup: async (parent, { roomInput }, { dataSources, authUser }) => {
+        leaveGroup: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
+            if (hasAuth) throw hasAuth;
+
             let removedFromAdmin, removedFromMembers;
             const { _id, admin, members } = roomInput;
-
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
 
             const currentRoom = await dataSources.chatAPI.getRoom(_id);
 
@@ -834,17 +738,10 @@ const resolvers = {
                 return { success: false, errorMessage: message };
             }
         },
-        deleteRoom: async (parent, { roomInput }, { dataSources, authUser }) => {
-            const { _id, members: currentUser } = roomInput;
+        deleteRoom: async (_, { roomInput }, { dataSources, authUser, hasAuth }) => {
+            if (hasAuth) throw hasAuth;
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            const { _id, members: currentUser } = roomInput;
 
             const currentRoom = await dataSources.chatAPI.getRoom(_id);
 
@@ -890,17 +787,10 @@ const resolvers = {
             }
         },
 
-        changeLanguage: async (_, { settingsInput }, { dataSources, authUser }) => {
+        changeLanguage: async (_, { settingsInput }, { dataSources, authUser, hasAuth }) => {
             const { settings } = settingsInput;
 
-            if (!authUser) {
-                throw new GraphQLError("Internal Error", {
-                    extensions: {
-                        code: 'UNAUTHENTICATED',
-                        http: { status: 401 },
-                    }
-                });
-            }
+            if (hasAuth) throw hasAuth;
 
             try {
                 const updatedUser = await dataSources.userAPI.updateInfo(authUser.username, { settings });
@@ -913,39 +803,43 @@ const resolvers = {
             }
         },
     },
-    //TODO: use withFilter in other subscriptions
     Subscription: {
         newMessage: {
             subscribe: withFilter(() => pubSub.asyncIterator(["MESSAGE_CREATED"]), async ({ newMessage }, _, { dataSources, authUser }) => {
                 const room = await dataSources.chatAPI.getRoom(newMessage.roomId);
-
                 const exists = room.members.some((member) => member.username === authUser.username);
-
                 return exists;
             }),
         },
-        newRoom: {
-            subscribe: () => pubSub.asyncIterator("ROOM_CREATED"),
-        },
         addFriend: {
-            subscribe: () => pubSub.asyncIterator("FRIEND_REQUEST"),
-            // subscribe: withFilter(
-            //     () => {
-            //         return pubSub.asyncIterator("FRIEND_REQUEST");
-            //     },
-            //     ({ addFriend }, { to }) => {
-            //         return true;
-            //     }
-            // )
+            subscribe: withFilter(() => pubSub.asyncIterator(["FRIEND_REQUEST"]),
+                ({ addFriend }, _, { authUser }) => {
+                    const { to } = addFriend;
+                    const exists = to.username === authUser.username;
+                    return exists;
+                }),
         },
         friendRequestAccepted: {
-            subscribe: () => pubSub.asyncIterator(`FRIEND_REQUEST_ACCEPTED`),
+            subscribe: withFilter(() => pubSub.asyncIterator(["FRIEND_REQUEST_ACCEPTED"]),
+                ({ friendRequestAccepted }, _, { authUser }) => {
+                    const exists = friendRequestAccepted.username === authUser.username;
+                    return exists;
+                }),
         },
         deleteContact: {
-            subscribe: () => pubSub.asyncIterator(`CONTACT_DELETED`),
+            subscribe: withFilter(() => pubSub.asyncIterator([`CONTACT_DELETED`]),
+                ({ deleteContact }, _, { authUser }) => {
+                    const exists = deleteContact.username === authUser.username;
+                    return exists;
+                }
+            )
         },
         groupChanged: {
-            subscribe: () => pubSub.asyncIterator(`GROUP_CHANGED`),
+            subscribe: withFilter(() => pubSub.asyncIterator(`GROUP_CHANGED`),
+                ({ groupChanged }, _, { authUser }) => {
+                    const exists = groupChanged.members.some((member) => member.username === authUser.username);
+                    return exists;
+                }),
         }
 
     }

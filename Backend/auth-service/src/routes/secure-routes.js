@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.post(
     '/profile',
-    (req, res, next) => {
+    (req, res) => {
         res.json({
             message: 'Authenticated',
             user: req.user,

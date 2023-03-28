@@ -1,10 +1,9 @@
 import { gql } from "@apollo/client";
 import { call, put } from 'redux-saga/effects';
 import { setUser, userErrorFetching } from '../reducers/userSlice';
-
 import client from "../../client";
-//TODO: Check the inputs on the query
-function* queryUser(action) {
+
+function* queryUser() {
   const options = {
     query: gql`
         query {
@@ -40,7 +39,7 @@ function* queryUser(action) {
                 rooms {
                   _id
                   name
-                  groupalRoom
+                  isGroupalRoom
                   admin {
                     username
                   } 
@@ -59,7 +58,6 @@ function* queryUser(action) {
 
   };
   try {
-    // yield put(setUserFetching());
     const res = yield call(client.query, options);
     const { currentUser } = res.data;
 

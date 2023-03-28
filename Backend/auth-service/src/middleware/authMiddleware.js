@@ -27,7 +27,7 @@ passport.use("signup", new LocalStrategy({
     passwordField: "password"
 }, async (username, password, done) => {
     try {
-        const user = await UserModel.create({ _id: username, username, password });
+        const user = await UserModel.create({ username, password });
         done(null, user);
     } catch (err) {
         done(err);

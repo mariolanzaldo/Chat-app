@@ -1,5 +1,4 @@
 import { takeEvery, all, takeLatest } from "redux-saga/effects";
-
 import login from './sagas/login';
 import addFrien from './sagas/addFriend';
 import signupUser from "./sagas/signupUser";
@@ -28,7 +27,6 @@ import checkEmail from "./sagas/checkEmail";
 import friendRequestAccepted from "./sagas/friendRequestAccepted";
 import deletedFrom from "./sagas/deletedFrom";
 import groupChanges from "./sagas/groupChanges";
-//TODO: Review all mutation/query of each saga!
 
 export function* watchLogin() {
 

@@ -49,7 +49,7 @@ function* acceptContact(action) {
             admin {
               username
             }
-            groupalRoom
+            isGroupalRoom
             members {
               username
               firstName
@@ -63,7 +63,6 @@ function* acceptContact(action) {
     }
         `,
     variables: action.payload,
-    // fetchPolicy: "no-cache",
     fetchPolicy: "network-only"
   }
   try {

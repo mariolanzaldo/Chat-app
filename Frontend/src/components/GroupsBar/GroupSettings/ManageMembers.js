@@ -59,8 +59,6 @@ export default function ManageMembers({ currentChat }) {
             <Modal open={open} >
                 <Grid container sx={{
                     position: 'relative',
-                    // display: 'flex',
-                    // flexDirection: 'column',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
@@ -79,7 +77,6 @@ export default function ManageMembers({ currentChat }) {
                             justifyContent: 'right',
                             height: 'auto',
                             backgroundColor: 'rgba(120, 120, 120, 1.0)',
-                            // justifyItems: 'right',
                         }}
                     >
                         <IconButton

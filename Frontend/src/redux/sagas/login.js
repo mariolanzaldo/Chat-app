@@ -41,7 +41,7 @@ function* login(action) {
               rooms {
                 _id
                 name
-                groupalRoom
+                isGroupalRoom
                 admin {
                   username
                 } 

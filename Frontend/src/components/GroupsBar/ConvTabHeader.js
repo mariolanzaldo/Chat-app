@@ -47,8 +47,6 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // const form = new FormData(event.target);
-        // groupName = form.get('groupName');
 
         if (groupName && groupName.trim() !== "") {
             const membersArray = members.map((member) => {
@@ -60,7 +58,7 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                 roomInput: {
                     name: groupName,
                     admin: [{ username }],
-                    groupalRoom: true,
+                    isGroupalRoom: true,
                     members: [...membersArray, { username }],
                 }
             };
@@ -83,13 +81,11 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
 
     return (
         <Box component='span'
-            // sx={navbarStyles.wrapper}
             sx={{
                 display: 'flex',
                 alignItems: 'center',
                 padding: 0,
                 mr: 2,
-                // width: 'calc(20.8vw - 1px)',
                 width: '100%',
                 height: '100px',
                 backgroundColor: '#f5f5f5',
@@ -103,7 +99,6 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                     onChange={(event) => handleSearch(event.target.value)}
                 />
             </Box>
-
 
             <Box
                 m={1}
@@ -137,7 +132,6 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                             placeholder={t("groupName")}
                             name="groupName"
                             label={t("groupName")}
-                            // required
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={errors ? true : false}
@@ -169,12 +163,7 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                     </Box>
                 </Box>
             </Modal>
-
-
-
         </Box>
-
-
     );
 };
 

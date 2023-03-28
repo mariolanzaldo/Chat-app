@@ -42,7 +42,7 @@ subscription groupChanged {
     groupChanged {
       _id
       name
-      groupalRoom
+      isGroupalRoom
       admin {
         username
       }
@@ -77,7 +77,7 @@ function ResponsiveDrawer(props) {
 
     const { username, requests, rooms } = useSelector((state) => state.user.value);
 
-    const current = rooms.find((room) => room._id === roomId);
+    const currentRoom = rooms.find((room) => room._id === roomId);
 
     const open = Boolean(anchorEl);
 
@@ -120,14 +120,14 @@ function ResponsiveDrawer(props) {
         onData: ({ data }) => {
             const { groupChanged } = data?.data;
 
-            const user = groupChanged.members.find((user) => user.username === username);
+            const hasUser = groupChanged.members.find((user) => user.username === username);
 
-            if (user) {
+            if (hasUser) {
                 dispatch({
                     type: 'groupChanges',
                 });
 
-                if (groupChanged.isDeleted && groupChanged.groupalRoom && roomId === groupChanged._id) {
+                if (groupChanged.isDeleted && groupChanged.isGroupalRoom && roomId === groupChanged._id) {
                     navigate('/');
                 }
             }
@@ -189,20 +189,17 @@ function ResponsiveDrawer(props) {
             <Box
                 sx={{
                     width: '100%',
-                    // height: '100vh',
-                    // scroll: "none",
                     overflow: "hidden",
                     height: { xs: '100%', sm: '93%', md: '90%' },
                 }}
             >
                 <BasicTabs />
-
             </Box>
             <Divider />
         </Grid>
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const hasContainer = window !== undefined ? () => window().document.body : undefined;
 
     return (
         <Box
@@ -211,7 +208,6 @@ function ResponsiveDrawer(props) {
                 width: "100%",
                 height: {
                     xs: "100vh",
-                    // sm: "150vh",
                     md: "100vh",
                     lg: "100vh",
                 },
@@ -240,9 +236,9 @@ function ResponsiveDrawer(props) {
 
                     <Box component="div">
                         <Typography variant="h6" noWrap component="div">
-                            {current?.name}
+                            {currentRoom?.name}
                         </Typography>
-                        {current?.name ? (<Stack
+                        {currentRoom?.name ? (<Stack
                             direction="row"
                             spacing={1}
                             sx={{
@@ -254,7 +250,7 @@ function ResponsiveDrawer(props) {
                             >
                                 {`${t("members")}:`}
                             </Typography>
-                            {current?.members.map((user) => {
+                            {currentRoom?.members.map((user) => {
                                 return <Chip
                                     key={user.username}
                                     avatar={<Avatar src={user.avatar} />}
@@ -281,7 +277,7 @@ function ResponsiveDrawer(props) {
             >
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Drawer
-                    container={container}
+                    container={hasContainer}
                     variant="temporary"
                     open={mobileOpen}
                     onClose={handleDrawerToggle}
@@ -322,17 +318,12 @@ function ResponsiveDrawer(props) {
                 sx={{
                     flexGrow: 1,
                     p: 0,
-                    // width: { sm: `calc(100% - ${drawerWidth}px)` },
                     width: { md: `calc(80% - ${drawerWidth}px)` },
                     height: {
-                        // xs: "2000px",
                         xs: "250vh",
                         sm: "230vh",
                         md: "77vh",
-                        // xl: "100vh"
                     },
-                    // border: "1px solid red"
-
                 }}
             >
                 <Toolbar />

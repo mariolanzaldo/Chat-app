@@ -6,7 +6,6 @@ const MemberGroupOptions = ({ currentChat }) => {
         <>
             <ManageLeave currentChat={currentChat} />
         </>
-
     );
 };
 

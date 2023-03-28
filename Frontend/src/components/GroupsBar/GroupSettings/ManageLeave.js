@@ -19,18 +19,17 @@ const ManageLeave = ({ currentChat }) => {
 
     const [open, setOpen] = useState(false);
 
-    const handleLeave = (event) => {
-        // event.preventDefault();
-
+    const handleLeave = () => {
         let roomInput;
+        const isAdmin = admin.includes(username);
 
-        if (admin.includes(username)) {
+        if (isAdmin) {
             roomInput = {
                 _id,
                 admin: [{ username }],
                 members: [{ username }]
             };
-        } else if (!admin.includes(username)) {
+        } else if (!isAdmin) {
             roomInput = {
                 _id,
                 admin: null,
@@ -67,7 +66,6 @@ const ManageLeave = ({ currentChat }) => {
                             key={_id}
                             type="submit"
                             variant="contained"
-                        // onClick={handleLeave}
                         >
                             {t("leave")}
                         </Button>
@@ -84,10 +82,7 @@ const ManageLeave = ({ currentChat }) => {
 
                 </Box>
             </Modal>
-
         </>
-
-
     );
 };
 

@@ -35,7 +35,6 @@ const typeDefs = gql`
         email: String
         password: String
         confirmPassword: String
-        #settings: SettingsInput
         avatar: String
         joinedAt: Date
     }
@@ -71,16 +70,14 @@ const typeDefs = gql`
     input MessageInput {
         content: String
         isScribble: Boolean
-        #sendBy: String
         roomId: ID
-        #room: [Room] ????
     }
 
     type Room {
         _id: String
         name: String
         admin: [UnauthUser]
-        groupalRoom: Boolean
+        isGroupalRoom: Boolean
         members: [UnauthUser]
         isDeleted: Boolean
     }
@@ -88,10 +85,9 @@ const typeDefs = gql`
     input RoomInput {
         _id: String
         name: String
-        groupalRoom: Boolean
+        isGroupalRoom: Boolean
         admin: [UserInput]
         members: [UserInput]
-        #addMember: [UserInput]
     }
 
     input CookieInput {
@@ -139,17 +135,14 @@ const typeDefs = gql`
         currentUser: User
         user(_id: String): User
         existence(username: String, email: String): Exists
-        #currentRoom(_id: String): Room
     }
 
     type Subscription {
         newMessage(roomId: ID): Message
-        newRoom: Room
         addFriend: Request
         friendRequestAccepted: User
         deleteContact: User
         groupChanged: Room
-        #groupChanged: [User]
     }
 `;
 

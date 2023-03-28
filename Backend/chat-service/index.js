@@ -1,11 +1,11 @@
 const express = require('express');
 const expressWinston = require('express-winston');
-const messageRouter = require('./routes/messageRouter');
-const roomRouter = require('./routes/roomRouter');
+const messageRouter = require('./src/routes/messageRouter');
+const roomRouter = require('./src/routes/roomRouter');
 const logger = require('./logger');
 
 require("dotenv").config();
-require('./db/db');
+require('./src/db/db');
 
 
 const app = express();
@@ -16,10 +16,9 @@ app.use(
         winstonInstance: logger,
         statusLevels: true,
     })
-)
+);
 
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/chat/message", messageRouter);
 app.use("/api/chat/room", roomRouter);

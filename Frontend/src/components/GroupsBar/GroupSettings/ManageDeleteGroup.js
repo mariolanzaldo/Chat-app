@@ -74,12 +74,8 @@ const ManageDeleteGroup = ({ currentChat }) => {
 
                 </Box>
             </Modal>
-
         </>
-
-
     );
-
 };
 
 export default ManageDeleteGroup;

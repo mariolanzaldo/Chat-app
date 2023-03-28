@@ -1,27 +1,15 @@
 export const navbarStyles = {
     drawer: {
         position: 'relative',
-        // width: '100%',
         width: '20.8vw',
         minWidth: '255px',
-        // height: '100vh',
-        // height: '100vh',
         flexShrink: 0,
         overflow: 'hidden',
-        // height: '100%',
-        // width: 'calc(100vh - 420px)',
-        // width: '100vh',
-        // border: '1px solid blue',
-
         '& .MuiDrawer-paper': {
             width: '20.8vw',
             minWidth: '255px',
-            // width: 320,
             overflow: 'visible',
             boxSizing: 'border-box',
-            // border: '1px solid red',
-            // backgroundColor: '#101F33',
-            // color: 'rgba(255, 255, 255, 0.7)',
         },
     },
 
@@ -48,7 +36,6 @@ export const navbarStyles = {
     tabs: {
         display: 'flex',
         flexDirection: 'column',
-        // width: '316px',
         width: "100%",
         height: '100%',
     },
@@ -72,7 +59,6 @@ export const navbarStyles = {
             margin: 0,
             padding: 0,
             width: '100%',
-            // height: '100px'
         }
     },
 

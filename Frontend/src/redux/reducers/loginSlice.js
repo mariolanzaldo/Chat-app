@@ -1,10 +1,6 @@
-// import { Types } from "./types";
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    // username: "",
-    // password: "",
-    // isSucess: false,
     isFetching: false,
     error: null,
 };

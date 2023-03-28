@@ -12,7 +12,7 @@ function* deleteAdmin(action) {
             deleteAdmin(roomInput: $roomInput) {
               _id
               name
-              groupalRoom
+              isGroupalRoom
               admin {
                 username
               }

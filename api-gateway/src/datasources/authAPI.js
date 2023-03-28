@@ -3,15 +3,17 @@ const { RESTDataSource } = require('@apollo/datasource-rest');
 class AuthAPI extends RESTDataSource {
     baseURL = process.env.API_AUTH;
 
+
     constructor(options = {}) {
         super(options);
         // this.token = options.token;
-        this.memoizeGetRequests;
+        // this.memoizeGetRequests;
+        this.standarURL = 'api/auth';
     }
 
     async signup(username, password) {
         return this.post(
-            `/api/auth/signup`,
+            `/${this.standarURL}/signup`,
             {
                 body: {
                     username,
@@ -22,7 +24,7 @@ class AuthAPI extends RESTDataSource {
     };
     async secureRoute(token) {
         return this.post(
-            `api/auth/profile`,
+            `/${this.standarURL}/profile`,
             {
                 body: {
                     secret_token: token
@@ -33,7 +35,7 @@ class AuthAPI extends RESTDataSource {
 
     async login(userInput) {
         return this.post(
-            `/api/auth/login`,
+            `/${this.standarURL}/login`,
             { body: userInput }
         );
     };

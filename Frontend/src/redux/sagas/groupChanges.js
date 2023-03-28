@@ -3,9 +3,9 @@ import { gql } from "@apollo/client";
 import { setUser, userErrorFetching } from '../reducers/userSlice';
 import client from "../../client";
 
-function* groupChanges(action) {
-    const options = {
-        query: gql`
+function* groupChanges() {
+  const options = {
+    query: gql`
             query {
                 currentUser{
                     _id
@@ -39,7 +39,7 @@ function* groupChanges(action) {
                     rooms {
                       _id
                       name
-                      groupalRoom
+                      isGroupalRoom
                       admin {
                         username
                       } 
@@ -54,19 +54,18 @@ function* groupChanges(action) {
                 }
             }
             `,
-        fetchPolicy: "no-cache"
+    fetchPolicy: "no-cache"
 
-    };
-    try {
-        // yield put(setUserFetching());
-        const res = yield call(client.query, options);
-        const { currentUser } = res.data;
+  };
+  try {
+    const res = yield call(client.query, options);
+    const { currentUser } = res.data;
 
-        yield put(setUser({ user: currentUser }));
+    yield put(setUser({ user: currentUser }));
 
-    } catch (err) {
-        yield put(userErrorFetching({ err }));
-    }
+  } catch (err) {
+    yield put(userErrorFetching({ err }));
+  }
 };
 
 export default groupChanges;

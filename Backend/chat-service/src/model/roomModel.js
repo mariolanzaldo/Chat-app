@@ -10,15 +10,10 @@ const roomSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    // icon: {
-    //     type: String,
-    //     required: true,
-    // },
-    groupalRoom: {
+    isGroupalRoom: {
         type: Boolean,
         default: false,
     },
-    // members: [String],
     members: [{
         type: new mongoose.Schema({
             username: {
@@ -32,7 +27,6 @@ const roomSchema = new mongoose.Schema({
             },
         }, { _id: false }),
     }],
-    // members: [memberSchema],
 });
 
 const roomModel = mongoose.model("Room", roomSchema);

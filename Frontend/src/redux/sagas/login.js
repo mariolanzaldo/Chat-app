@@ -4,56 +4,16 @@ import client from "../../client";
 import { changeLanguage, t } from "i18next";
 import { setUser } from "../reducers/userSlice";
 import { setNotification } from "../reducers/notificationSlice";
+import { CORE_USER_FIELDS } from "../../graphql/userFragment";
 
 function* login(action) {
   const options = {
+
     mutation: gql`
+    ${CORE_USER_FIELDS}
         mutation Login($userInput: UserInput) {
             login(userInput: $userInput) {
-              username
-              firstName
-              lastName
-              email
-              avatar
-              contactList {
-                username
-                firstName
-                lastName
-                email
-                avatar
-              }
-              requests {
-                from {
-                  _id
-                  username
-                  firstName
-                  lastName
-                  avatar
-                }
-                to{
-                  _id
-                  username
-                  firstName
-                  lastName
-                  avatar
-                }
-              }
-              rooms {
-                _id
-                name
-                isGroupalRoom
-                admin {
-                  username
-                } 
-                members {
-                  username
-                  avatar
-                  joinedAt
-                }
-              }
-              settings {
-                language
-              }
+              ...CoreUserFields
               token
             }
           }

@@ -1,25 +1,16 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
+import { CORE_ROOM_FIELDS } from "../../graphql/roomFragment";
 import { userErrorFetching, newMember } from "../reducers/userSlice";
 
 function* addMember(action) {
   const options = {
     mutation: gql`
+    ${CORE_ROOM_FIELDS}
         mutation addMember($roomInput: RoomInput) {
             addMember(roomInput: $roomInput) {
-              _id
-              name
-              isGroupalRoom
-              admin {
-                username
-              }
-              members {
-                _id
-                username
-                avatar
-                joinedAt
-              }
+              ...CoreRoomFields
             }
           }
         `,

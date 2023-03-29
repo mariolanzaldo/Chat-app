@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
+import { CORE_ROOM_FIELDS } from "../../graphql/roomFragment";
 import { setDefaultNotification } from "../reducers/notificationSlice";
 import { removeAdmin } from '../reducers/userSlice';
 
@@ -8,22 +9,10 @@ import { removeAdmin } from '../reducers/userSlice';
 function* deleteAdmin(action) {
   const options = {
     mutation: gql`
+    ${CORE_ROOM_FIELDS}
         mutation deleteAdmin($roomInput: RoomInput) {
             deleteAdmin(roomInput: $roomInput) {
-              _id
-              name
-              isGroupalRoom
-              admin {
-                username
-              }
-              members {
-                _id
-                username
-                firstName
-                lastName
-                avatar
-                joinedAt
-              }
+              ...CoreRoomFields
             }
           }
         `,

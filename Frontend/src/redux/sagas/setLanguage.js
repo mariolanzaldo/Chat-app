@@ -4,62 +4,16 @@ import client from "../../client";
 import { setDefaultNotification, setNotification } from "../reducers/notificationSlice";
 import { setUser } from "../reducers/userSlice";
 import { t } from 'i18next';
+import { CORE_USER_FIELDS } from "../../graphql/userFragment";
 
 function* setLanguage(action) {
   const options = {
     mutation: gql`
+    ${CORE_USER_FIELDS}
         mutation ChangeLanguage($settingsInput: SettingsInput) {
             changeLanguage(settingsInput: $settingsInput) {
               value {
-                _id
-                username
-                firstName
-                lastName
-                email
-                avatar
-                settings {
-                  language
-                }
-                contactList {
-                  username
-                  firstName
-                  lastName
-                  email
-                  avatar
-                }
-                requests {
-                  from {
-                    _id
-                    username
-                    firstName
-                    lastName
-                    avatar
-                  }
-                  to{
-                    _id
-                    username
-                    firstName
-                    lastName
-                    avatar
-                  }
-                }
-                rooms {
-                  _id
-                  name
-                  isGroupalRoom
-                  admin {
-                    username
-                  } 
-                  members {
-                    _id
-                    username
-                    firstName
-                    lastName
-                    avatar
-                    joinedAt
-                  }
-                }
-                token
+                ...CoreUserFields
               } 
             }
           }

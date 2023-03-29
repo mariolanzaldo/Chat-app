@@ -1,71 +1,10 @@
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import { Typography } from '@mui/material';
 import { t } from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ContactList from "./ContactList";
-
-const CONTACT_DELETED = gql`
-  
-  subscription deleteContact {
-    deleteContact {
-      _id
-    username
-      firstName
-      lastName
-      email
-      
-      avatar
-      contactList {
-        _id
-        username
-        firstName
-        lastName
-        email
-        avatar
-      }
-      requests {
-        from {
-          _id
-          username
-          firstName
-          lastName
-          email
-          avatar
-        }
-        to {
-          _id
-          username
-          firstName
-          lastName
-          email
-          avatar
-        }
-      }
-      rooms {
-        _id
-        name
-        groupalRoom
-        admin {
-          username
-        }
-        members {
-          _id
-          username
-          firstName
-          lastName
-          email
-          joinedAt
-          avatar
-        }
-      }  
-      token
-      settings {
-        language
-      }
-    }
-  }
-  `;
+import CONTACT_DELETED from '../../graphql/subscriptions/contactDeleted';
 
 const TabContent = ({ users }) => {
 

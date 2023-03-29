@@ -1,62 +1,20 @@
 import { gql } from "@apollo/client";
 import { call, put } from "redux-saga/effects";
 import client from "../../client";
+import { CORE_USER_FIELDS } from "../../graphql/userFragment";
 import { setDefaultNotification } from "../reducers/notificationSlice";
 import { rejectFriend } from "../reducers/userSlice";
 
 function* rejectContact(action) {
   const options = {
     mutation: gql`
+    ${CORE_USER_FIELDS}
         mutation rejectFriend($friendInput: FriendInput) {
             rejectFriend(friendInput: $friendInput) {
               success
               errorMessage
               value {
-                _id
-                username
-                firstName
-                lastName
-                email
-                avatar
-                settings {
-                  language
-                }
-                contactList {
-                  _id
-                  username
-                  firstName
-                  lastName
-                  email
-                  avatar
-                }
-                requests {
-                  from {
-                    _id
-                    username
-                    firstName
-                    lastName
-                    avatar
-                  }
-                  to{
-                    _id
-                    username
-                    firstName
-                    lastName
-                    avatar
-                  }
-                }
-                rooms {
-                  _id
-                  name
-                  admin {
-                    username
-                  }
-                  isGroupalRoom
-                  members {
-                    username
-                    joinedAt
-                  }
-                }
+                ...CoreUserFields
               }
             }
           }

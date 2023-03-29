@@ -3,68 +3,18 @@ import { gql } from '@apollo/client';
 import client from "../../client";
 import { deleteContact } from "../reducers/userSlice";
 import { setDefaultNotification } from "../reducers/notificationSlice";
+import { CORE_USER_FIELDS } from "../../graphql/userFragment.js";
 
-function* deleteFrien(action) {
+function* deleteFriend(action) {
   const options = {
     mutation: gql`
+    ${CORE_USER_FIELDS}
     mutation DeleteFriend($friendInput: FriendInput) {
       deleteFriend(friendInput: $friendInput) {
         success
         errorMessage
         value {
-          username
-          contactList {
-            _id
-            username
-            email
-            firstName
-            lastName
-            avatar
-          }
-          avatar
-          email
-          firstName
-          lastName
-          rooms {
-            _id
-            name
-            isGroupalRoom
-            admin {
-              username
-            }
-            members {
-              _id
-              username
-              firstName
-              lastName
-              email
-              joinedAt
-              avatar
-            }
-          }
-          _id
-          token
-          requests {
-            to {
-              _id
-              username
-              firstName
-              lastName
-              email
-              avatar
-            }
-            from {
-              _id
-              username
-              firstName
-              lastName
-              email
-              avatar
-            }
-          }
-          settings {
-            language
-          }
+          ...CoreUserFields
         }
       }
     }
@@ -82,4 +32,4 @@ function* deleteFrien(action) {
   }
 };
 
-export default deleteFrien;
+export default deleteFriend;

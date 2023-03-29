@@ -72,6 +72,12 @@ const startServer = async () => {
             return {
                 dataSources,
                 authUser,
+                hasAuth: JWT ? null : new GraphQLError("Internal Error", {
+                    extensions: {
+                        code: 'UNAUTHENTICATED',
+                        http: { status: 401 },
+                    }
+                }),
             }
         },
     }, wsServer);

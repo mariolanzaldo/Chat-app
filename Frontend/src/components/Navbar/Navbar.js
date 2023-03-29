@@ -14,48 +14,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Outlet, useParams } from 'react-router-dom';
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
+import GROUP_CHANGED from '../../graphql/subscriptions/groupUpdates';
+import FRIEND_REQUEST from '../../graphql/subscriptions/friendRequest';
 
 const drawerWidth = 275;
-
-const FRIEND_REQUEST = gql`
-subscription FriendSub {
-    addFriend {
-        from {
-            username
-            firstName
-            lastName
-            avatar
-          }
-          to {
-            username
-            firstName
-            lastName
-            avatar
-          }
-  }
-}
-`;
-
-const GROUP_CHANGED = gql`
-subscription groupChanged {
-    groupChanged {
-      _id
-      name
-      isGroupalRoom
-      admin {
-        username
-      }
-      isDeleted
-      members {
-        _id
-        username
-        avatar
-        joinedAt
-      }
-    }
-  }
-`;
 
 function ResponsiveDrawer(props) {
     const { window } = props;

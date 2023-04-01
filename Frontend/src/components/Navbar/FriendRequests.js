@@ -45,12 +45,9 @@ const FriendRequests = () => {
                 >
                     <Grid
                         item xs={12}
+                        justifyContent='right'
+                        height='auto'
                         sx={{
-                            display: 'flex',
-                            margin: 0,
-                            padding: 0,
-                            justifyContent: 'right',
-                            height: 'auto',
                             backgroundColor: 'rgba(120, 120, 120, 1.0)',
                         }}
                     >
@@ -73,9 +70,8 @@ const FriendRequests = () => {
 
                         <List
                             sx={{
-                                width: "100%",
                                 height: "400px",
-                                overflowY: "scroll",
+                                overflowY: 'scroll',
                                 "& .css-tazwbd-MuiList-root::-webkit-scrollbar-track": {
                                     border: 'none',
                                 },
@@ -86,13 +82,10 @@ const FriendRequests = () => {
                                 '&::-webkit-scrollbar-track': {
                                     boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
                                     webkitBoxShadow: 'inset 0 0 6px rgba(,0,0,0.00)',
-
-
                                 },
                                 '&::-webkit-scrollbar-thumb': {
                                     backgroundColor: 'rgba(145, 136, 153, 0.91)',
                                     borderRadius: '20px',
-
                                     outline: '1px solid slategrey'
                                 }
                             }}

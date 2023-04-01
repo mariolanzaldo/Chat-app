@@ -52,7 +52,7 @@ export default function ManageMembers({ currentChat }) {
     return (
         <>
             <MenuItem onClick={() => setOpen(true)} >
-                <Typography textAlign="center">
+                <Typography>
                     {t("manageMembers")}
                 </Typography>
             </MenuItem>
@@ -71,7 +71,6 @@ export default function ManageMembers({ currentChat }) {
                 >
                     <Grid item xs={12}
                         sx={{
-                            display: 'flex',
                             margin: 0,
                             padding: 0,
                             justifyContent: 'right',
@@ -108,7 +107,10 @@ export default function ManageMembers({ currentChat }) {
                             <AddMember currentChat={currentChat} open={open} setOpen={setOpen} />
                         </TabPanel>
                         <TabPanel value={value} index={1} dir={theme.direction}>
+                            {/* <DeleteMember currentChat={currentChat} open={open} setOpen={setOpen} /> */}
                             <DeleteMember currentChat={currentChat} open={open} setOpen={setOpen} />
+
+
                         </TabPanel>
                     </Grid>
                 </Grid>

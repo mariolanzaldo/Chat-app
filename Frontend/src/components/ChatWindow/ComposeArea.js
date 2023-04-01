@@ -1,11 +1,10 @@
-import { Box, Button, IconButton, Modal, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, Modal, TextField, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import GestureIcon from '@mui/icons-material/Gesture';
 import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { contactStyles } from "../ContactsBar/styles";
-import CommonButton from "../common/CommonButton/CommonButton";
 import Canvas from "./Canvas";
 import { useTranslation } from "react-i18next";
 
@@ -87,7 +86,7 @@ const ComposeArea = () => {
 
     return (
         <>
-            <Box
+            <Grid
                 component="form"
                 onSubmit={handleSubmit}
                 sx={{
@@ -164,7 +163,7 @@ const ComposeArea = () => {
                 >
                     <SendIcon />
                 </IconButton>
-            </Box >
+            </Grid>
 
             <Modal open={open} onSubmit={handleScribble}>
                 <Box component="form" sx={contactStyles.scribble}>
@@ -199,7 +198,7 @@ const ComposeArea = () => {
                         >
                             {t("submit")}
                         </Button>
-                        <CommonButton
+                        <Button
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
@@ -208,7 +207,7 @@ const ComposeArea = () => {
                             }}
                         >
                             {t("cancel")}
-                        </CommonButton>
+                        </Button>
                     </Box>
                 </Box>
             </Modal>

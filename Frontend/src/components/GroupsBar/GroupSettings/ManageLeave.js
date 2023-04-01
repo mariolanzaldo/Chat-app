@@ -1,7 +1,6 @@
 import { Box, Button, MenuItem, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 import { contactStyles } from '../../ContactsBar/styles';
-import CommonButton from "../../common/CommonButton/CommonButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -69,7 +68,7 @@ const ManageLeave = ({ currentChat }) => {
                         >
                             {t("leave")}
                         </Button>
-                        <CommonButton
+                        <Button
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
@@ -77,7 +76,7 @@ const ManageLeave = ({ currentChat }) => {
                             }}
                         >
                             {t("cancel")}
-                        </CommonButton>
+                        </Button>
                     </Box>
 
                 </Box>

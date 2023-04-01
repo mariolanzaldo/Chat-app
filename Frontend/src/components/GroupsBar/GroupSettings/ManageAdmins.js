@@ -72,7 +72,6 @@ const ManageAdmins = ({ currentChat }) => {
                 >
                     <Grid item xs={12}
                         sx={{
-                            display: 'flex',
                             margin: 0,
                             padding: 0,
                             justifyContent: 'right',

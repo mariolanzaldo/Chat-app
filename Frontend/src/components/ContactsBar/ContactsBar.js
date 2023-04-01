@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TabHeader from "./TabHeader";
@@ -54,28 +54,27 @@ const ContactsBar = () => {
   if (contactList.length > 0 && contactList && username) {
 
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          margin: 0,
-          padding: 0,
-        }}
+
+      <Grid
+        container
+        flexDirection='column'
       >
         <TabHeader open={open} setOpen={setOpen} filterData={filterData} />
 
         <TabContent users={users} />
-      </ Box>
+      </Grid>
     );
 
   } else if (contactList.length === 0) {
     return (
-      <Box>
+      <Grid
+        container
+        flexDirection='column'
+      >
         <TabHeader open={open} setOpen={setOpen} />
 
         <Typography>{t("noContacts")}</Typography>
-      </Box>
+      </Grid>
     );
   }
 };

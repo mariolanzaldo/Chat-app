@@ -83,13 +83,14 @@ const Login = () => {
     return (
         <Paper
             variant='outlined'
+            display="flex"
             sx={{
                 width: 300,
                 mx: "auto",
                 my: 4,
                 p: 4,
                 px: 2,
-                display: 'flex',
+                // display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
                 borderRadius: 'sm',
@@ -100,12 +101,11 @@ const Login = () => {
                 <Typography level='h4' component='h1'>
                     <b>{t("welcome")}</b>
                 </Typography>
-                <Typography level="body2">
+                <Typography level="body2" mb={2}>
                     {t('signinToContinue')}
                 </Typography>
             </div>
             <Box component='form' onSubmit={handleSubmit}>
-                <Box></Box>
                 <TextField
                     fullWidth
                     name='username'

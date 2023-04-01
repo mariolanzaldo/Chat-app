@@ -20,17 +20,34 @@ const useForm = ({ initState, callback, validator }) => {
     }, [isSubmited, state, errors]);
 
     useEffect(() => {
-        dispatch({
-            type: "usernameExistence",
-            payload: { username: state.username },
-        });
+
+        const delayDebounce = setTimeout(() => {
+            dispatch({
+                type: "usernameExistence",
+                payload: { username: state.username },
+            });
+        }, 1000);
+        // dispatch({
+        //     type: "usernameExistence",
+        //     payload: { username: state.username },
+        // });
+
+        return () => clearTimeout(delayDebounce);
     }, [state.username, dispatch]);
 
     useEffect(() => {
-        dispatch({
-            type: "emailExistence",
-            payload: { email: state.email },
-        });
+
+        const delayDebounce = setTimeout(() => {
+            dispatch({
+                type: "emailExistence",
+                payload: { email: state.email },
+            });
+        }, 1000);
+        // dispatch({
+        //     type: "emailExistence",
+        //     payload: { email: state.email },
+        // });
+        return () => clearTimeout(delayDebounce);
     }, [state.email, dispatch]);
 
     const handleChange = event => {

@@ -12,13 +12,21 @@ export const navbarStyles = {
             boxSizing: 'border-box',
         },
     },
-
+    drawerContainer: {
+        height: '100%',
+        width: '100%',
+    },
+    typography: {
+        '& .MuiTypography-root': {
+            fontSize: '70px',
+        }
+    },
     avatar: {
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
         '& .MuiGrid-item': {
-            display: 'flex',
+            // display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%'
@@ -32,7 +40,9 @@ export const navbarStyles = {
             height: '50px'
         }
     },
-
+    chips: {
+        boxShadow: "5px 2px 2px rgba(74, 76, 74, 0.8)",
+    },
     tabs: {
         display: 'flex',
         flexDirection: 'column',

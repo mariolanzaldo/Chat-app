@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import MESSAGES_SUBSCRIPTION from "../../graphql/subscriptions/incomingMessages";
+//TODO: style the ChatWindow/Login/Signup/Dashboard components!!
 
 const ChatWindow = () => {
 
@@ -38,7 +39,6 @@ const ChatWindow = () => {
         <Grid
             container
             sx={{
-                display: 'flex',
                 flexDirection: 'row',
                 padding: 0,
                 height: "100%",

@@ -14,14 +14,14 @@ const MessageItem = ({ message }) => {
             maxWidth: { xs: "30%", sm: "30%", md: '77%', lg: "60%" },
             alignSelf: alignMessage,
         }}>
-            <ListItem sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                padding: 1,
-                alignItems: "stretch",
-                overflowWrap: "break-word",
-                borderRadius: '10px',
-            }}>
+            <ListItem
+                sx={{
+                    flexDirection: 'column',
+                    padding: 1,
+                    alignItems: "stretch",
+                    overflowWrap: "break-word",
+                    borderRadius: '10px',
+                }}>
                 {!message.isScribble ? (<>
                     <ListItemText
                         primary={message.sendBy}
@@ -30,7 +30,6 @@ const MessageItem = ({ message }) => {
                             backgroundColor: color,
                             borderRadius: '10px',
                             padding: 1,
-                            margin: 0,
                             height: 'auto',
                             '& .MuiListItemText-primary': {
                                 fontSize: { xs: "30px", sm: "25px", md: "15px" },
@@ -45,9 +44,6 @@ const MessageItem = ({ message }) => {
                     <ListItemText
                         secondary={message?.createdAt ? `${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}` : `${new Date(Date.now()).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
-                            padding: 0,
-                            margin: 0,
-                            width: '100%',
                             textAlign: 'right',
                         }}
                     />
@@ -68,11 +64,9 @@ const MessageItem = ({ message }) => {
                             sx={{
 
                                 '& .MuiListItemText-primary': {
-
                                     fontWeight: 'bold',
                                 },
                                 '& .MuiListItemText-secondary': {
-
                                     color: 'rgba(14, 14, 14, 1)',
                                 }
                             }}
@@ -92,9 +86,6 @@ const MessageItem = ({ message }) => {
                     <ListItemText
                         secondary={message?.createdAt ? `${time.toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}` : `${new Date(Date.now()).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}`}
                         sx={{
-                            padding: 0,
-                            margin: 0,
-                            width: '100%',
                             textAlign: 'right',
                         }}
                     />

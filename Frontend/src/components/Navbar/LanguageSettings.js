@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { t } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -38,7 +38,7 @@ const LanguageSettings = ({ setOpen }) => {
     };
 
     return (
-        <Box
+        <Grid
             component="form"
             onSubmit={handleSubmit}
             sx={{
@@ -74,8 +74,7 @@ const LanguageSettings = ({ setOpen }) => {
                     {t("apply")}
                 </Button>
             </Box>
-
-        </Box>
+        </Grid>
     );
 };
 

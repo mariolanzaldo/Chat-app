@@ -4,14 +4,14 @@ import { styled, InputBase } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
-    gap: '0px',
+    // gap: '10px',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: 'rgba(127, 93, 149, 0.8)',
     "&:hover": {
         backgroundColor: 'rgba(127, 93, 149, 0.3)',
     },
     margin: '0 3px',
-    width: '85%',
+    width: '90%',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -29,7 +29,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
-        paddingLeft: `calc(1em + ${theme.spacing(3)})`,
+        paddingLeft: `calc(1em + ${theme.spacing(2)})`,
         transition: theme.transitions.create('width'),
         width: '100%',
     },

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { contactStyles } from "./styles";
-import CommonButton from "../common/CommonButton/CommonButton";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -58,15 +57,10 @@ const ContactList = ({ contacts }) => {
                 return <ListItem
                     key={user.username}
                     sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: '10px',
                         padding: '0 0 0 10px',
-                        width: '100%',
                     }}
                 >
                     <Grid container mb={2} sx={{
-                        display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         width: "100%"
@@ -74,14 +68,13 @@ const ContactList = ({ contacts }) => {
                         <Grid item xs={3}>
                             <ListItemIcon>
                                 <Avatar src={user.avatar} />
-
                             </ListItemIcon>
                         </Grid>
-                        <Grid item xs={7} sx={{
-                            textAlign: "left",
-                            wordWrap: "break-word",
-
-                        }}>
+                        <Grid item xs={7}
+                            textAlign='left'
+                            sx={{
+                                wordWrap: "break-word",
+                            }}>
                             <Typography>{user.username}</Typography>
 
                         </Grid>
@@ -97,16 +90,7 @@ const ContactList = ({ contacts }) => {
                     </Grid>
 
                     <Modal open={showDelete}>
-                        <Box sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            backgroundColor: 'rgba(255,255,255, 0.8)',
-                            transform: 'translate(-50%, -50%)',
-                            width: 300,
-                            boxShadow: 24,
-                            p: 4,
-                        }} component="form" onSubmit={handleSubmit}>
+                        <Box sx={contactStyles.wrapper} component="form" onSubmit={handleSubmit}>
                             <Typography
                                 variant={'subtitle1'}
                                 gutterBottom
@@ -117,11 +101,10 @@ const ContactList = ({ contacts }) => {
                                 <Button
                                     variant="contained"
                                     type="submit"
-                                // onClick={}
                                 >
                                     {t("delete")}
                                 </Button>
-                                <CommonButton
+                                <Button
                                     variant="outlined"
                                     onClick={(event) => {
                                         event.preventDefault();
@@ -129,7 +112,7 @@ const ContactList = ({ contacts }) => {
                                     }}
                                 >
                                     {t("cancel")}
-                                </CommonButton>
+                                </Button>
                             </Box>
 
                         </Box>

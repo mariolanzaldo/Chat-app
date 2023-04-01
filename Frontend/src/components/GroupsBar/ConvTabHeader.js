@@ -1,7 +1,6 @@
 import { navbarStyles } from '../Navbar/styles';
-import CommonButton from '../common/CommonButton/CommonButton';
 import SearchBar from '../common/SearchBar/SearchBar';
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, Modal, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { contactStyles } from '../ContactsBar/styles';
 import TagInput from './TagInput';
@@ -80,41 +79,39 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
     };
 
     return (
-        <Box component='span'
+        <Grid
+            container
+            mr={2}
+            alignItems='center'
+            flexDirection='row'
+            height='100px'
             sx={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: 0,
-                mr: 2,
-                width: '100%',
-                height: '100px',
                 backgroundColor: '#f5f5f5',
                 borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
             }}
         >
+            <Grid
+                item
+                width='74%'
 
-            <Box>
+            >
                 <SearchBar
                     placeholder={t("searchConversation")}
                     onChange={(event) => handleSearch(event.target.value)}
                 />
-            </Box>
-
-            <Box
-                m={1}
-                sx={{
-                    width: '65px',
-                }}
+            </Grid>
+            <Grid
+                item
             >
-                <CommonButton
+                <Button
                     variant="contained"
                     size='large'
                     onClick={createConversation}
                     sx={navbarStyles.addUserButton}
                 >
                     {t("add")}
-                </CommonButton>
-            </Box>
+                </Button>
+            </Grid>
 
             <Modal open={open} onSubmit={handleSubmit}>
                 <Box component="form" sx={contactStyles.wrapper}>
@@ -124,7 +121,7 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                     >
                         {t("newGroup")}
                     </Typography>
-                    <Typography sx={{ mt: 2 }}>
+                    <Typography mt={2}>
                         {t("fillForm")}
                     </Typography>
                     <Box sx={contactStyles.inputFields}>
@@ -147,7 +144,7 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                         >
                             {t("submit")}
                         </Button>
-                        <CommonButton
+                        <Button
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
@@ -159,11 +156,11 @@ const ConvTabHeader = ({ open, setOpen, filterData }) => {
                             }}
                         >
                             {t("cancel")}
-                        </CommonButton>
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
-        </Box>
+        </Grid >
     );
 };
 

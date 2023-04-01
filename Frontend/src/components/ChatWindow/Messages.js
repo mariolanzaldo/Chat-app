@@ -1,4 +1,4 @@
-import { Box, List, Toolbar } from "@mui/material";
+import { Box, Grid, List, Toolbar } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import MessageItem from "./MessageItem";
@@ -15,11 +15,11 @@ const Messages = () => {
     if (messages && currentConversation?._id) {
         const filteredMessages = messages.filter((item) => item.roomId === currentConversation._id);
         return (
-            <List
+            <Grid
                 disablePadding
+                component={List}
+                display='flex'
                 sx={{
-
-                    display: 'flex',
                     flexDirection: 'column',
                 }}
             >
@@ -32,7 +32,7 @@ const Messages = () => {
                 })}
 
                 <Box ref={messagesEnd}></Box>
-            </List>
+            </Grid>
         );
     }
 

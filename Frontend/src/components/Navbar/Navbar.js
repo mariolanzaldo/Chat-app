@@ -102,20 +102,14 @@ function ResponsiveDrawer(props) {
 
     const drawer = (
         <Grid container
-            sx={{
-                width: "100%",
-                height: "100%",
-            }}
+            sx={navbarStyles.drawer.container}
         >
             <Grid container sx={navbarStyles.avatar}>
                 <Grid item xs={3}>
                     <Image />
                 </Grid>
                 <Grid item xs={7}>
-                    <Typography variant='h5' component='div'
-                        sx={{
-                            width: "100%"
-                        }}
+                    <Typography variant='h4'
                     >{username}</Typography>
                 </Grid>
                 <Grid item xs={2}>
@@ -159,27 +153,26 @@ function ResponsiveDrawer(props) {
                 <BasicTabs />
             </Box>
             <Divider />
-        </Grid>
+        </Grid >
     );
 
     const hasContainer = window !== undefined ? () => window().document.body : undefined;
 
     return (
-        <Box
+        <Grid
+            display='flex'
+            width='100%'
+            zIndex="0"
             sx={{
-                display: 'flex',
-                width: "100%",
                 height: {
                     xs: "100vh",
                     md: "100vh",
                     lg: "100vh",
                 },
-                zIndex: 0,
             }}
         >
             <CssBaseline />
             <AppBar
-                position="fixed"
                 sx={{
                     width: { md: `calc(100% - ${drawerWidth}px)` },
                     height: { xs: '70px' },
@@ -204,9 +197,6 @@ function ResponsiveDrawer(props) {
                         {currentRoom?.name ? (<Stack
                             direction="row"
                             spacing={1}
-                            sx={{
-
-                            }}
                         >
                             <Typography
                                 variant="body1"
@@ -218,12 +208,7 @@ function ResponsiveDrawer(props) {
                                     key={user.username}
                                     avatar={<Avatar src={user.avatar} />}
                                     label={user.username}
-                                    sx={{
-                                        backgroundColor: "rgba(177, 173, 206, 0.8)",
-                                        fontWeight: 'bold',
-                                        boxShadow: "5px 2px 2px rgba(74, 76, 74, 0.8)",
-                                        color: "whitesmoke"
-                                    }}
+                                    sx={navbarStyles.chips}
                                 />
                             })}
                         </Stack>) : ""}
@@ -293,7 +278,7 @@ function ResponsiveDrawer(props) {
 
                 <Outlet />
             </Box>
-        </Box >
+        </Grid>
     );
 }
 

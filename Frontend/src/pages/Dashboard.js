@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Grid, Stack } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar/Navbar';
@@ -18,12 +18,12 @@ function Dashboard() {
     if (hasUser) {
 
         return (
-            <Stack sx={{
-                display: 'flex',
-                flexDirection: 'row',
-            }}>
+            <Grid
+                container
+                flexDirection='row'
+            >
                 <Navbar />
-            </Stack>
+            </Grid>
         );
     }
     else if (!hasUser) {

@@ -1,9 +1,9 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { MuiChipsInput } from "mui-chips-input";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import CommonButton from "../../common/CommonButton/CommonButton";
+import { groupSettingsStyles } from "./styles";
 
 
 const AddAdmin = ({ currentChat, setOpen }) => {
@@ -61,24 +61,21 @@ const AddAdmin = ({ currentChat, setOpen }) => {
 
     return (
         <>
-            <Box
+            <Grid
+                container
                 component="form"
                 onSubmit={handleSubmit}
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    p: 1,
-                }}
-            >
+                pt={6}
+                sx={groupSettingsStyles.gridContainer}
 
+            >
                 <Typography sx={{ textAlign: 'center' }}>{t("addAdmin")}</Typography>
                 <Typography sx={{ textAlign: 'center' }}>{t("fillForm")}</Typography>
 
-                <Box
-                    sx={{
-                        width: '70%',
-                        alignSelf: 'center',
-                    }}
+                <Grid
+                    item
+                    sx={groupSettingsStyles.chipField}
+
                 >
                     <MuiChipsInput
                         name="addAdmin"
@@ -92,25 +89,14 @@ const AddAdmin = ({ currentChat, setOpen }) => {
                         inputProps={{
                             maxLength: 25
                         }}
-                        sx={{
-                            width: '100%',
-                            '& .MuiChipsInput-Chip': {
-                                backgroundColor: 'rgba(175, 173, 222, 0.8)'
-                            },
-                            '& .MuiChipsInput-Chip-Editing': {
-                                color: 'white'
-                            }
-                        }}
+                        sx={groupSettingsStyles.MuiChips}
                     />
+                </Grid>
 
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        gap: '30px',
-                        justifyContent: 'center',
-                        padding: 1,
-                    }}
+                <Grid
+                    item
+                    p={1}
+                    sx={groupSettingsStyles.modalButtons}
                 >
                     <Button
                         type='submit'
@@ -118,7 +104,7 @@ const AddAdmin = ({ currentChat, setOpen }) => {
                     >
                         {t("add")}
                     </Button>
-                    <CommonButton
+                    <Button
                         variant="outlined"
                         onClick={(event) => {
                             event.preventDefault();
@@ -126,9 +112,9 @@ const AddAdmin = ({ currentChat, setOpen }) => {
                         }}
                     >
                         {t("cancel")}
-                    </CommonButton>
-                </Box>
-            </Box>
+                    </Button>
+                </Grid>
+            </Grid>
         </>
     );
 };

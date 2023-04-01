@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useState } from 'react';
 import { Box, Button, MenuItem, Modal, Typography } from '@mui/material';
-import CommonButton from '../../common/CommonButton/CommonButton';
 import { contactStyles } from '../../ContactsBar/styles';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -61,7 +60,7 @@ const ManageDeleteGroup = ({ currentChat }) => {
                         >
                             {t("delete")}
                         </Button>
-                        <CommonButton
+                        <Button
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
@@ -69,7 +68,7 @@ const ManageDeleteGroup = ({ currentChat }) => {
                             }}
                         >
                             {t("cancel")}
-                        </CommonButton>
+                        </Button>
                     </Box>
 
                 </Box>

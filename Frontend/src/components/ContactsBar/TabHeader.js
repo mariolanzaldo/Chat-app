@@ -1,6 +1,5 @@
 import { navbarStyles } from '../Navbar/styles';
-import CommonButton from '../common/CommonButton/CommonButton';
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, Modal, TextField, Typography } from '@mui/material';
 import SearchBar from "../common/SearchBar/SearchBar";
 import { contactStyles } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -80,42 +79,39 @@ const TabHeader = ({ open, setOpen, filterData }) => {
     };
 
     return (
-        <Box component='span'
+        <Grid
+            container
+            flexDirection='row'
+            alignItems='center'
+            height='100px'
+            mr={2}
             sx={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: 0,
-                mr: 2,
-                width: '100%',
-                height: '100px',
                 backgroundColor: '#f5f5f5',
                 borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
             }}
         >
-
-            <Box>
+            <Grid
+                item
+                width='74%'
+            >
                 <SearchBar
                     placeholder={t("searchFriend")}
                     onChange={(event) => handleSearch(event.target.value)}
                 />
-            </Box>
+            </Grid>
 
-
-            <Box
-                m={1}
-                sx={{
-                    width: '65px',
-                }}
+            <Grid
+                item
             >
-                <CommonButton
+                <Button
                     variant="contained"
                     size='large'
                     onClick={addContact}
                     sx={navbarStyles.addUserButton}
                 >
                     {t("add")}
-                </CommonButton>
-            </Box>
+                </Button>
+            </Grid>
 
             <Modal open={open} onSubmit={handleSubmit}>
                 <Box component="form" sx={contactStyles.wrapper}>
@@ -125,7 +121,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                     >
                         {t("newUser")}
                     </Typography>
-                    <Typography sx={{ mt: 2 }}>
+                    <Typography mt={2}>
                         {t("fillForm")}
                     </Typography>
                     <Box sx={contactStyles.inputFields}>
@@ -148,7 +144,7 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                         >
                             {t("submit")}
                         </Button>
-                        <CommonButton
+                        <Button
                             variant="outlined"
                             onClick={(event) => {
                                 event.preventDefault();
@@ -157,11 +153,12 @@ const TabHeader = ({ open, setOpen, filterData }) => {
                             }}
                         >
                             {t("cancel")}
-                        </CommonButton>
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
-        </Box>
+        </Grid>
+
     );
 };
 

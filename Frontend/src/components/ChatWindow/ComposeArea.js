@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { contactStyles } from "../ContactsBar/styles";
 import Canvas from "./Canvas";
 import { useTranslation } from "react-i18next";
+import { chatWindowStyles } from "./styles";
 
 
 const ComposeArea = () => {
@@ -89,14 +90,10 @@ const ComposeArea = () => {
             <Grid
                 component="form"
                 onSubmit={handleSubmit}
-                sx={{
-                    display: 'flex',
-                    width: "100%",
-                    height: "97%",
-                    padding: "0px",
-                    gap: '15px',
-                    alignItems: "center",
-                }}
+                display='flex'
+                height="97%"
+                alignItems="center"
+                gap='15px'
             >
                 <TextField
                     direction="column"
@@ -107,45 +104,13 @@ const ComposeArea = () => {
                         maxLength: 5000,
                     }}
                     required
-                    sx={{
-                        backgroundColor: "rgb(240, 240, 240)",
-                        borderRadius: "25px",
-                        flexGrow: 2,
-                        paddingLeft: "2px",
-                        width: "125vh",
-                        maxHeight: "70px",
-                        margin: 0,
-                        whiteSpace: "normal",
-                        overflowY: 'scroll',
-                        overflowWrap: "break-word",
-                        "& fieldset": {
-                            border: 'none',
-                        },
-                        '&::-webkit-scrollbar': {
-                            width: '0.4em',
-                        },
-                        '&::-webkit-scrollbar-track': {
-                            boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-                            webkitBoxShadow: 'inset 0 0 6px rgba(,0,0,0.00)',
-
-                        },
-                        '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: 'rgba(145, 136, 153, 0.91)',
-                            outline: '1px solid slategrey'
-                        }
-                    }}
+                    sx={chatWindowStyles.textInput}
                 />
                 <IconButton
                     variant="contained"
                     color="primary"
                     onClick={handleClick}
-                    sx={{
-                        minWidth: "50px",
-                        width: "50px",
-                        height: "50px",
-                        flexGrow: 0,
-                        backgroundColor: "rgb(240, 240, 240)",
-                    }}
+                    sx={chatWindowStyles.sendScribbleButton}
                 >
                     <GestureIcon />
                 </IconButton>
@@ -153,41 +118,38 @@ const ComposeArea = () => {
                     variant="contained"
                     color="primary"
                     type="submit"
-                    sx={{
-                        minWidth: "50px",
-                        width: "50px",
-                        height: "50px",
-                        flexGrow: 0,
-                        backgroundColor: "rgb(240, 240, 240)",
-                    }}
+                    sx={chatWindowStyles.sendMessageButton}
                 >
                     <SendIcon />
                 </IconButton>
             </Grid>
 
             <Modal open={open} onSubmit={handleScribble}>
-                <Box component="form" sx={contactStyles.scribble}>
+                <Box component="form" sx={chatWindowStyles.scribble}>
                     <Typography
                         variant='h6'
                         component='h2'
+                        textAlign='center'
                     >
                         {t("scribble")}
                     </Typography>
-                    <Typography sx={{ mt: 1 }}>
+                    <Typography
+                        mt={1}
+                        textAlign='center'
+                    >
                         {t("scribbleInstruction")}
                     </Typography>
 
                     <Box
-                        sx={{
-                            margin: 1,
-                        }}
+                        m={1}
+                        display='flex'
                     >
                         <Canvas
                             width={430}
                             height={280}
                             id='canvas'
                         />{
-                            isError ? <Typography color='red' sx={{ m: 1, textAlign: 'center' }}>{t("scribbleError")}</Typography> : null
+                            isError ? <Typography color='red'>{t("scribbleError")}</Typography> : null
                         }
                     </Box>
 

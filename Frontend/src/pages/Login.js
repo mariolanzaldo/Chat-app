@@ -90,7 +90,6 @@ const Login = () => {
                 my: 4,
                 p: 4,
                 px: 2,
-                // display: 'flex',
                 flexDirection: 'column',
                 gap: 2,
                 borderRadius: 'sm',

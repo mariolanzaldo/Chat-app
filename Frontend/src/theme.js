@@ -1,4 +1,3 @@
-import { gridClasses } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
@@ -35,13 +34,6 @@ const theme = createTheme({
                 }
             }
         },
-        // MuiBox: {
-        //     styleOverrides: {
-        //         root: {
-        //             width: '100%',
-        //         }
-        //     }
-        // },
         MuiList: {
             styleOverrides: {
                 root: {
@@ -90,6 +82,7 @@ const theme = createTheme({
                     padding: 0,
                     margin: 0,
                 },
+
             }
         }
     }

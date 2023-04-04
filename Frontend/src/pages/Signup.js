@@ -60,20 +60,22 @@ export default function Signup() {
         <Paper elevation={5} style={paperStyle}>
             <Container component="main" maxWidth="xs" >
                 <CssBaseline />
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
+                <Grid
+                    container
+                    flexDirection='column'
+                    alignItems='center'
+                    // alignSelf='center'
+                    alignContent='center'
+                    textAlign='center'
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography level="h1" component="h1" variant="h5" sx={{ mb: 2 }}>
+                    <Typography level="h1" component="h1" variant="h5" marginBottom={1} >
                         {t("signup")}
                     </Typography>
-                </Box>
+                </Grid>
+
                 <Box component="form" onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>

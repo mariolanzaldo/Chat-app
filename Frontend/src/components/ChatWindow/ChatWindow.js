@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import MESSAGES_SUBSCRIPTION from "../../graphql/subscriptions/incomingMessages";
-//TODO: style the ChatWindow/Login/Signup/Dashboard components!!
+import { chatWindowStyles } from "./styles";
 
 const ChatWindow = () => {
 
@@ -38,51 +38,23 @@ const ChatWindow = () => {
     return (
         <Grid
             container
-            sx={{
-                flexDirection: 'row',
-                padding: 0,
-                height: "100%",
-                width: "100%",
-            }}
+            flexDirection='row'
+            height="100%"
         >
             <Grid
                 item
-                sx={{
-                    backgroundColor: 'rgb(240, 240, 240)',
-                    overflowY: 'scroll',
-                    scrollBehavior: 'smooth',
-                    height: "100%",
-                    width: "100%",
-                    "& .css-tazwbd-MuiList-root::-webkit-scrollbar-track": {
-                        border: 'none',
-                    },
-                    '&::-webkit-scrollbar': {
-                        width: '0.4em',
-
-                    },
-                    '&::-webkit-scrollbar-track': {
-                        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-                        webkitBoxShadow: 'inset 0 0 6px rgba(,0,0,0.00)',
-
-
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: 'rgba(145, 136, 153, 0.91)',
-                        borderRadius: '20px',
-                        outline: '1px solid slategrey'
-                    }
-                }}
+                width='100%'
+                height="100%"
+                sx={chatWindowStyles.messagesWindow}
             >
                 <Messages />
             </Grid>
 
             <Grid
                 item
-                sx={{
-                    padding: "2px",
-                    width: '100%',
-                    height: "100px",
-                }}
+                padding={2}
+                width='100%'
+                height='100px'
             >
                 <ComposeArea />
 

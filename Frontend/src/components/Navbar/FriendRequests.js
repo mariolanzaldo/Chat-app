@@ -32,24 +32,22 @@ const FriendRequests = () => {
             <Modal open={open}>
                 <Grid
                     container
+                    position='relative'
+                    top="50%"
+                    left="50%"
+                    width={600}
+                    bgcolor='background.paper'
+                    boxShadow={24}
+                    p={0}
                     sx={{
-                        position: 'relative',
-                        top: '50%',
-                        left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 600,
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 0,
                     }}
                 >
                     <Grid
                         item xs={12}
                         justifyContent='right'
                         height='auto'
-                        sx={{
-                            backgroundColor: 'rgba(120, 120, 120, 1.0)',
-                        }}
+                        bgcolor='rgba(120, 120, 120, 1.0)'
                     >
                         <IconButton
                             size='medium'

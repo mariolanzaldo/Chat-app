@@ -60,11 +60,11 @@ const ContactList = ({ contacts }) => {
                         padding: '0 0 0 10px',
                     }}
                 >
-                    <Grid container mb={2} sx={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%"
-                    }}>
+                    <Grid container mb={2}
+                        alignItems='center'
+                        justifyContent='center'
+                        width='100%'
+                    >
                         <Grid item xs={3}>
                             <ListItemIcon>
                                 <Avatar src={user.avatar} />

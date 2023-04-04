@@ -4,7 +4,6 @@ import { styled, InputBase } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
-    // gap: '10px',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: 'rgba(127, 93, 149, 0.8)',
     "&:hover": {

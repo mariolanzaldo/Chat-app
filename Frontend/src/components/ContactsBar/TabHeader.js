@@ -85,10 +85,8 @@ const TabHeader = ({ open, setOpen, filterData }) => {
             alignItems='center'
             height='100px'
             mr={2}
-            sx={{
-                backgroundColor: '#f5f5f5',
-                borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-            }}
+            bgcolor='f5f5f5'
+            borderBottom='1px solid rgba(0, 0, 0, 0.12)'
         >
             <Grid
                 item

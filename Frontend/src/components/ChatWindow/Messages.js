@@ -1,4 +1,4 @@
-import { Box, Grid, List, Toolbar } from "@mui/material";
+import { Grid, List, Toolbar } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import MessageItem from "./MessageItem";
@@ -19,9 +19,7 @@ const Messages = () => {
                 disablePadding
                 component={List}
                 display='flex'
-                sx={{
-                    flexDirection: 'column',
-                }}
+                flexDirection='column'
             >
                 <Toolbar />
 
@@ -31,7 +29,7 @@ const Messages = () => {
                     );
                 })}
 
-                <Box ref={messagesEnd}></Box>
+                <Grid ref={messagesEnd}></Grid>
             </Grid>
         );
     }

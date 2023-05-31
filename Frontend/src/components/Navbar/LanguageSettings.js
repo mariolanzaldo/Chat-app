@@ -59,9 +59,9 @@ const LanguageSettings = ({ setOpen }) => {
                     value={selectedLanguage}
                     onChange={handleChange}
                 >
-                    <MenuItem value={"en"}>{t("english")}</MenuItem>
-                    <MenuItem value={"es"}>{t("spanish")}</MenuItem>
-                    <MenuItem value={"fr"}>{t("french")}</MenuItem>
+                    <MenuItem value={"en"}>&#8288;{t("english")}</MenuItem>
+                    <MenuItem value={"es"}>&#8288;{t("spanish")}</MenuItem>
+                    <MenuItem value={"fr"}>&#8288;{t("french")}</MenuItem>
                 </Select>
             </FormControl>
             <Box

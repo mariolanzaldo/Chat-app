@@ -40,6 +40,7 @@ const ManageDeleteGroup = ({ currentChat }) => {
     return (
         <>
             <MenuItem onClick={() => setOpen(true)}>
+                &#8288;
                 <Typography>
                     {t("deleteGroup")}
                 </Typography>

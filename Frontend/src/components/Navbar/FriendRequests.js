@@ -21,6 +21,7 @@ const FriendRequests = () => {
                     setOpen(true);
                 }}
             >
+                &#8288;
                 <Badge
                     badgeContent={requests.length}
                     color="secondary"

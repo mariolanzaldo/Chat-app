@@ -135,7 +135,7 @@ function ResponsiveDrawer(props) {
                         <MenuItem
                             onClick={handleLogout}
                         >
-                            <Typography>{t("logout")}</Typography>
+                            &#8288;<Typography>{t("logout")}</Typography>
                         </MenuItem>
                         <Settings />
                         <FriendRequests />

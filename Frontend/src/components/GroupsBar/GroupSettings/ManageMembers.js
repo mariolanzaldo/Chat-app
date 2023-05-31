@@ -52,6 +52,7 @@ export default function ManageMembers({ currentChat }) {
     return (
         <>
             <MenuItem onClick={() => setOpen(true)} >
+                &#8288;
                 <Typography>
                     {t("manageMembers")}
                 </Typography>

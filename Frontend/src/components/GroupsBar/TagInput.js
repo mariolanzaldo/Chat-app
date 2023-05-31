@@ -51,7 +51,7 @@ const TagInput = ({ members, setMembers }) => {
                             key={item.username}
                             value={item.username}
                         >
-                            {item.username}
+                            &#8288;{item.username}
                         </MenuItem>
                     ))}
                 </Select>

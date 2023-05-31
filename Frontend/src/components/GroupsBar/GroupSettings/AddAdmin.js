@@ -69,8 +69,8 @@ const AddAdmin = ({ currentChat, setOpen }) => {
                 sx={groupSettingsStyles.gridContainer}
 
             >
-                <Typography sx={{ textAlign: 'center' }}>{t("addAdmin")}</Typography>
-                <Typography sx={{ textAlign: 'center' }}>{t("fillForm")}</Typography>
+                <Typography sx={{ textAlign: 'center' }}>&#8288;{t("addAdmin")}</Typography>
+                <Typography sx={{ textAlign: 'center' }}>&#8288;{t("fillForm")}</Typography>
 
                 <Grid
                     item

@@ -62,7 +62,7 @@ const Settings = () => {
             <MenuItem
                 onClick={handleSettings}
             >
-                {t("settings")}
+                &#8288;{t("settings")}
             </MenuItem>
             <Modal open={open} >
                 <Grid container sx={{
